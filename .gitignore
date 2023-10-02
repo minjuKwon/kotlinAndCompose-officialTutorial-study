@@ -272,3 +272,4 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,android,androidstudio,kotlin,windows
+jetpackCompose/01.Introduce/introduce02/src/main/res/drawable-nodpi/androidparty.png
