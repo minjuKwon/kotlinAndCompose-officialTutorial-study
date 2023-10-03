@@ -273,3 +273,5 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,android,androidstudio,kotlin,windows
 jetpackCompose/01.Introduce/introduce02/src/main/res/drawable-nodpi/androidparty.png
+jetpackCompose/01.Introduce/practice01/src/main/res/drawable-nodpi/bg_compose_background.png
+jetpackCompose/01.Introduce/practice02/src/main/res/drawable-nodpi/ic_task_completed.png
