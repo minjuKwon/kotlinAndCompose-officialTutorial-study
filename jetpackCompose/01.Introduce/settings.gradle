@@ -16,3 +16,4 @@ rootProject.name = "Introduce"
 include ':introduce01'
 include ':introduce02'
 include ':practice01'
+include ':practice02'
