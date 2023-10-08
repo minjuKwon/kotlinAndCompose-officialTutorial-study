@@ -21,13 +21,16 @@ fun main() {
 	
 	//3
 	println("#3")
-	printFinalTemperature(27.0, "Celsius", "Fahrenheit"){(9*it)/5+32}
+	printFinalTemperature(27.0, "Celsius", "Fahrenheit"){9.0/5.0*it+32}
 	printFinalTemperature(350.0, "Kelvin", "Celsius"){it-273.15}
-	printFinalTemperature(10.0, "Fahrenheit", "Kelvin"){(it-32)*5/9+273.15}
+	printFinalTemperature(10.0, "Fahrenheit", "Kelvin"){5.0/9.0*(it-32)+273.15}
 	println()
 	
 	//4
 	println("#4")
+	val song=Song("We Don't Talk About Bruno", "Encanto Cast", 2022, 1_000_000)
+	song.printInfo()
+	println(song.isFamous)
 	println()
 	
 	//5
@@ -40,6 +43,12 @@ fun main() {
 	
 	//6
 	println("#6")
+	val foldablePhone=FoldablePhone()
+	foldablePhone.switchOn()
+	foldablePhone.checkPhoneScreenLight()
+	foldablePhone.unfold()
+	foldablePhone.switchOn()
+	foldablePhone.checkPhoneScreenLight()
 	println()
 	
 	//7
@@ -62,17 +71,11 @@ fun printNotificationSummary(numberOfMessages: Int){
 
 //2
 fun ticketPrice(age: Int, isMonday: Boolean): Int{
-	if(age<=12){
-		return 15
-	}else if(age>=13&&age<=60){
-		if(isMonday){
-			return 25
-		}
-		return 30
-	}else if(age>=61&&age<=100){
-		return 20
-	}else{
-		return -1		
+	return when(age){
+		in 0..12->15
+		in 13..60->if(isMonday) 25 else 30
+		in 61..100->20
+		else ->-1
 	}
 }
 	
@@ -88,15 +91,14 @@ fun printFinalTemperature(
 }
 	
 //4
-class Song(val title: String, val artist: String, val published: String, val count: Int) {
-	private var isFamous=false
-			set(value){
-				if(count<1000){
-					field=value
-				}else{
-					field=!value
-				}
-			}
+class Song(
+	val title: String,
+	val artist: String,
+	val published: Int,
+	val count: Int
+) {
+	val isFamous:Boolean
+		get()=count>=1000
 	fun printInfo() {
 		println("[$title], artist [$artist] published [$published]")
 	}
@@ -112,7 +114,12 @@ class Person(val name: String, val age: Int, val hobby: String?, val referrer: P
 			print("Likes to $hobby.")
 		}
 		if(referrer!=null){
-			println(" Has a referrer named ${referrer.name}, who likes to ${referrer.hobby}.")
+			print(" Has a referrer named ${referrer.name}")
+			if(referrer.hobby!=null){
+				print(", who likes to ${referrer.hobby}.")
+			}else{
+				print(".")
+			}
 		}else{
 			println(" Doesnt' have a referrer.")
 		}
@@ -127,35 +134,34 @@ open class Phone(var isScreenLightOn: Boolean=false){
 		isScreenLightOn=true
 	}
 	
-	open fun switchOff(){
+	fun switchOff(){
 		isScreenLightOn=false
 	}
 	
-	open fun checkPhoneScreenLight() {
+	fun checkPhoneScreenLight() {
 		val phoneScreenLight=if(isScreenLightOn) "on" else "off"
 		println("The phone screen's light is $phoneScreenLight")
 	}
 	
 }
 
-class FoldablePhone(var isScreenLightOnFoldable:Boolean=false): Phone(){
+class FoldablePhone(var isFolded:Boolean=true): Phone(){
 	
-	var isFoldable=false
 	
 	override fun switchOn(){
-		isScreenLightOn=true
-		isFoldable=true
+		if(!isFolded){
+			isScreenLightOn=true
+		}
 	}
 	
-	override fun switchOff(){
-		isScreenLightOn=false
-		isFoldable=false
+	fun fold(){
+		isFolded=true
 	}
 	
-	override fun checkPhoneScreenLight(){
-		val phoneScreenLight=if(isScreenLightOn&&isFoldable) "on" else "off"
-		println("The phone screen's light is $phoneScreenLight")
+	fun unfold(){
+		isFolded=false
 	}
+	
 }
 	
 //7
