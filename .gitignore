@@ -276,3 +276,9 @@ jetpackCompose/01.Introduce/introduce02/src/main/res/drawable-nodpi/androidparty
 jetpackCompose/01.Introduce/practice01/src/main/res/drawable-nodpi/bg_compose_background.png
 jetpackCompose/01.Introduce/practice02/src/main/res/drawable-nodpi/ic_task_completed.png
 jetpackCompose/01.Introduce/businesscard/src/main/res/drawable-nodpi/android_logo.png
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_1.xml
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_2.xml
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_3.xml
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_4.xml
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_5.xml
+jetpackCompose/02.BuildingUI/diceroller/src/main/res/drawable/dice_6.xml
