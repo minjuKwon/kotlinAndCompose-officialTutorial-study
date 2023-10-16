@@ -314,3 +314,5 @@ jetpackCompose/03.ListAndMaterialDesign/grid/src/main/res/drawable/crafts.jpg
 jetpackCompose/03.ListAndMaterialDesign/grid/src/main/res/drawable/design.jpg
 jetpackCompose/03.ListAndMaterialDesign/grid/src/main/res/drawable/gaming.jpg
 jetpackCompose/03.ListAndMaterialDesign/grid/src/main/res/drawable/ic_grain.xml
+*.jpg
+*.png
