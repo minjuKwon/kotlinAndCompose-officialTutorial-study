@@ -317,3 +317,11 @@ jetpackCompose/03.ListAndMaterialDesign/grid/src/main/res/drawable/ic_grain.xml
 *.jpg
 *.png
 *.ttf
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero6.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero4.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero1.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero2.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero3.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/android_superhero5.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/ic_launcher_background.xml
+jetpackCompose/03.ListAndMaterialDesign/superheroes/src/main/res/drawable/ic_launcher_foreground.xml
