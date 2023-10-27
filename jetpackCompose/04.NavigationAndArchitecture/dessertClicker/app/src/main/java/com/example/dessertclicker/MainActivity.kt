@@ -174,13 +174,6 @@ private fun DessertClickerApp(
 ) {
     val desertUiState by dessertViewModel.uiState.collectAsState()
 
-    var currentDessertPrice by rememberSaveable {
-        mutableStateOf(desertUiState.currentDessertIndex)
-    }
-    var currentDessertImageId by rememberSaveable {
-        mutableStateOf(desertUiState.currentDessertIndex)
-    }
-
     Scaffold(
         topBar = {
             val intentContext = LocalContext.current
