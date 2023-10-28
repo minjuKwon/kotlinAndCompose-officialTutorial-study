@@ -2,6 +2,7 @@ package com.example.dessertclicker
 
 
 import androidx.lifecycle.ViewModel
+import com.example.dessertclicker.data.Datasource.dessertList
 import com.example.dessertclicker.data.DesertUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,5 +32,34 @@ class DesertViewModel: ViewModel() {
             currentState.copy(currentDesertImageId = image, currentDessertPrice = price)
         }
     }
+
+  /*  official solution
+    fun onDessertClicked() {
+        _uiState.update { currentState->
+
+            val dessertsSold= currentState.dessertsSold+1
+            val nextDessertIndex=determineDessertIndex(dessertsSold)
+            currentState.copy(
+                revenue = currentState.revenue+currentState.currentDessertPrice,
+                dessertsSold=dessertsSold,
+                currentDessertIndex = nextDessertIndex,
+                currentDesertImageId = dessertList[nextDessertIndex].imageId,
+                currentDessertPrice = dessertList[nextDessertIndex].price
+            )
+
+        }
+    }
+
+    private fun determineDessertIndex(dessertsSold: Int): Int {
+        var dessertIndex=0
+        for(index in dessertList.indices){
+            if(dessertsSold>=dessertList[index].startProductionAmount){
+                dessertIndex=index
+            }else{
+                break
+            }
+        }
+        return dessertIndex
+    }*/
 
 }
