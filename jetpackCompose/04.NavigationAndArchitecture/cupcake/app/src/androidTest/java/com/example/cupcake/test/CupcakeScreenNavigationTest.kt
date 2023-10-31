@@ -75,4 +75,57 @@ class CupcakeScreenNavigationTest {
         composeTestRule.onNodeWithStringId(R.string.next).performClick()
     }
 
+    private fun performNavigateUp() {
+        val backText=composeTestRule.activity.getString(R.string.back_button)
+        composeTestRule.onNodeWithContentDescription(backText).performClick()
+    }
+
+    @Test
+    fun cupcakeNavHost_clickNextOnFlavorScreen_navigatesToPickupScreen() {
+        navigateToFlavorScreen()
+        composeTestRule.onNodeWithStringId(R.string.next).performClick()
+        navController.assertCurrentRouteName(CupCakeScreen.Pickup.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickBackOnFlavorScreen_navigatesToStartOrderScreen() {
+        navigateToFlavorScreen()
+        performNavigateUp()
+        navController.assertCurrentRouteName(CupCakeScreen.Start.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickCancelOnFlavorScreen_navigatesToStartOrderScreen() {
+        navigateToFlavorScreen()
+        composeTestRule.onNodeWithStringId(R.string.cancel).performClick()
+        navController.assertCurrentRouteName(CupCakeScreen.Start.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickBackOnPickupScreen_navigatesToFlavorScreen() {
+        navigateToPickupScreen()
+        performNavigateUp()
+        navController.assertCurrentRouteName(CupCakeScreen.Flavor.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickCancelOnPickupScreen_navigatesToStartOrderScreen() {
+        navigateToPickupScreen()
+        composeTestRule.onNodeWithStringId(R.string.cancel).performClick()
+        navController.assertCurrentRouteName(CupCakeScreen.Start.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickNextOnPickupScreen_navigatesToSummaryScreen() {
+        navigateToSummaryScreen()
+        navController.assertCurrentRouteName(CupCakeScreen.Summary.name)
+    }
+
+    @Test
+    fun cupcakeNavHost_clickCancelOnSummaryScreen_navigatesToStartOrderScreen() {
+        navigateToSummaryScreen()
+        composeTestRule.onNodeWithStringId(R.string.cancel).performClick()
+        navController.assertCurrentRouteName(CupCakeScreen.Start.name)
+    }
+
 }
