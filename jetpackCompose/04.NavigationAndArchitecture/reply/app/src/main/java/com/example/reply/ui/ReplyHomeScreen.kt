@@ -21,10 +21,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Drafts
 import androidx.compose.material.icons.filled.Inbox
@@ -39,6 +42,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,13 +93,21 @@ fun ReplyHomeScreen(
     )
 
     if(navigationType==ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER&&replyUiState.isShowingHomepage){
+
         PermanentNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent(
-                    selectedDestination = replyUiState.currentMailbox,
-                    onTabPressed = onTabPressed,
-                    navigationItemContentList = navigationItemContentList
-                )
+                PermanentDrawerSheet(Modifier.width(dimensionResource(id = R.dimen.drawer_width))){
+                    NavigationDrawerContent(
+                        selectedDestination = replyUiState.currentMailbox,
+                        onTabPressed = onTabPressed,
+                        navigationItemContentList = navigationItemContentList,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .fillMaxHeight()
+                            .background(MaterialTheme.colorScheme.inverseOnSurface)
+                            .padding(dimensionResource(R.dimen.drawer_padding_content))
+                    )
+                }
             }
         ) {
             ReplyAppContent(
@@ -133,23 +145,18 @@ private fun ReplyAppContent(
     navigationItemContentList: List<NavigationItemContent>,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier=modifier.fillMaxSize()){
-        AnimatedVisibility(visible=navigationType==ReplyNavigationType.NAVIGATION_RAIL){
-            ReplyNavigationRail(
-                currentTab = replyUiState.currentMailbox,
-                onTabPressed = onTabPressed,
-                navigationItemContentList =navigationItemContentList
-            )
-        }
-        Box(modifier = modifier) {
-            val navigationRailContentDescription = stringResource(R.string.navigation_rail)
-            ReplyNavigationRail(
-                currentTab = replyUiState.currentMailbox,
-                onTabPressed = onTabPressed,
-                navigationItemContentList = navigationItemContentList,
-                modifier = Modifier
-                    .testTag(navigationRailContentDescription)
-            )
+    Box(modifier = modifier) {
+        Row(modifier=Modifier.fillMaxSize()){
+            AnimatedVisibility(visible=navigationType==ReplyNavigationType.NAVIGATION_RAIL){
+                val navigationRailContentDescription = stringResource(R.string.navigation_rail)
+                ReplyNavigationRail(
+                    currentTab = replyUiState.currentMailbox,
+                    onTabPressed = onTabPressed,
+                    navigationItemContentList =navigationItemContentList,
+                    modifier=Modifier.testTag(navigationRailContentDescription)
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -164,7 +171,6 @@ private fun ReplyAppContent(
                             horizontal = dimensionResource(R.dimen.email_list_only_horizontal_padding)
                         )
                 )
-                val bottomNavigationContentDescription = stringResource(R.string.navigation_bottom)
                 AnimatedVisibility(visible = navigationType==ReplyNavigationType.BOTTOM_NAVIGATION) {
                     ReplyBottomNavigationBar(
                         currentTab = replyUiState.currentMailbox,
