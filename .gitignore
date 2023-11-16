@@ -363,3 +363,6 @@ jetpackCompose/04.NavigationAndArchitecture/sports/app/src/main/res/drawable/ic_
 jetpackCompose/04.NavigationAndArchitecture/sports/app/src/main/res/drawable/ic_table_tennis_square.xml
 jetpackCompose/04.NavigationAndArchitecture/sports/app/src/main/res/drawable/ic_tennis_banner.xml
 jetpackCompose/04.NavigationAndArchitecture/sports/app/src/main/res/drawable/ic_tennis_square.xml
+jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/loading_img.xml
+jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/ic_connection_error.xml
+jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/ic_broken_image.xml
