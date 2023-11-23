@@ -3,7 +3,6 @@ package com.example.amphibians.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,14 +33,14 @@ import com.example.amphibians.ui.theme.AmphibiansTheme
 
 @Composable
 fun HomeScreen(
-    amphibiansUiState: AmphibiansViewModel.AmphibiansUiState,
+    amphibiansUiState: AmphibiansUiState,
     retryAction: () -> Unit,
-    modifier: Modifier= Modifier
+    modifier: Modifier= Modifier,
 ){
     when(amphibiansUiState){
-        is AmphibiansViewModel.AmphibiansUiState.Loading -> LoadingScreen(modifier=modifier.fillMaxSize())
-        is AmphibiansViewModel.AmphibiansUiState.Success -> AmphibiansGridScreen(amphibians=amphibiansUiState.list, modifier=modifier)
-        is AmphibiansViewModel.AmphibiansUiState.Error -> ErrorScreen(retryAction, modifier=modifier.fillMaxSize())
+        is AmphibiansUiState.Loading -> LoadingScreen(modifier=modifier.fillMaxSize())
+        is AmphibiansUiState.Success -> AmphibiansGridScreen(amphibians=amphibiansUiState.list, modifier=modifier.padding(12.dp))
+        is AmphibiansUiState.Error -> ErrorScreen(retryAction, modifier=modifier.fillMaxSize())
     }
 }
 

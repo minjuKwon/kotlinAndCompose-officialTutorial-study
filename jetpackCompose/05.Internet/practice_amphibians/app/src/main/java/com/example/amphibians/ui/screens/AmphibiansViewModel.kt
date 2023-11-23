@@ -47,9 +47,10 @@ class AmphibiansViewModel(
         }
     }
 
-    sealed interface AmphibiansUiState{
-        data class Success(val list: List<Amphibians>): AmphibiansUiState
-        object Error: AmphibiansUiState
-        object Loading: AmphibiansUiState
-    }
+}
+
+sealed interface AmphibiansUiState{
+    data class Success(val list: List<Amphibians>): AmphibiansUiState
+    object Error: AmphibiansUiState
+    object Loading: AmphibiansUiState
 }
