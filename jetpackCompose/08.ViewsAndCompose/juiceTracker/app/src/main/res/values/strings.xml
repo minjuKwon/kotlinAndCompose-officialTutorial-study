@@ -23,11 +23,16 @@
     <string name="name">Name</string>
     <string name="save">Save</string>
     <string name="juice_color">Color</string>
-
+    <plurals name="number_of_stars">
+        <item quantity="one">%d star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
     <string name="red">Red</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
     <string name="cyan">Cyan</string>
     <string name="yellow">Yellow</string>
     <string name="magenta">Magenta</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
