@@ -30,6 +30,7 @@ class BlurWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, p
         )
 
         return withContext(Dispatchers.IO){
+            delay(DELAY_TIME_MILLIS)
             return@withContext try {
                 require(!resourceUri.isNullOrBlank()){
                     val errorMessage=
@@ -37,7 +38,6 @@ class BlurWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, p
                     Log.e(TAG,errorMessage)
                     errorMessage
                 }
-                delay(DELAY_TIME_MILLIS)
 //                val picture= BitmapFactory.decodeResource(
 //                    applicationContext.resources,
 //                    R.drawable.android_cupcake
