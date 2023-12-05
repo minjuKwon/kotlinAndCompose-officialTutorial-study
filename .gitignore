@@ -367,3 +367,7 @@ jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/loading_img.xml
 jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/ic_connection_error.xml
 jetpackCompose/05.Internet/marsPhotos/app/src/main/res/drawable/ic_broken_image.xml
 jetpackCompose/08.ViewsAndCompose/juiceTracker/app/src/main/res/drawable/ic_plus_24.xml
+jetpackCompose/08.ViewsAndCompose/juiceTracker2/app/src/main/res/drawable/delete_icon.xml
+jetpackCompose/08.ViewsAndCompose/juiceTracker2/app/src/main/res/drawable/juice_clear_icon.xml
+jetpackCompose/08.ViewsAndCompose/juiceTracker2/app/src/main/res/drawable/star.xml
+jetpackCompose/08.ViewsAndCompose/juiceTracker2/app/src/main/res/drawable/juice_color.xml
