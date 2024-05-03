@@ -1,3 +1,111 @@
 <resources>
     <string name="app_name">Days30</string>
+
+    <!--title-->
+    <string name="title1">LETTER</string>
+    <string name="title2">창문</string>
+    <string name="title3">놀이</string>
+    <string name="title4">Firefly</string>
+    <string name="title5">수성의 하루</string>
+    <string name="title6">NO PAIN</string>
+    <string name="title7">좋다</string>
+    <string name="title8">名前(이름)</string>
+    <string name="title9">馬と鹿(말과 사슴)</string>
+    <string name="title10">너 있는 곳</string>
+    <string name="title11">백야</string>
+    <string name="title12">꿈에 나타나줘</string>
+    <string name="title13">나는 아픈 건 딱 질색이니까</string>
+    <string name="title14">그대만 있다면</string>
+    <string name="title15">Strawberry Cake</string>
+    <string name="title16">たぶん(아마도)</string>
+    <string name="title17">Zombie</string>
+    <string name="title18">Higher</string>
+    <string name="title19">좋지 아니한가</string>
+    <string name="title20">어쩌다보니</string>
+    <string name="title21">Comedy</string>
+    <string name="title22">10,000 Hours</string>
+    <string name="title23">Polaroid Love</string>
+    <string name="title24">정이라고 하자</string>
+    <string name="title25">像极了(정말 닮았어)</string>
+    <string name="title26">起风了(바람이 분다)</string>
+    <string name="title27">小幸运(소행운)</string>
+    <string name="title28">너와의 그 여름</string>
+    <string name="title29">무지개</string>
+    <string name="title30">궁금해 자꾸만</string>
+
+    <!--artist-->
+    <string name="artist1">유다빈밴드</string>
+    <string name="artist2">알레프</string>
+    <string name="artist3">LUCY</string>
+    <string name="artist4">N.flying</string>
+    <string name="artist5">쏜애플</string>
+    <string name="artist6">실리카겔</string>
+    <string name="artist7">데이브레이크</string>
+    <string name="artist8">amazarashi</string>
+    <string name="artist9">米津玄師(요네즈켄시)</string>
+    <string name="artist10">플래그</string>
+    <string name="artist11">짙은</string>
+    <string name="artist12">위수</string>
+    <string name="artist13">(여자)아이들</string>
+    <string name="artist14">일기예보</string>
+    <string name="artist15">Xdinary Heroes</string>
+    <string name="artist16">YOASOBI</string>
+    <string name="artist17">DAY6</string>
+    <string name="artist18">Erik Grönwall</string>
+    <string name="artist19">크라잉넛</string>
+    <string name="artist20">안예은</string>
+    <string name="artist21">星野源(호시노겐)</string>
+    <string name="artist22">Dan + Shay, Justin Bieber</string>
+    <string name="artist23">ENHYPEN</string>
+    <string name="artist24">BIG Naughty -Feat. 10CM</string>
+    <string name="artist25">永彬Ryan.B(영빈Ryan.B)</string>
+    <string name="artist26">买辣椒也用券(고추 살때도 쿠폰을 써)</string>
+    <string name="artist27">田馥甄(전복견)</string>
+    <string name="artist28">버블 사운드</string>
+    <string name="artist29">요니스</string>
+    <string name="artist30">From.U-Feat. 406호 프로젝트</string>
+
+    <!--genre-->
+    <string name="genre_rock">락</string>
+    <string name="genre_indie">인디</string>
+    <string name="genre_jpop">JPOP</string>
+    <string name="genre_balled">발라드</string>
+    <string name="genre_dance">댄스</string>
+    <string name="genre_pop">POP</string>
+    <string name="genre_RB">R&amp;B</string>
+    <string name="genre_cpop">CPOP</string>
+    <string name="genre_folk">포크</string>
+
+    <!--duration-->
+    <string name="duration1">03:26</string>
+    <string name="duration2">03:19</string>
+    <string name="duration3">03:46</string>
+    <string name="duration4">03:05</string>
+    <string name="duration5">05:10</string>
+    <string name="duration6">03:39</string>
+    <string name="duration7">03:14</string>
+    <string name="duration8">05:56</string>
+    <string name="duration9">04:26</string>
+    <string name="duration10">04:27</string>
+    <string name="duration11">04:08</string>
+    <string name="duration12">03:50</string>
+    <string name="duration13">02:41</string>
+    <string name="duration14">03:59</string>
+    <string name="duration15">03:38</string>
+    <string name="duration16">04:18</string>
+    <string name="duration17">03:27</string>
+    <string name="duration18">03:36</string>
+    <string name="duration19">04:24</string>
+    <string name="duration20">03:25</string>
+    <string name="duration21">03:50</string>
+    <string name="duration22">02:47</string>
+    <string name="duration23">03:04</string>
+    <string name="duration24">03:08</string>
+    <string name="duration25">03:14</string>
+    <string name="duration26">5:25</string>
+    <string name="duration27">04:26</string>
+    <string name="duration28">03:13</string>
+    <string name="duration29">02:20</string>
+    <string name="duration30">03:30</string>
+
 </resources>
