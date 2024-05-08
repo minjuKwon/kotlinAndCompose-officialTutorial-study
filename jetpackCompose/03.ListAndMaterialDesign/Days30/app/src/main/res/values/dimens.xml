@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_tiny">4dp</dimen>
+
+    <dimen name="shadow">16dp</dimen>
+
+    <dimen name="image">300dp</dimen>
+
+    <dimen name="icon">80dp</dimen>
+
+    <dimen name="canvas_width">260dp</dimen>
+    <dimen name="canvas_height">16dp</dimen>
+</resources>
