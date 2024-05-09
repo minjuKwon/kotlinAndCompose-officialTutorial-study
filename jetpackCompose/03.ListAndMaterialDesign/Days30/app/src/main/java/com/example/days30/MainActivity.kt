@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -104,7 +107,13 @@ fun Days30Item(index:Int, music:Music, modifier:Modifier=Modifier){
             .fillMaxWidth()
             .fillMaxHeight()
             .padding(dimensionResource(R.dimen.padding_large))
-            .wrapContentSize(Alignment.Center),
+            .wrapContentSize(Alignment.Center)
+            .animateContentSize(
+                animationSpec=spring(
+                    dampingRatio= Spring.DampingRatioNoBouncy,
+                    stiffness=Spring.StiffnessVeryLow
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
