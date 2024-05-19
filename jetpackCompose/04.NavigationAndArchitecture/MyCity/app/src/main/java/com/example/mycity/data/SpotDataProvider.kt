@@ -108,4 +108,15 @@ object SpotDataProvider {
         )
 
     )
+
+    fun updateIsBookmark(id:Long){
+        allSpots.forEach {
+            if(it.id == id){
+                it.isBookmark= !it.isBookmark
+            }
+        }
+    }
+
+    val defaultSpot = Spot(id=-1, img = R.drawable.baseline_error_outline_24)
+
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="logo_size">60dp</dimen>
+    <dimen name="logo_padding">8dp</dimen>
+
+    <dimen name="navigation_drawer_padding">16dp</dimen>
+
+</resources>
