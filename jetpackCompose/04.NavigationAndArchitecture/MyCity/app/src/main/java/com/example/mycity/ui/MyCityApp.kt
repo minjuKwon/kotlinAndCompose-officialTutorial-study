@@ -1,6 +1,5 @@
 package com.example.mycity.ui
 
-
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,11 +44,15 @@ fun MyCityApp(
         navigationType = navigationType,
         contentType = contentType,
         cityUiState = cityUiState,
+        cityViewModel=viewModel,
         onTabPressed = {spotType:SpotType->
             viewModel.updateCurrentSpotType(spotType)
-
+            pressedTab(
+                viewModel=viewModel,
+                cityUiState=cityUiState,
+                spotType=spotType
+            )
         },
-
         onSpotCardPressed = {spot: Spot ->
             viewModel.updateDetailScreenStates(spot)
         },
@@ -61,16 +64,14 @@ fun MyCityApp(
 
 }
 
-fun pressedTab(
+private fun pressedTab(
     viewModel: CityViewModel,
     cityUiState: CityUiState,
     spotType: SpotType
 ){
     if(spotType==SpotType.Bookmark){
-        if(cityUiState.bookmarkList.size>0){
+        if(cityUiState.bookmarkList.isNotEmpty()){
             viewModel.resetBookmarkScreen()
-        }else{
-
         }
     }else{
         viewModel.resetHomeScreenStates()

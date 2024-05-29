@@ -10,6 +10,7 @@
     <string name="tab_place">즐길거리</string>
     <string name="tab_bookmark">즐겨찾기</string>
     <string name="move_to_bookmark">Move To Bookmark</string>
+    <string name="empty_bookmark">즐겨찾기하고 싶은 장소를 추가해보세요!</string>
 
     <string name="food_1_name">매일 샐러드</string>
     <string name="food_1_type">양식</string>

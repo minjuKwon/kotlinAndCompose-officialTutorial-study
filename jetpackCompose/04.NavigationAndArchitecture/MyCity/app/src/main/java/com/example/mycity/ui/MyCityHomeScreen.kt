@@ -47,11 +47,13 @@ fun MyCityHomeScreen(
     navigationType: NavigationType,
     contentType: ContentType,
     cityUiState: CityUiState,
+    cityViewModel: CityViewModel,
     onTabPressed : (SpotType) -> Unit,
     onSpotCardPressed : (Spot) -> Unit,
     onDetailScreenBackPressed: () ->Unit,
     modifier: Modifier =Modifier
 ){
+
     val navigationItemContentList = listOf(
         NavigationItemContent(
             spotType = SpotType.Food,
@@ -89,6 +91,7 @@ fun MyCityHomeScreen(
                 navigationType= navigationType,
                 contentType = contentType,
                 cityUiState = cityUiState,
+                cityViewModel=cityViewModel,
                 onTabPressed = onTabPressed,
                 onSpotCardPressed = onSpotCardPressed,
                 navigationItemContentList = navigationItemContentList,
@@ -102,6 +105,7 @@ fun MyCityHomeScreen(
                 navigationType= navigationType,
                 contentType = contentType,
                 cityUiState = cityUiState,
+                cityViewModel=cityViewModel,
                 onTabPressed = onTabPressed,
                 onSpotCardPressed = onSpotCardPressed,
                 navigationItemContentList = navigationItemContentList,
@@ -121,6 +125,7 @@ private fun MyCityAppContent(
     navigationType: NavigationType,
     contentType: ContentType,
     cityUiState: CityUiState,
+    cityViewModel: CityViewModel,
     onTabPressed: (SpotType) -> Unit,
     onSpotCardPressed: (Spot) -> Unit,
     navigationItemContentList: List<NavigationItemContent>,
@@ -141,7 +146,18 @@ private fun MyCityAppContent(
                 if(contentType==ContentType.LIST_AND_DETAIL){
 
                 }else{
-
+                    //북마크된 아이템이 없는 상태에서 탭을 누르면 별도의 화면 생성
+                    if(cityUiState.currentSpotType==SpotType.Bookmark&&
+                        cityUiState.bookmarkList.isEmpty()){
+                        BookMarkEmptyScreen(Modifier.weight(1f))
+                    }else{
+                        SpotListOnlyContent(
+                            cityUiState = cityUiState,
+                            cityViewModel=cityViewModel,
+                            onSpotCardPressed = onSpotCardPressed,
+                            modifier=Modifier.weight(1f)
+                        )
+                    }
                 }
                 AnimatedVisibility(visible = navigationType==NavigationType.BOTTOM_NAVIGATION){
                     SpotBottomNavigationBar(

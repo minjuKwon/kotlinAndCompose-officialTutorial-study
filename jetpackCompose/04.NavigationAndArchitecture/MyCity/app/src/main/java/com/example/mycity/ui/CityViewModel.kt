@@ -69,17 +69,22 @@ class CityViewModel : ViewModel() {
         }
     }
 
-    fun updateIsBookmark(spot:Spot){
+    fun updateBookmarkList(spot:Spot){
         SpotDataProvider.updateIsBookmark(spot.id)
+
         _uiState.update {
+            var tempList:MutableList<Spot> = it.bookmarkList
             if(spot.isBookmark){
-                it.bookmarkList.add(spot)
+                tempList= (tempList + spot) as MutableList<Spot>
             }else{
-                it.bookmarkList.remove(spot)
+                tempList= (tempList - spot) as MutableList<Spot>
+                if(it.currentSpotType==SpotType.Bookmark&&it.bookmarkList.size==0){
+                }
             }
             it.copy(
-                bookmarkList =it.bookmarkList
+                bookmarkList = tempList
             )
         }
     }
+
 }
