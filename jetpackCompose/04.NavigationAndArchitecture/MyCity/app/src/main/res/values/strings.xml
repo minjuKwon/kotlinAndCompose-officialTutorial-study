@@ -12,6 +12,13 @@
     <string name="move_to_bookmark">Move To Bookmark</string>
     <string name="empty_bookmark">즐겨찾기하고 싶은 장소를 추가해보세요!</string>
 
+    <string name="spilt"> : </string>
+    <string name="name">이름</string>
+    <string name="type">유형</string>
+    <string name="location">장소</string>
+    <string name="duration">시간</string>
+    <string name="description">설명</string>
+
     <string name="food_1_name">매일 샐러드</string>
     <string name="food_1_type">양식</string>
     <string name="food_1_location">초록구 신선로9–2</string>

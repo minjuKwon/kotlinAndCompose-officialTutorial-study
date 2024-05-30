@@ -4,16 +4,35 @@
     <dimen name="logo_size">60dp</dimen>
     <dimen name="logo_padding">8dp</dimen>
 
-    <dimen name="navigation_drawer_padding">16dp</dimen>
+    <dimen name="permanent_navigation_drawer_padding">12dp</dimen>
+    <dimen name="navigation_drawer_header_padding">16dp</dimen>
+    <dimen name="navigation_rail_item_top_padding">40dp</dimen>
+    <dimen name="navigation_drawer_item_text_start_padding">20dp</dimen>
+    <dimen name="navigation_drawer_item_icon_start_padding">8dp</dimen>
+
+    <dimen name="navigation_back_padding">4dp</dimen>
 
     <dimen name="topBar_top_padding">8dp</dimen>
     <dimen name="topBar_bottom_padding">12dp</dimen>
 
-    <dimen name="list_card_padding">4dp</dimen>
-    <dimen name="list_card_text_row_start_padding">8dp</dimen>
-    <dimen name="list_card_text_bottom_padding">4dp</dimen>
+    <dimen name="topBar_detail_top_padding">8dp</dimen>
+    <dimen name="topBar_detail_bottom_padding">12dp</dimen>
+
+    <dimen name="list_only_horizontal_padding">8dp</dimen>
+
+    <dimen name="list_and_detail_top_padding">28dp</dimen>
+    <dimen name="list_and_detail_end_padding">8dp</dimen>
+
+    <dimen name="list_card_padding">8dp</dimen>
+    <dimen name="list_card_text_row_start_padding">20dp</dimen>
+    <dimen name="list_card_text_bottom_padding">8dp</dimen>
     <dimen name="list_card_bookmark_button_end_padding">16dp</dimen>
 
+    <dimen name="card_detail_padding">28dp</dimen>
+    <dimen name="card_detail_outer_padding">28dp</dimen>
+    <dimen name="card_detail_inner_padding">12dp</dimen>
+    <dimen name="card_detail_text_padding">4dp</dimen>
+
     <dimen name="empty_bookmarkList_background_round">16dp</dimen>
-    
+
 </resources>

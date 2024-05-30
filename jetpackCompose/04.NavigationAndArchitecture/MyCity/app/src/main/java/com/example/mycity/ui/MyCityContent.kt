@@ -1,5 +1,6 @@
 package com.example.mycity.ui
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,12 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,12 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.mycity.R
 import com.example.mycity.data.Spot
 import com.example.mycity.data.SpotType
@@ -50,11 +48,20 @@ fun SpotListOnlyContent(
     modifier: Modifier =Modifier
 ){
     LazyColumn(
-        modifier=modifier
+        modifier=modifier,
+        verticalArrangement = Arrangement.spacedBy(
+            dimensionResource(R.dimen.list_card_padding)
+        )
     ){
 
         item{
-            SpotHomeTopBar()
+            SpotHomeTopBar(modifier= Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(R.dimen.topBar_top_padding),
+                    bottom = dimensionResource(R.dimen.topBar_bottom_padding)
+                )
+            )
         }
 
         if(cityUiState.currentSpotType==SpotType.Bookmark){
@@ -95,9 +102,64 @@ fun SpotListOnlyContent(
 
 @Composable
 fun SpotListAndDetailContent(
-
+    cityUiState: CityUiState,
+    cityViewModel: CityViewModel,
+    onSpotCardPressed: (Spot) -> Unit,
+    modifier: Modifier=Modifier
 ){
+    Row(modifier=modifier){
 
+        LazyColumn(
+            modifier= Modifier
+                .weight(1f)
+                .padding(
+                    top = dimensionResource(R.dimen.list_and_detail_top_padding),
+                    end = dimensionResource(R.dimen.list_and_detail_end_padding)
+                ),
+            verticalArrangement = Arrangement.spacedBy(
+                dimensionResource(R.dimen.list_card_padding)
+            )
+
+        ){
+            if(cityUiState.currentSpotType==SpotType.Bookmark){
+                items(cityUiState.bookmarkList, key = { it.id }){spot->
+                    var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
+                    SpotListItem(
+                        spot = spot,
+                        pressed = pressedBookmark,
+                        onCardClick = {onSpotCardPressed(spot)},
+                        onBookmarkClick = {
+                            pressedBookmark=!pressedBookmark
+                            cityViewModel.updateBookmarkList(spot)
+                        }
+
+                    )
+                }
+            }
+            else{
+                val spots=cityUiState.currentSpotTypeList
+                items(spots, key = { it.id }){spot->
+                    var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
+                    SpotListItem(
+                        spot = spot,
+                        pressed = pressedBookmark,
+                        onCardClick = {onSpotCardPressed(spot)},
+                        onBookmarkClick = {
+                            pressedBookmark=!pressedBookmark
+                            cityViewModel.updateBookmarkList(spot)
+                        }
+                    )
+                }
+            }
+        }
+
+        val activity = LocalContext.current as Activity
+        CityDetailScreen(
+            cityUiState = cityUiState,
+            onBackPressed = {activity.finish() },
+            modifier=Modifier.weight(1f)
+        )
+    }
 }
 
 @Composable
@@ -106,13 +168,20 @@ fun BookMarkEmptyScreen(modifier:Modifier=Modifier){
         modifier=modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SpotHomeTopBar()
+        SpotHomeTopBar(
+            modifier=Modifier
+            .fillMaxWidth()
+            .padding(
+                top = dimensionResource(R.dimen.topBar_top_padding),
+                bottom = dimensionResource(R.dimen.topBar_bottom_padding)
+            ))
         Box(
-            modifier=Modifier.fillMaxSize()
+            modifier= Modifier
+                .fillMaxSize()
                 .background(
-                    color=MaterialTheme.colorScheme.secondaryContainer,
-                    shape= RoundedCornerShape(
-                        topStart = dimensionResource(R.dimen.empty_bookmarkList_background_round) ,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(
+                        topStart = dimensionResource(R.dimen.empty_bookmarkList_background_round),
                         topEnd = dimensionResource(R.dimen.empty_bookmarkList_background_round)
                     )
                 ),
@@ -133,11 +202,12 @@ fun SpotListItem(
     spot:Spot,
     pressed:Boolean,
     onCardClick:()->Unit,
-    onBookmarkClick:(Spot)->Unit
+    onBookmarkClick:(Spot)->Unit,
+    modifier:Modifier=Modifier
 ){
 
     Card(
-        modifier=Modifier.padding(dimensionResource(R.dimen.list_card_padding)),
+        modifier=modifier,
         onClick=onCardClick
     ){
         Row(
@@ -160,16 +230,19 @@ fun SpotListItem(
                     text = stringResource(spot.name),
                     modifier=Modifier.padding(
                         bottom= dimensionResource( R.dimen.list_card_text_bottom_padding)
-                    )
+                    ),
+                    style=MaterialTheme.typography.bodyLarge
                 )
                 Text(
                     text = stringResource(spot.type),
                     modifier=Modifier.padding(
                         bottom= dimensionResource(R.dimen.list_card_text_bottom_padding)
-                    )
+                    ),
+                    style=MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = stringResource(spot.location)
+                    text = stringResource(spot.location),
+                    style=MaterialTheme.typography.bodyLarge
                 )
             }
 
@@ -196,14 +269,9 @@ fun SpotListItem(
 }
 
 @Composable
-private fun SpotHomeTopBar(){
+private fun SpotHomeTopBar(modifier:Modifier=Modifier){
     Row(
-        modifier= Modifier
-            .fillMaxWidth()
-            .padding(
-                top = dimensionResource(R.dimen.topBar_top_padding),
-                bottom = dimensionResource(R.dimen.topBar_bottom_padding)
-            ),
+        modifier= modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment= Alignment.CenterVertically
     ){

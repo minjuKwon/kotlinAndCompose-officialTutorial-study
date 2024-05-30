@@ -57,7 +57,7 @@ fun MyCityApp(
             viewModel.updateDetailScreenStates(spot)
         },
         onDetailScreenBackPressed = {
-
+            viewModel.resetHomeScreenStates()
         },
         modifier=modifier
     )

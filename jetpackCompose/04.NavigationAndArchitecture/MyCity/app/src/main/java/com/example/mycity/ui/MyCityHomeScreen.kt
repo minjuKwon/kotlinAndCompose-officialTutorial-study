@@ -75,7 +75,7 @@ fun MyCityHomeScreen(
     if(navigationType==NavigationType.PERMANENT_NAVIGATION_DRAWER){
         PermanentNavigationDrawer(
             drawerContent = {
-                PermanentDrawerSheet(Modifier.fillMaxWidth(0.2f)){
+                PermanentDrawerSheet(Modifier.fillMaxWidth(0.22f)){
                     NavigationDrawerContent(
                         selectedDestination = cityUiState.currentSpotType,
                         onTabPressed = onTabPressed,
@@ -83,6 +83,9 @@ fun MyCityHomeScreen(
                         modifier = Modifier
                             .wrapContentWidth()
                             .fillMaxHeight()
+                            .padding(
+                                dimensionResource(R.dimen.permanent_navigation_drawer_padding)
+                            )
                     )
                 }
             }
@@ -112,13 +115,16 @@ fun MyCityHomeScreen(
                 modifier=modifier
             )
         }else{
-
+            CityDetailScreen(
+                cityUiState = cityUiState,
+                onBackPressed = onDetailScreenBackPressed,
+                isFullScreen = true,
+                modifier=modifier
+            )
         }
     }
 
 }
-
-
 
 @Composable
 private fun MyCityAppContent(
@@ -144,7 +150,12 @@ private fun MyCityAppContent(
 
             Column( modifier = Modifier.fillMaxSize()) {
                 if(contentType==ContentType.LIST_AND_DETAIL){
-
+                    SpotListAndDetailContent(
+                        cityUiState = cityUiState,
+                        cityViewModel = cityViewModel,
+                        onSpotCardPressed = onSpotCardPressed,
+                        modifier=Modifier.weight(1f)
+                    )
                 }else{
                     //북마크된 아이템이 없는 상태에서 탭을 누르면 별도의 화면 생성
                     if(cityUiState.currentSpotType==SpotType.Bookmark&&
@@ -155,7 +166,13 @@ private fun MyCityAppContent(
                             cityUiState = cityUiState,
                             cityViewModel=cityViewModel,
                             onSpotCardPressed = onSpotCardPressed,
-                            modifier=Modifier.weight(1f)
+                            modifier= Modifier
+                                .weight(1f)
+                                .padding(
+                                    horizontal = dimensionResource(
+                                        R.dimen.list_only_horizontal_padding
+                                    )
+                                )
                         )
                     }
                 }
@@ -163,7 +180,8 @@ private fun MyCityAppContent(
                     SpotBottomNavigationBar(
                         currentTab = cityUiState.currentSpotType,
                         onTabPressed = onTabPressed,
-                        navigationItemContentList = navigationItemContentList
+                        navigationItemContentList = navigationItemContentList,
+                        modifier=Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -184,20 +202,30 @@ private fun NavigationDrawerContent(
         NavigationDrawerHeader(
             modifier= Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.navigation_drawer_padding))
+                .padding(dimensionResource(R.dimen.navigation_drawer_header_padding))
         )
         for(naviItem in navigationItemContentList){
             NavigationDrawerItem(
                 selected = selectedDestination == naviItem.spotType,
                 label = {
                     Text(
-                        text = naviItem.text
+                        text = naviItem.text,
+                        modifier=Modifier.padding(
+                            start= dimensionResource(
+                                R.dimen.navigation_drawer_item_text_start_padding
+                            )
+                        )
                     )
                 },
                 icon={
                     Icon(
                         imageVector = naviItem.icon,
-                        contentDescription = naviItem.text
+                        contentDescription = naviItem.text,
+                        modifier=Modifier.padding(
+                            start= dimensionResource(
+                                R.dimen.navigation_drawer_item_icon_start_padding
+                            )
+                        )
                     )
                 },
                 onClick = {onTabPressed(naviItem.spotType)}
@@ -217,7 +245,7 @@ private fun NavigationDrawerHeader(
     ){
         Text(
             text=stringResource(R.string.app_name),
-            style= MaterialTheme.typography.headlineSmall
+            style= MaterialTheme.typography.titleLarge
         )
         Image(
             painter= painterResource(R.drawable.logo),
@@ -237,17 +265,25 @@ private fun SpotNavigationRail(
     modifier : Modifier = Modifier
 ){
     NavigationRail(modifier=modifier){
-        for(naviItem in navigationItemContentList){
-            NavigationRailItem(
-                selected = currentTab == naviItem.spotType,
-                onClick = { onTabPressed(naviItem.spotType) },
-                icon = {
-                    Icon(
-                        imageVector = naviItem.icon,
-                        contentDescription = naviItem.text
+        Column(
+            modifier=Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+            ) {
+            for(naviItem in navigationItemContentList){
+                NavigationRailItem(
+                    selected = currentTab == naviItem.spotType,
+                    onClick = { onTabPressed(naviItem.spotType) },
+                    icon = {
+                        Icon(
+                            imageVector = naviItem.icon,
+                            contentDescription = naviItem.text
+                        )
+                    },
+                    modifier=Modifier.padding(
+                        top= dimensionResource(R.dimen.navigation_rail_item_top_padding)
                     )
-                }
-            )
+                )
+            }
         }
     }
 
