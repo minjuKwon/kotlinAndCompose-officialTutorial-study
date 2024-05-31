@@ -2,6 +2,7 @@ package com.example.mycity.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,9 +48,9 @@ fun CityDetailScreen(
                 modifier= Modifier
                     .fillMaxWidth()
                     .padding(
-                        top = dimensionResource(R.dimen.topBar_detail_top_padding),
                         bottom = dimensionResource(R.dimen.topBar_detail_bottom_padding)
                     )
+                    .background(Color.White)
             )
         }
         LazyColumn(
@@ -106,7 +109,8 @@ private fun CityDetailsCard(
     modifier:Modifier=Modifier
 ){
     Card(
-        modifier=modifier
+        modifier=modifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ){
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -163,19 +167,22 @@ private fun CityDetailsCardText(
             text=title,
             modifier=Modifier.padding(
                 dimensionResource(R.dimen.card_detail_text_padding)
-            )
+            ),
+            color=Color.Black
         )
         Text(
             text= stringResource(R.string.spilt),
             modifier=Modifier.padding(
                  dimensionResource(R.dimen.card_detail_text_padding)
-            )
+            ),
+            color=Color.Black
         )
         Text(
             text=content,
             modifier=Modifier.padding(
                 dimensionResource(R.dimen.card_detail_text_padding)
-            )
+            ),
+            color=Color.Black
         )
     }
 }

@@ -12,10 +12,8 @@
 
     <dimen name="navigation_back_padding">4dp</dimen>
 
-    <dimen name="topBar_top_padding">8dp</dimen>
     <dimen name="topBar_bottom_padding">12dp</dimen>
 
-    <dimen name="topBar_detail_top_padding">8dp</dimen>
     <dimen name="topBar_detail_bottom_padding">12dp</dimen>
 
     <dimen name="list_only_horizontal_padding">8dp</dimen>

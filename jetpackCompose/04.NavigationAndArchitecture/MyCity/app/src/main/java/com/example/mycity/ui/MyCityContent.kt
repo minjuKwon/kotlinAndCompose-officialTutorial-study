@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -58,9 +60,9 @@ fun SpotListOnlyContent(
             SpotHomeTopBar(modifier= Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(R.dimen.topBar_top_padding),
                     bottom = dimensionResource(R.dimen.topBar_bottom_padding)
                 )
+                .background(Color.White)
             )
         }
 
@@ -172,14 +174,15 @@ fun BookMarkEmptyScreen(modifier:Modifier=Modifier){
             modifier=Modifier
             .fillMaxWidth()
             .padding(
-                top = dimensionResource(R.dimen.topBar_top_padding),
                 bottom = dimensionResource(R.dimen.topBar_bottom_padding)
-            ))
+            )
+            .background(Color.White)
+        )
         Box(
             modifier= Modifier
                 .fillMaxSize()
                 .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    color = MaterialTheme.colorScheme.secondary,
                     shape = RoundedCornerShape(
                         topStart = dimensionResource(R.dimen.empty_bookmarkList_background_round),
                         topEnd = dimensionResource(R.dimen.empty_bookmarkList_background_round)
@@ -202,12 +205,21 @@ fun SpotListItem(
     spot:Spot,
     pressed:Boolean,
     onCardClick:()->Unit,
-    onBookmarkClick:(Spot)->Unit,
-    modifier:Modifier=Modifier
+    onBookmarkClick:(Spot)->Unit
 ){
 
     Card(
-        modifier=modifier,
+        modifier=Modifier.padding(
+            horizontal = dimensionResource(
+                R.dimen.list_only_horizontal_padding
+            )
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if(pressed)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.secondary
+        ),
         onClick=onCardClick
     ){
         Row(
@@ -231,18 +243,21 @@ fun SpotListItem(
                     modifier=Modifier.padding(
                         bottom= dimensionResource( R.dimen.list_card_text_bottom_padding)
                     ),
-                    style=MaterialTheme.typography.bodyLarge
+                    style=MaterialTheme.typography.bodyLarge,
+                    color=Color.Black
                 )
                 Text(
                     text = stringResource(spot.type),
                     modifier=Modifier.padding(
                         bottom= dimensionResource(R.dimen.list_card_text_bottom_padding)
                     ),
-                    style=MaterialTheme.typography.bodyLarge
+                    style=MaterialTheme.typography.bodyLarge,
+                    color=Color.Black
                 )
                 Text(
                     text = stringResource(spot.location),
-                    style=MaterialTheme.typography.bodyLarge
+                    style=MaterialTheme.typography.bodyLarge,
+                    color=Color.Black
                 )
             }
 
@@ -258,7 +273,8 @@ fun SpotListItem(
                     imageVector =
                     if(pressed) Icons.Default.Bookmark
                     else Icons.Default.BookmarkBorder,
-                    contentDescription = stringResource(R.string.move_to_bookmark)
+                    contentDescription = stringResource(R.string.move_to_bookmark),
+                    tint = Color.Black
                 )
             }
 
