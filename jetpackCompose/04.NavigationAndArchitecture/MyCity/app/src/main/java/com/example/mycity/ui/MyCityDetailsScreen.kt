@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -109,7 +110,7 @@ private fun CityDetailsCard(
     modifier:Modifier=Modifier
 ){
     Card(
-        modifier=modifier,
+        modifier=modifier.testTag(stringResource(R.string.details_screen)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ){
         Column(modifier = Modifier

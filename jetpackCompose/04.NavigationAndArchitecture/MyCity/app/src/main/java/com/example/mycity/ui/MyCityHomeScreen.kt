@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -90,7 +91,7 @@ fun MyCityHomeScreen(
                             )
                     )
                 }
-            }
+            },modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ){
             MyCityAppContent(
                 navigationType= navigationType,
@@ -146,7 +147,8 @@ private fun MyCityAppContent(
                 SpotNavigationRail(
                     currentTab = cityUiState.currentSpotType,
                     onTabPressed = onTabPressed,
-                    navigationItemContentList = navigationItemContentList
+                    navigationItemContentList = navigationItemContentList,
+                    modifier=Modifier.testTag(stringResource(R.string.navigation_rail))
                 )
             }
 
@@ -294,7 +296,9 @@ private fun SpotBottomNavigationBar(
     navigationItemContentList: List<NavigationItemContent>,
     modifier: Modifier=Modifier
 ){
-    NavigationBar(modifier=modifier){
+    NavigationBar(
+        modifier=modifier.testTag(stringResource(R.string.navigation_bottom))
+    ){
         for(naviItem in navigationItemContentList){
             NavigationBarItem(
                 selected = currentTab ==naviItem.spotType,
