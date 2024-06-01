@@ -3,9 +3,8 @@ package com.example.days30.data
 import com.example.days30.R
 import com.example.days30.model.Music
 
-class Datasource(){
-    fun loadMusicInfo():List<Music>{
-        return listOf(
+object Datasource {
+    val allMusic = listOf(
             Music(R.drawable.letter, R.string.title1, R.string.artist1, R.string.genre_rock, R.string.duration1),
             Music(R.drawable.window, R.string.title2, R.string.artist2, R.string.genre_indie, R.string.duration2),
             Music(R.drawable.play, R.string.title3, R.string.artist3, R.string.genre_rock, R.string.duration3),
@@ -37,5 +36,4 @@ class Datasource(){
             Music(R.drawable.rainbow, R.string.title29, R.string.artist29, R.string.genre_folk, R.string.duration29),
             Music(R.drawable.curious, R.string.title30, R.string.artist30, R.string.genre_RB, R.string.duration30)
         )
-    }
 }

@@ -109,6 +109,6 @@
     <string name="duration30">03:30</string>
 
     <string name="music_start">0:00</string>
-    <string name="icon_button">this button show detail information</string>
+    <string name="icon_button">button show detail information</string>
 
 </resources>

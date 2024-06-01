@@ -49,7 +49,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.days30.data.Datasource
+import com.example.days30.data.Datasource.allMusic
 import com.example.days30.model.Music
 import com.example.days30.ui.theme.Days30Theme
 import kotlinx.coroutines.launch
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Days30App(){
     Days30List(
-        Datasource().loadMusicInfo()
+        allMusic
     )
 }
 
@@ -149,6 +149,7 @@ fun Days30Item(index:Int, music:Music, modifier:Modifier=Modifier){
             MusicButton(
                 expanded=expanded,
                 onClick = {expanded=!expanded},
+                index=index,
                 modifier= Modifier
                     .size(dimensionResource(R.dimen.icon))
                     .padding(dimensionResource(R.dimen.padding_small))
@@ -222,6 +223,7 @@ fun DrawLine(space:Float){
 fun MusicButton(
     expanded:Boolean,
     onClick:()->Unit,
+    index:Int,
     modifier:Modifier=Modifier
 ){
     IconButton(
@@ -230,7 +232,7 @@ fun MusicButton(
     ) {
         Icon(
             imageVector = if(expanded) Icons.Outlined.PauseCircleOutline else Icons.Outlined.PlayCircleOutline,
-            contentDescription = stringResource(R.string.icon_button),
+            contentDescription = "${index+1} index"+stringResource(R.string.icon_button),
             modifier=modifier
         )
     }
