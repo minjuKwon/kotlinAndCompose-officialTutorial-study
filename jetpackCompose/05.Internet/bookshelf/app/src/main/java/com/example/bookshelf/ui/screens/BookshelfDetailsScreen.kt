@@ -15,21 +15,21 @@ fun BookshelfDetailsScreen(book: Book){
         Row {
             AsyncImage(
                 model = ImageRequest.Builder(context= LocalContext.current)
-                    .data(book.img),
+                    .data(book.bookInfo.img.thumbnail),
                 contentDescription = null
             )
             Column {
-                Text(text=book.title)
+                Text(text=book.bookInfo.title)
                 Row{
-                    for(author in book.authors){
+                    for(author in book.bookInfo.authors){
                         Text(text=author)
                     }
                 }
-                Text(text=book.publisher)
-                Text(text=book.publishedDate)
+                Text(text=book.bookInfo.publisher)
+                Text(text=book.bookInfo.publishedDate)
             }
         }
-        Text(text=book.description)
+        Text(text=book.bookInfo.description)
     }
 
 }
