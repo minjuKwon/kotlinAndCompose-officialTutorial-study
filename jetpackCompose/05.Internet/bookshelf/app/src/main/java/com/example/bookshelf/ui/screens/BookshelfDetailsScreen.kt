@@ -7,29 +7,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.bookshelf.network.Book
+import com.example.bookshelf.network.Item
 
-@Composable
-fun BookshelfDetailsScreen(book: Book){
-    Column {
-        Row {
-            AsyncImage(
-                model = ImageRequest.Builder(context= LocalContext.current)
-                    .data(book.bookInfo.img.thumbnail),
-                contentDescription = null
-            )
-            Column {
-                Text(text=book.bookInfo.title)
-                Row{
-                    for(author in book.bookInfo.authors){
-                        Text(text=author)
-                    }
-                }
-                Text(text=book.bookInfo.publisher)
-                Text(text=book.bookInfo.publishedDate)
-            }
-        }
-        Text(text=book.bookInfo.description)
-    }
-
-}
+//@Composable
+//fun BookshelfDetailsScreen(item: Item){
+//    Column {
+//        Row {
+//            AsyncImage(
+//                model = ImageRequest.Builder(context= LocalContext.current)
+//                    .data(book.bookInfo.img.thumbnail),
+//                contentDescription = null
+//            )
+//            Column {
+//                Text(text=item.book.bookInfo.title)
+//                Row{
+//                    for(author in item.book.bookInfo.authors){
+//                        Text(text=author)
+//                    }
+//                }
+//                Text(text=item.book.bookInfo.publisher)
+//                Text(text=item.book.bookInfo.publishedDate)
+//            }
+//        }
+//        Text(text=item.book.bookInfo.description)
+//    }
+//
+//}

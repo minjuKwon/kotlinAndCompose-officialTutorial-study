@@ -4,23 +4,30 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("items")
+data class Item(
+    @SerialName(value="items")
+    val book:List<Book>
+)
+
+@Serializable
 data class Book(
-   val id:Int,
+   val id:String,
+   @SerialName(value="volumeInfo")
    val bookInfo: BookInfo
 )
 
-@SerialName("volumeInfo")
+@Serializable
 data class BookInfo(
     val title:String,
     val authors:List<String>,
     val publisher:String,
     val publishedDate:String,
     val description:String,
-    val img:Image
+//    @SerialName(value="imageLinks")
+//    val img:Image
 )
 
-@SerialName("imageLinks")
+@Serializable
 data class Image(
     val thumbnail:String,
     val small:String,

@@ -21,28 +21,31 @@ import coil.request.ImageRequest
 import com.example.bookshelf.R
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
+import com.example.bookshelf.network.Item
+import com.example.bookshelf.ui.BookshelfViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
     books:List<Book>,
+    viewModel: BookshelfViewModel,
     modifier:Modifier= Modifier
 ){
     var input by remember{mutableStateOf("")}
     Column {
-        
+
         Row(modifier=modifier) {
             OutlinedTextField(
                 value = input,
                 onValueChange = {input=it}
             )
-            Button(onClick = {}){
+            Button(onClick = { viewModel.getInformation(input) }){
                 Text(
                     text=stringResource(R.string.search)
                 )
             }
         }
-        
+       // BookShelfListItem(item = books)
         LazyColumn{
             items(books){
                 BookShelfListItem(book = it)
@@ -63,14 +66,16 @@ fun BookshelfListAndDetailContent(
 
 @Composable
 private fun BookShelfListItem(book: Book){
+    //Text(text="${item.totalItems}")
+   // Text(text=item)
     Row {
-        AsyncImage(
-            model = ImageRequest.Builder(context=LocalContext.current)
-                .data(book.bookInfo.img.medium),
-            contentDescription = null
-        )
+//        AsyncImage(
+//            model = ImageRequest.Builder(context=LocalContext.current)
+//                .data(book.bookInfo.img.medium),
+//            contentDescription = null
+//        )
         Column {
-            Text(text=book.bookInfo.title)
+            Text(text="item")
             Row{
                 for(author in book.bookInfo.authors){
                     Text(text=author)
