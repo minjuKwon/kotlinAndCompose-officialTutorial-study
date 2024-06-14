@@ -18,20 +18,20 @@ data class Book(
 
 @Serializable
 data class BookInfo(
-    val title:String,
-    val authors:List<String>,
-    val publisher:String,
-    val publishedDate:String,
-    val description:String,
-//    @SerialName(value="imageLinks")
-//    val img:Image
+    val title:String?=null,
+    val authors:List<String>?=null,
+    val publisher:String?=null,
+    val publishedDate:String?=null,
+    val description:String?=null,
+    @SerialName(value="imageLinks")
+    val img:Image?=null
 )
 
 @Serializable
 data class Image(
-    val thumbnail:String,
-    val small:String,
-    val medium:String,
-    val large:String,
-    val smallThumbnail:String,
+    val thumbnail:String?=null,
+    val small:String?=null,
+    val medium:String?=null,
+    val large:String?=null,
+    val smallThumbnail:String?=null,
 )

@@ -2,6 +2,9 @@ package com.example.bookshelf.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -16,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
@@ -45,13 +49,12 @@ fun BookshelfListOnlyContent(
                 )
             }
         }
-       // BookShelfListItem(item = books)
+
         LazyColumn{
             items(books){
                 BookShelfListItem(book = it)
             }
         }
-        
 
     }
 }
@@ -66,23 +69,22 @@ fun BookshelfListAndDetailContent(
 
 @Composable
 private fun BookShelfListItem(book: Book){
-    //Text(text="${item.totalItems}")
-   // Text(text=item)
     Row {
-//        AsyncImage(
-//            model = ImageRequest.Builder(context=LocalContext.current)
-//                .data(book.bookInfo.img.medium),
-//            contentDescription = null
-//        )
+        AsyncImage(
+            model = book.bookInfo.img?.let {
+                ImageRequest.Builder(context=LocalContext.current)
+                .data(it.thumbnail).build()},
+            contentDescription = null
+        )
         Column {
-            Text(text="item")
+            book.bookInfo.title?.let { Text(text= it) }
             Row{
-                for(author in book.bookInfo.authors){
-                    Text(text=author)
-                }
+               book.bookInfo.authors?.forEach{Text(text=it)}
             }
-            Text(text=book.bookInfo.publisher)
-            Text(text=book.bookInfo.publishedDate)
+            book.bookInfo.publisher?.let { Text(text= it) }
+            book.bookInfo.description?.let { Text(text= it) }
+            book.bookInfo.publishedDate?.let { Text(text= it) }
+            Spacer(modifier=Modifier.fillMaxWidth().height(30.dp))
         }
     }
 }

@@ -7,10 +7,5 @@ interface BookshelfApiService {
     
     @GET("volumes")
     suspend fun getInformation(@Query("q")query:String):Item
-/*
-    @GET("volumes")
-    suspend fun getInformation(
-        @Query("q") query:String
-    ):List<Item>
-*/
+
 }

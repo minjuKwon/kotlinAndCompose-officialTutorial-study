@@ -17,8 +17,7 @@ class DefaultAppContainer: AppContainer{
 
     private val json = Json { ignoreUnknownKeys = true }
     private val contentType = "application/json".toMediaType()
-//json.asConverterFactory(contentType)
-    //ScalarsConverterFactory.create()
+
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(json.asConverterFactory(contentType))
         .baseUrl(baseUrl)
