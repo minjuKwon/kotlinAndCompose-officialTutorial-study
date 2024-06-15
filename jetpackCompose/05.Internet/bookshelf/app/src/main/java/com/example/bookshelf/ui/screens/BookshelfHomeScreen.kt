@@ -11,14 +11,13 @@ fun BookshelfHomeScreen(
     viewModel: BookshelfViewModel,
     modifier:Modifier=Modifier
 ){
-    BookshelfAppContent(bookshelfUiState, viewModel)
-//    when(bookshelfUiState){
-//        is BookshelfUiState.Success -> {
-//            if(bookshelfUiState.isShowingHomepage) {BookshelfAppContent(bookshelfUiState, viewModel)}
-//            else {BookshelfDetailsScreen(item = bookshelfUiState.list[0])}
-//        }
-//        else ->{}
-//    }
+    when(bookshelfUiState){
+        is BookshelfUiState.Success -> {
+            if(bookshelfUiState.isShowingHomepage) {BookshelfAppContent(bookshelfUiState, viewModel)}
+            else {BookshelfDetailsScreen(book = bookshelfUiState.currentItem)}
+        }
+        else ->{BookshelfAppContent(bookshelfUiState, viewModel)}
+    }
 }
 
 @Composable
@@ -35,5 +34,4 @@ private fun BookshelfAppContent(
         is BookshelfUiState.Loading -> {}
         is BookshelfUiState.Error -> {}
     }
-
 }

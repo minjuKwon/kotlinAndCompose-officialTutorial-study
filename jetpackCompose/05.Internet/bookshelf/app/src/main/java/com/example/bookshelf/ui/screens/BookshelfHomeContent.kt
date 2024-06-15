@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,7 +53,7 @@ fun BookshelfListOnlyContent(
 
         LazyColumn{
             items(books){
-                BookShelfListItem(book = it)
+                BookShelfListItem(book = it, viewModel=viewModel)
             }
         }
 
@@ -68,8 +69,14 @@ fun BookshelfListAndDetailContent(
 }
 
 @Composable
-private fun BookShelfListItem(book: Book){
-    Row {
+private fun BookShelfListItem(
+    book: Book,
+    viewModel: BookshelfViewModel
+){
+    Row(
+        modifier=Modifier
+            .clickable {viewModel.updateDetailsScreenState(book.bookInfo)}
+    ) {
         AsyncImage(
             model = book.bookInfo.img?.let {
                 ImageRequest.Builder(context=LocalContext.current)
@@ -82,7 +89,6 @@ private fun BookShelfListItem(book: Book){
                book.bookInfo.authors?.forEach{Text(text=it)}
             }
             book.bookInfo.publisher?.let { Text(text= it) }
-            book.bookInfo.description?.let { Text(text= it) }
             book.bookInfo.publishedDate?.let { Text(text= it) }
             Spacer(modifier=Modifier.fillMaxWidth().height(30.dp))
         }

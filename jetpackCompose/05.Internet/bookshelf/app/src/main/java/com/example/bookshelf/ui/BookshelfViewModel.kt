@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bookshelf.BookshelfApplication
 import com.example.bookshelf.data.BookshelfRepository
+import com.example.bookshelf.network.BookInfo
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -27,18 +28,14 @@ class BookshelfViewModel(
     }
 
     fun getInformation(search:String="android"){
-        Log.d("dd","start viewModel getInformation")
         viewModelScope.launch {
-            Log.d("dd","start getInformation launch")
             //bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
                 BookshelfUiState.Success(bookshelfRepository.getBookListInformation(search))
             }catch (e: IOException){
                 BookshelfUiState.Error
             }
-            Log.d("dd","end getInformation launch")
         }
-        Log.d("dd","end viewModel getInformation ")
     }
 
     companion object{
@@ -51,14 +48,14 @@ class BookshelfViewModel(
         }
     }
 
-    fun updateDetailsScreenState(){
-//        bookshelfUiState =
-//            BookshelfUiState.Success(isShowingHomepage = false)
+    fun updateDetailsScreenState(bookInfo: BookInfo){
+        bookshelfUiState =
+            BookshelfUiState.Success(currentItem = bookInfo, isShowingHomepage = false)
     }
 
     fun resetHomeScreenState(){
-//        bookshelfUiState =
-//            BookshelfUiState.Success(isShowingHomepage = true)
+        bookshelfUiState =
+            BookshelfUiState.Success(isShowingHomepage = true)
     }
 
 }
