@@ -29,7 +29,7 @@ class BookshelfViewModel(
 
     fun getInformation(search:String="android"){
         viewModelScope.launch {
-            //bookshelfUiState = BookshelfUiState.Loading
+            bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
                 BookshelfUiState.Success(bookshelfRepository.getBookListInformation(search))
             }catch (e: IOException){

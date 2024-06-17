@@ -10,6 +10,7 @@ fun BookshelfApp(modifier:Modifier= Modifier){
     val bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory)
     BookshelfHomeScreen(
         bookshelfUiState=bookshelfViewModel.bookshelfUiState,
-        viewModel = bookshelfViewModel
+        viewModel = bookshelfViewModel,
+        modifier=modifier
     )
 }

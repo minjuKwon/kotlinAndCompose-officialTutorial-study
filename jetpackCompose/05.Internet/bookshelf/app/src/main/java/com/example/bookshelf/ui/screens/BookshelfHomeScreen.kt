@@ -13,10 +13,10 @@ fun BookshelfHomeScreen(
 ){
     when(bookshelfUiState){
         is BookshelfUiState.Success -> {
-            if(bookshelfUiState.isShowingHomepage) {BookshelfAppContent(bookshelfUiState, viewModel)}
-            else {BookshelfDetailsScreen(book = bookshelfUiState.currentItem)}
+            if(bookshelfUiState.isShowingHomepage) {BookshelfAppContent(bookshelfUiState, viewModel,modifier)}
+            else {BookshelfDetailsScreen(book = bookshelfUiState.currentItem, modifier=modifier)}
         }
-        else ->{BookshelfAppContent(bookshelfUiState, viewModel)}
+        else ->{BookshelfAppContent(bookshelfUiState,viewModel,modifier)}
     }
 }
 
@@ -29,7 +29,8 @@ private fun BookshelfAppContent(
     when(bookshelfUiState){
         is BookshelfUiState.Success -> BookshelfListOnlyContent(
             books=bookshelfUiState.list.book,
-            viewModel= viewModel
+            viewModel= viewModel,
+            modifier=modifier
             )
         is BookshelfUiState.Loading -> {}
         is BookshelfUiState.Error -> {}

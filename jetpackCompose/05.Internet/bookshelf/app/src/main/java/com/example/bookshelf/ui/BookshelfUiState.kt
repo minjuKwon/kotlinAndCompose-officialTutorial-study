@@ -1,6 +1,5 @@
 package com.example.bookshelf.ui
 
-import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.network.Image
 import com.example.bookshelf.network.Item
