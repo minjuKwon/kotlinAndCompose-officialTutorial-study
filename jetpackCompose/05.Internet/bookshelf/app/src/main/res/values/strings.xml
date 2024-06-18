@@ -6,4 +6,8 @@
     <string name="search_label">검색할 도서 명을 입력하시오</string>
 
     <string name="back">뒤로 가기</string>
+
+    <string name="loading">로딩 중</string>
+    <string name="error">로딩 실패</string>
+    <string name="retry">재시도</string>
 </resources>

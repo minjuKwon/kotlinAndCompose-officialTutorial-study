@@ -17,4 +17,7 @@
     <dimen name="detail_screen_text_padding">12.dp</dimen>
     <dimen name="detail_screen_image_padding">12.dp</dimen>
     <dimen name="detail_screen_image_height">160.dp</dimen>
+
+    <dimen name="loading_screen_image_size">200.dp</dimen>
+    <dimen name="error_screen_text_padding">12.dp</dimen>
 </resources>
