@@ -14,7 +14,7 @@ fun BookshelfHomeScreen(
     when(bookshelfUiState){
         is BookshelfUiState.Success -> {
             if(bookshelfUiState.isShowingHomepage) {BookshelfAppContent(bookshelfUiState, viewModel,modifier)}
-            else {BookshelfDetailsScreen(book = bookshelfUiState.currentItem, modifier=modifier)}
+            else {BookshelfDetailsScreen(bookshelfUiState.currentItem,viewModel,modifier)}
         }
         else ->{BookshelfAppContent(bookshelfUiState,viewModel,modifier)}
     }

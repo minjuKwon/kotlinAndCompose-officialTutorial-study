@@ -1,6 +1,5 @@
 package com.example.bookshelf.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -31,7 +30,7 @@ class BookshelfViewModel(
         viewModelScope.launch {
             bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
-                BookshelfUiState.Success(bookshelfRepository.getBookListInformation(search))
+                BookshelfUiState.Success(list=bookshelfRepository.getBookListInformation(search))
             }catch (e: IOException){
                 BookshelfUiState.Error
             }
@@ -49,13 +48,17 @@ class BookshelfViewModel(
     }
 
     fun updateDetailsScreenState(bookInfo: BookInfo){
-        bookshelfUiState =
-            BookshelfUiState.Success(currentItem = bookInfo, isShowingHomepage = false)
+        bookshelfUiState = when (val state = bookshelfUiState) {
+            is BookshelfUiState.Success -> state.copy(currentItem = bookInfo, isShowingHomepage = false)
+            else -> state
+        }
     }
 
     fun resetHomeScreenState(){
-        bookshelfUiState =
-            BookshelfUiState.Success(isShowingHomepage = true)
+        bookshelfUiState = when (val state = bookshelfUiState) {
+            is BookshelfUiState.Success -> state.copy(isShowingHomepage = true)
+            else -> state
+        }
     }
 
 }

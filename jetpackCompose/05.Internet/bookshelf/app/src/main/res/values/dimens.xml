@@ -11,4 +11,10 @@
     <dimen name="list_item_image_padding">4.dp</dimen>
     <dimen name="list_item_image_height">128.dp</dimen>
     <dimen name="list_item_image_width">80.dp</dimen>
+
+    <dimen name="detail_screen_arrow_padding">4.dp</dimen>
+    <dimen name="detail_screen_text_column_padding">4.dp</dimen>
+    <dimen name="detail_screen_text_padding">12.dp</dimen>
+    <dimen name="detail_screen_image_padding">12.dp</dimen>
+    <dimen name="detail_screen_image_height">160.dp</dimen>
 </resources>
