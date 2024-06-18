@@ -68,7 +68,7 @@ private fun DetailsScreenContent(
         }
 
         Column(
-            modifier=modifier,
+            modifier=Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
