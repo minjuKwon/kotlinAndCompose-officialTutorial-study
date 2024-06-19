@@ -1,16 +1,47 @@
 package com.example.bookshelf.ui
 
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookshelf.ui.screens.BookshelfHomeScreen
+import com.example.bookshelf.ui.utils.ContentType
+import com.example.bookshelf.ui.utils.NavigationType
 
 @Composable
-fun BookshelfApp(modifier:Modifier= Modifier){
+fun BookshelfApp(
+    windowSize: WindowWidthSizeClass,
+    modifier:Modifier= Modifier
+){
     val bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory)
+
+    val navigationType:NavigationType
+    val contentType:ContentType
+
+    when(windowSize){
+        WindowWidthSizeClass.Compact->{
+            navigationType=NavigationType.BOTTOM_NAVIGATION
+            contentType=ContentType.LIST_ONLY
+        }
+        WindowWidthSizeClass.Medium->{
+            navigationType=NavigationType.NAVIGATION_RAIL
+            contentType=ContentType.LIST_ONLY
+        }
+        WindowWidthSizeClass.Expanded->{
+            navigationType=NavigationType.PERMANENT_NAVIGATION_DRAWER
+            contentType=ContentType.LIST_AND_DETAIL
+        }
+        else->{
+            navigationType=NavigationType.BOTTOM_NAVIGATION
+            contentType=ContentType.LIST_ONLY
+        }
+    }
+
     BookshelfHomeScreen(
         bookshelfUiState=bookshelfViewModel.bookshelfUiState,
         viewModel = bookshelfViewModel,
+        navigationType = navigationType,
+        contentType= contentType,
         modifier=modifier
     )
 }

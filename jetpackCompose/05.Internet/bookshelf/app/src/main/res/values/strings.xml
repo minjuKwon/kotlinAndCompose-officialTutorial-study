@@ -10,4 +10,9 @@
     <string name="loading">로딩 중</string>
     <string name="error">로딩 실패</string>
     <string name="retry">재시도</string>
+
+    <string name="book">책목록</string>
+    <string name="bookmark">즐겨찾기</string>
+
+    <string name="empty_bookmark">책을 추가하여 나만의 서재를 완성해보세요</string>
 </resources>

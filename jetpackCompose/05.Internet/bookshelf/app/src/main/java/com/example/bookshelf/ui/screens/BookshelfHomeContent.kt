@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,17 +35,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
+import com.example.bookshelf.checkBookmarkList
+import com.example.bookshelf.checkCurrentItem
+import com.example.bookshelf.checkTabPressed
+import com.example.bookshelf.data.BookType
 import com.example.bookshelf.network.Book
+import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.BookshelfViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
     books:List<Book>,
+    bookshelfUiState: BookshelfUiState,
     viewModel: BookshelfViewModel,
     modifier:Modifier= Modifier
 ){
@@ -99,10 +107,18 @@ fun BookshelfListOnlyContent(
         LazyColumn(
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.list_padding))
+                .fillMaxHeight(0.9f)
         ){
-            items(books){
-                BookShelfListItem(book = it, viewModel=viewModel, modifier=modifier)
+            if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
+                items(checkBookmarkList(bookshelfUiState)){
+                    BookShelfListItem(book = it, viewModel=viewModel, modifier=modifier)
+                }
+            }else{
+                items(books){
+                    BookShelfListItem(book = it, viewModel=viewModel, modifier=modifier)
+                }
             }
+
         }
 
     }
@@ -110,10 +126,35 @@ fun BookshelfListOnlyContent(
 
 @Composable
 fun BookshelfListAndDetailContent(
-
+    books:List<Book>,
+    bookshelfUiState: BookshelfUiState,
+    viewModel: BookshelfViewModel,
+    modifier:Modifier= Modifier
 ){
+    Row(modifier=modifier){
+        BookshelfListOnlyContent(
+            books = books,
+            bookshelfUiState = bookshelfUiState,
+            viewModel = viewModel
+        )
+        BookshelfDetailsScreen(
+            book = checkCurrentItem(bookshelfUiState),
+            viewModel = viewModel
+        )
+    }
+}
 
-
+@Composable
+fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
+    Box(
+        modifier=modifier,
+        contentAlignment = Alignment.Center
+    ){
+        Text(
+            text=stringResource(R.string.empty_bookmark),
+            textAlign=TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -127,8 +168,10 @@ private fun BookShelfListItem(
             .clickable { viewModel.updateDetailsScreenState(book.bookInfo) }
             .fillMaxWidth()
             .padding(dimensionResource(R.dimen.list_item_padding))
-            .background(Color(
-                ContextCompat.getColor(LocalContext.current, R.color.light_gray))
+            .background(
+                Color(
+                    ContextCompat.getColor(LocalContext.current, R.color.light_gray)
+                )
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -144,7 +187,7 @@ private fun BookShelfListItem(
                             .data(it.thumbnail).build(),
                     contentDescription = null,
                     contentScale= ContentScale.FillBounds,
-                    modifier=Modifier
+                    modifier= Modifier
                         .height(dimensionResource(R.dimen.list_item_image_height))
                         .width(dimensionResource(R.dimen.list_item_image_width))
                 )
@@ -194,3 +237,7 @@ private fun BookShelfListItem(
 
     }
 }
+
+
+
+

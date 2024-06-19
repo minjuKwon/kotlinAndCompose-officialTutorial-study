@@ -20,4 +20,9 @@
 
     <dimen name="loading_screen_image_size">200.dp</dimen>
     <dimen name="error_screen_text_padding">12.dp</dimen>
+
+    <dimen name="permanent_navigation_drawer_content_padding">12.dp</dimen>
+    <dimen name="permanent_navigation_drawer_content_icon_padding">8.dp</dimen>
+    <dimen name="permanent_navigation_drawer_content_text_padding">20.dp</dimen>
+    <dimen name="navigation_rail_item_padding">40.dp</dimen>
 </resources>

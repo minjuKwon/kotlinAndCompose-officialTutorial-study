@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bookshelf.BookshelfApplication
+import com.example.bookshelf.data.BookType
 import com.example.bookshelf.data.BookshelfRepository
 import com.example.bookshelf.network.BookInfo
 import kotlinx.coroutines.launch
@@ -30,7 +31,9 @@ class BookshelfViewModel(
         viewModelScope.launch {
             bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
-                BookshelfUiState.Success(list=bookshelfRepository.getBookListInformation(search))
+                BookshelfUiState.Success(
+                    list=bookshelfRepository.getBookListInformation(search),
+                )
             }catch (e: IOException){
                 BookshelfUiState.Error
             }
@@ -57,6 +60,13 @@ class BookshelfViewModel(
     fun resetHomeScreenState(){
         bookshelfUiState = when (val state = bookshelfUiState) {
             is BookshelfUiState.Success -> state.copy(isShowingHomepage = true)
+            else -> state
+        }
+    }
+
+    fun updateCurrentBookTabType(bookType: BookType){
+        bookshelfUiState = when (val state = bookshelfUiState) {
+            is BookshelfUiState.Success -> state.copy(currentTabType = bookType)
             else -> state
         }
     }
