@@ -30,16 +30,16 @@ import com.example.bookshelf.ui.BookshelfViewModel
 @Composable
 fun BookshelfDetailsScreen(
     book: BookInfo,
-    viewModel:BookshelfViewModel,
+    onBackPressed:()->Unit,
     modifier: Modifier =Modifier
 ){
     BackHandler {
-        viewModel.resetHomeScreenState()
+        onBackPressed()
     }
 
     LazyColumn{
         item{
-            DetailsScreenContent(book,viewModel,modifier)
+            DetailsScreenContent(book,onBackPressed,modifier)
         }
     }
 
@@ -48,13 +48,13 @@ fun BookshelfDetailsScreen(
 @Composable
 private fun DetailsScreenContent(
     book: BookInfo,
-    viewModel:BookshelfViewModel,
+    onBackPressed:()->Unit,
     modifier: Modifier =Modifier
 ){
     Column(modifier=modifier) {
 
         IconButton(
-            onClick = {viewModel.resetHomeScreenState()},
+            onClick = {onBackPressed()},
             modifier=modifier
         ) {
             Icon(

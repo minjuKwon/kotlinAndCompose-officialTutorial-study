@@ -45,15 +45,16 @@ import com.example.bookshelf.checkCurrentItem
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
 import com.example.bookshelf.network.Book
+import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
-import com.example.bookshelf.ui.BookshelfViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
     books:List<Book>,
     bookshelfUiState: BookshelfUiState,
-    viewModel: BookshelfViewModel,
+    onSearch:(String)->Unit,
+    onBookItemPressed: (BookInfo) -> Unit,
     modifier:Modifier= Modifier
 ){
     var input by remember{mutableStateOf("")}
@@ -72,7 +73,7 @@ fun BookshelfListOnlyContent(
                     imageVector= Icons.Filled.Search,
                     contentDescription=stringResource(R.string.search),
                     modifier= Modifier
-                        .clickable { viewModel.getInformation(input) }
+                        .clickable { onSearch(input) }
                         .padding(
                             dimensionResource(R.dimen.list_only_content_search_icon_padding)
                         )
@@ -93,7 +94,7 @@ fun BookshelfListOnlyContent(
                 imeAction= ImeAction.Search
             ),
             keyboardActions= KeyboardActions(
-                onSearch = {viewModel.getInformation(input)},
+                onSearch = {onSearch(input)},
             ),
             modifier= Modifier
                 .fillMaxWidth()
@@ -111,11 +112,19 @@ fun BookshelfListOnlyContent(
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
                 items(checkBookmarkList(bookshelfUiState)){
-                    BookShelfListItem(book = it, viewModel=viewModel, modifier=modifier)
+                    BookShelfListItem(
+                        book = it,
+                        onBookItemPressed=onBookItemPressed,
+                        modifier=modifier
+                    )
                 }
             }else{
                 items(books){
-                    BookShelfListItem(book = it, viewModel=viewModel, modifier=modifier)
+                    BookShelfListItem(
+                        book = it,
+                        onBookItemPressed=onBookItemPressed,
+                        modifier=modifier
+                    )
                 }
             }
 
@@ -128,18 +137,21 @@ fun BookshelfListOnlyContent(
 fun BookshelfListAndDetailContent(
     books:List<Book>,
     bookshelfUiState: BookshelfUiState,
-    viewModel: BookshelfViewModel,
+    onSearch: (String) -> Unit,
+    onBookItemPressed: (BookInfo) -> Unit,
+    onBackPressed:()->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
         BookshelfListOnlyContent(
             books = books,
             bookshelfUiState = bookshelfUiState,
-            viewModel = viewModel
+            onSearch=onSearch,
+            onBookItemPressed = onBookItemPressed
         )
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),
-            viewModel = viewModel
+            onBackPressed=onBackPressed
         )
     }
 }
@@ -160,12 +172,12 @@ fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
 @Composable
 private fun BookShelfListItem(
     book: Book,
-    viewModel: BookshelfViewModel,
+    onBookItemPressed:(BookInfo)->Unit,
     modifier:Modifier=Modifier
 ){
     Row(
         modifier= Modifier
-            .clickable { viewModel.updateDetailsScreenState(book.bookInfo) }
+            .clickable { onBookItemPressed(book.bookInfo) }
             .fillMaxWidth()
             .padding(dimensionResource(R.dimen.list_item_padding))
             .background(

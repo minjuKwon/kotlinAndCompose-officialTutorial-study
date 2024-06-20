@@ -38,8 +38,8 @@ import com.example.bookshelf.checkBookList
 import com.example.bookshelf.checkBookmarkIsEmpty
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
+import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
-import com.example.bookshelf.ui.BookshelfViewModel
 import com.example.bookshelf.ui.utils.ContentType
 import com.example.bookshelf.ui.utils.NavigationType
 
@@ -47,7 +47,11 @@ import com.example.bookshelf.ui.utils.NavigationType
 @Composable
 fun BookshelfHomeScreen(
     bookshelfUiState: BookshelfUiState,
-    viewModel: BookshelfViewModel,
+    onTabPressed: (BookType) -> Unit,
+    onSearch:(String)->Unit,
+    onBookItemPressed: (BookInfo) -> Unit,
+    onBackPressed:()->Unit,
+    onRetry: () -> Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     modifier:Modifier=Modifier
@@ -72,9 +76,7 @@ fun BookshelfHomeScreen(
                 PermanentDrawerSheet(modifier = Modifier.fillMaxWidth(0.2f)) {
                     NavigationDrawerContent(
                         selectedTab = checkTabPressed(bookshelfUiState) ,
-                        onTabPressed = {viewModel.updateCurrentBookTabType(
-                            checkTabPressed(bookshelfUiState)
-                        )},
+                        onTabPressed = onTabPressed,
                         navigationItemList = navigationItemContentList,
                         modifier= Modifier
                             .fillMaxHeight()
@@ -90,12 +92,16 @@ fun BookshelfHomeScreen(
             }
         ) {
             BookshelfAppContent(
-                navigationType,
-                contentType,
-                bookshelfUiState,
-                viewModel,
-                navigationItemContentList,
-                modifier
+                navigationType = navigationType,
+                contentType = contentType,
+                bookshelfUiState = bookshelfUiState,
+                onTabPressed=onTabPressed,
+                onSearch=onSearch,
+                onBookItemPressed=onBookItemPressed,
+                onBackPressed=onBackPressed,
+                onRetry=onRetry,
+                navigationItemContent = navigationItemContentList,
+                modifier = modifier
             )
         }
     }else{
@@ -103,24 +109,32 @@ fun BookshelfHomeScreen(
             is BookshelfUiState.Success -> {
                 if(bookshelfUiState.isShowingHomepage) {
                     BookshelfAppContent(
-                        navigationType,
-                        contentType,
-                        bookshelfUiState,
-                        viewModel,
-                        navigationItemContentList,
-                        modifier
+                        navigationType=navigationType,
+                        contentType = contentType,
+                        bookshelfUiState = bookshelfUiState,
+                        onTabPressed= onTabPressed,
+                        onSearch=onSearch,
+                        onBookItemPressed=onBookItemPressed,
+                        onBackPressed=onBackPressed,
+                        onRetry=onRetry,
+                        navigationItemContent = navigationItemContentList,
+                        modifier = modifier
                     )
                 }
-                else {BookshelfDetailsScreen(bookshelfUiState.currentItem,viewModel,modifier)}
+                else {BookshelfDetailsScreen(bookshelfUiState.currentItem,onBackPressed,modifier)}
             }
             else ->{
                 BookshelfAppContent(
-                    navigationType,
-                    contentType,
-                    bookshelfUiState,
-                    viewModel,
-                    navigationItemContentList,
-                    modifier
+                    navigationType = navigationType,
+                    contentType = contentType,
+                    bookshelfUiState = bookshelfUiState,
+                    onTabPressed=onTabPressed,
+                    onSearch=onSearch,
+                    onBookItemPressed=onBookItemPressed,
+                    onBackPressed=onBackPressed,
+                    onRetry=onRetry,
+                    navigationItemContent = navigationItemContentList,
+                    modifier = modifier
                 )
             }
         }
@@ -129,10 +143,14 @@ fun BookshelfHomeScreen(
 
 @Composable
 private fun BookshelfAppContent(
+    bookshelfUiState: BookshelfUiState,
+    onTabPressed: (BookType) -> Unit,
+    onSearch: (String) -> Unit,
+    onBookItemPressed: (BookInfo) -> Unit,
+    onBackPressed:()->Unit,
+    onRetry:()->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
-    bookshelfUiState: BookshelfUiState,
-    viewModel: BookshelfViewModel,
     navigationItemContent: List<NavigationItemContent>,
     modifier:Modifier=Modifier
 ){
@@ -142,8 +160,7 @@ private fun BookshelfAppContent(
             AnimatedVisibility(visible=navigationType==NavigationType.NAVIGATION_RAIL){
                 BookNavigationRail(
                     currentTab = checkTabPressed(bookshelfUiState),
-                    onTabPressed = {viewModel
-                        .updateCurrentBookTabType(checkTabPressed(bookshelfUiState))},
+                    onTabPressed = onTabPressed,
                     navigationItemContentList = navigationItemContent
                 )
             }
@@ -153,7 +170,9 @@ private fun BookshelfAppContent(
                     BookshelfListAndDetailContent(
                         books = checkBookList(bookshelfUiState) ,
                         bookshelfUiState = bookshelfUiState,
-                        viewModel = viewModel
+                        onSearch=onSearch,
+                        onBookItemPressed=onBookItemPressed,
+                        onBackPressed=onBackPressed
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -166,7 +185,8 @@ private fun BookshelfAppContent(
                         when(bookshelfUiState){
                             is BookshelfUiState.Success -> BookshelfListOnlyContent(
                                 books=bookshelfUiState.list.book,
-                                viewModel= viewModel,
+                                onSearch=onSearch,
+                                onBookItemPressed=onBookItemPressed,
                                 bookshelfUiState=bookshelfUiState
                             )
                             is BookshelfUiState.Loading -> {
@@ -176,7 +196,7 @@ private fun BookshelfAppContent(
                             }
                             is BookshelfUiState.Error -> {
                                 ErrorScreen(
-                                    retryAction = viewModel::getInformation,
+                                    retryAction = onRetry,
                                     modifier= Modifier
                                         .fillMaxSize()
                                         .weight(1f))
@@ -187,8 +207,7 @@ private fun BookshelfAppContent(
                 AnimatedVisibility(visible = navigationType==NavigationType.BOTTOM_NAVIGATION) {
                     BookBottomNavigationBar(
                         currentTab = checkTabPressed(bookshelfUiState),
-                        onTabPressed = {bookType:BookType->viewModel
-                            .updateCurrentBookTabType(bookType)},
+                        onTabPressed = onTabPressed,
                         navigationItemContentList = navigationItemContent,
                         modifier=Modifier.fillMaxWidth()
                     )
