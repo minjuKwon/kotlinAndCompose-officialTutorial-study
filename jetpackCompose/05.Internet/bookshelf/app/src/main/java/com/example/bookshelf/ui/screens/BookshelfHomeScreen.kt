@@ -187,8 +187,8 @@ private fun BookshelfAppContent(
                 AnimatedVisibility(visible = navigationType==NavigationType.BOTTOM_NAVIGATION) {
                     BookBottomNavigationBar(
                         currentTab = checkTabPressed(bookshelfUiState),
-                        onTabPressed = {viewModel
-                            .updateCurrentBookTabType(checkTabPressed(bookshelfUiState))},
+                        onTabPressed = {bookType:BookType->viewModel
+                            .updateCurrentBookTabType(bookType)},
                         navigationItemContentList = navigationItemContent,
                         modifier=Modifier.fillMaxWidth()
                     )
