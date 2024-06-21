@@ -27,6 +27,10 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -51,7 +55,6 @@ fun BookshelfHomeScreen(
     onSearch:(String)->Unit,
     onBookItemPressed: (BookInfo) -> Unit,
     onBackPressed:()->Unit,
-    onRetry: () -> Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     modifier:Modifier=Modifier
@@ -99,7 +102,6 @@ fun BookshelfHomeScreen(
                 onSearch=onSearch,
                 onBookItemPressed=onBookItemPressed,
                 onBackPressed=onBackPressed,
-                onRetry=onRetry,
                 navigationItemContent = navigationItemContentList,
                 modifier = modifier
             )
@@ -116,7 +118,6 @@ fun BookshelfHomeScreen(
                         onSearch=onSearch,
                         onBookItemPressed=onBookItemPressed,
                         onBackPressed=onBackPressed,
-                        onRetry=onRetry,
                         navigationItemContent = navigationItemContentList,
                         modifier = modifier
                     )
@@ -132,7 +133,6 @@ fun BookshelfHomeScreen(
                     onSearch=onSearch,
                     onBookItemPressed=onBookItemPressed,
                     onBackPressed=onBackPressed,
-                    onRetry=onRetry,
                     navigationItemContent = navigationItemContentList,
                     modifier = modifier
                 )
@@ -148,12 +148,13 @@ private fun BookshelfAppContent(
     onSearch: (String) -> Unit,
     onBookItemPressed: (BookInfo) -> Unit,
     onBackPressed:()->Unit,
-    onRetry:()->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     navigationItemContent: List<NavigationItemContent>,
     modifier:Modifier=Modifier
 ){
+    var input by remember{ mutableStateOf("android") }
+
     Box(modifier=modifier){
         Row(modifier=Modifier.fillMaxSize()){
 
@@ -172,7 +173,10 @@ private fun BookshelfAppContent(
                         bookshelfUiState = bookshelfUiState,
                         onSearch=onSearch,
                         onBookItemPressed=onBookItemPressed,
-                        onBackPressed=onBackPressed
+                        onBackPressed=onBackPressed,
+                        input=input,
+                        onInputChange = {input=it},
+                        onInputReset = {input=it}
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -187,7 +191,10 @@ private fun BookshelfAppContent(
                                 books=bookshelfUiState.list.book,
                                 onSearch=onSearch,
                                 onBookItemPressed=onBookItemPressed,
-                                bookshelfUiState=bookshelfUiState
+                                bookshelfUiState=bookshelfUiState,
+                                input=input,
+                                onInputChange = {input=it},
+                                onInputReset = {input=it}
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier
@@ -196,7 +203,8 @@ private fun BookshelfAppContent(
                             }
                             is BookshelfUiState.Error -> {
                                 ErrorScreen(
-                                    retryAction = onRetry,
+                                    retryAction = onSearch,
+                                    input=input,
                                     modifier= Modifier
                                         .fillMaxSize()
                                         .weight(1f))
@@ -230,7 +238,8 @@ private fun LoadingScreen(modifier: Modifier=Modifier){
 
 @Composable
 private fun ErrorScreen(
-    retryAction:()->Unit,
+    retryAction:(String)->Unit,
+    input:String,
     modifier: Modifier=Modifier
 ){
     Column(
@@ -246,7 +255,7 @@ private fun ErrorScreen(
             text=stringResource(R.string.error),
             modifier=Modifier.padding(dimensionResource(R.dimen.error_screen_text_padding))
         )
-        Button(onClick = retryAction) {
+        Button(onClick = {retryAction(input)}) {
             Text(text=stringResource(R.string.retry))
         }
     }

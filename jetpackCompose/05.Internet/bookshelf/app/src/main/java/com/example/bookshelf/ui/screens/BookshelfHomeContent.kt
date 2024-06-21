@@ -23,10 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,9 +51,11 @@ fun BookshelfListOnlyContent(
     bookshelfUiState: BookshelfUiState,
     onSearch:(String)->Unit,
     onBookItemPressed: (BookInfo) -> Unit,
+    input:String,
+    onInputChange:(String)->Unit,
+    onInputReset:(String)->Unit,
     modifier:Modifier= Modifier
 ){
-    var input by remember{mutableStateOf("")}
     Column(
         modifier= Modifier
             .padding(dimensionResource(R.dimen.list_only_content_column_padding)),
@@ -66,7 +64,7 @@ fun BookshelfListOnlyContent(
 
         OutlinedTextField(
             value = input,
-            onValueChange = {input=it},
+            onValueChange = onInputChange,
             label={Text(stringResource(R.string.search_label))},
             leadingIcon = {
                 Icon(
@@ -84,7 +82,7 @@ fun BookshelfListOnlyContent(
                     imageVector = Icons.Filled.Close,
                     contentDescription = stringResource(R.string.search_close),
                     modifier= Modifier
-                        .clickable { input = "" }
+                        .clickable {onInputReset("")}
                         .padding(
                             dimensionResource(R.dimen.list_only_content_search_icon_padding)
                         )
@@ -140,6 +138,9 @@ fun BookshelfListAndDetailContent(
     onSearch: (String) -> Unit,
     onBookItemPressed: (BookInfo) -> Unit,
     onBackPressed:()->Unit,
+    input:String,
+    onInputChange:(String)->Unit,
+    onInputReset:(String)->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -147,7 +148,10 @@ fun BookshelfListAndDetailContent(
             books = books,
             bookshelfUiState = bookshelfUiState,
             onSearch=onSearch,
-            onBookItemPressed = onBookItemPressed
+            onBookItemPressed = onBookItemPressed,
+            input=input,
+            onInputChange=onInputChange,
+            onInputReset=onInputReset
         )
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),

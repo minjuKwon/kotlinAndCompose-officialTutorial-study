@@ -43,7 +43,6 @@ fun BookshelfApp(
         onSearch={ bookshelfViewModel.getInformation(it)},
         onBookItemPressed={bookshelfViewModel.updateDetailsScreenState(it)},
         onBackPressed={bookshelfViewModel.resetHomeScreenState()},
-        onRetry={bookshelfViewModel.getInformation()},
         navigationType = navigationType,
         contentType= contentType,
         modifier=modifier
