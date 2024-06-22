@@ -51,23 +51,31 @@ class BookshelfViewModel(
     }
 
     fun updateDetailsScreenState(bookInfo: BookInfo){
-        bookshelfUiState = when (val state = bookshelfUiState) {
-            is BookshelfUiState.Success -> state.copy(currentItem = bookInfo, isShowingHomepage = false)
-            else -> state
+        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+            it.copy(currentItem = bookInfo, isShowingHomepage = false)
         }
     }
 
     fun resetHomeScreenState(){
-        bookshelfUiState = when (val state = bookshelfUiState) {
-            is BookshelfUiState.Success -> state.copy(isShowingHomepage = true)
-            else -> state
+        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+            it.copy(isShowingHomepage = true)
         }
     }
 
     fun updateCurrentBookTabType(bookType: BookType){
-        bookshelfUiState = when (val state = bookshelfUiState) {
-            is BookshelfUiState.Success -> state.copy(currentTabType = bookType)
-            else -> state
+        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+            it.copy(currentTabType = bookType)
+        }
+    }
+
+    private fun <T:BookshelfUiState.Success> updateCopiedUiState(
+        uiState:BookshelfUiState,
+        copyOperation:(BookshelfUiState.Success)->T
+    ):BookshelfUiState
+    {
+        return when(uiState){
+            is BookshelfUiState.Success-> copyOperation(uiState)
+            else ->uiState
         }
     }
 
