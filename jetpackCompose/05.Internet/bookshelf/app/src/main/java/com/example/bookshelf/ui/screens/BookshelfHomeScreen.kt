@@ -42,6 +42,7 @@ import com.example.bookshelf.checkBookList
 import com.example.bookshelf.checkBookmarkIsEmpty
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
+import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.utils.ContentType
@@ -55,6 +56,7 @@ fun BookshelfHomeScreen(
     onSearch:(String)->Unit,
     onBookItemPressed: (BookInfo) -> Unit,
     onBackPressed:()->Unit,
+    onBookmarkPressed:(Book)->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     modifier:Modifier=Modifier
@@ -102,6 +104,7 @@ fun BookshelfHomeScreen(
                 onSearch=onSearch,
                 onBookItemPressed=onBookItemPressed,
                 onBackPressed=onBackPressed,
+                onBookmarkPressed=onBookmarkPressed,
                 navigationItemContent = navigationItemContentList,
                 modifier = modifier
             )
@@ -118,6 +121,7 @@ fun BookshelfHomeScreen(
                         onSearch=onSearch,
                         onBookItemPressed=onBookItemPressed,
                         onBackPressed=onBackPressed,
+                        onBookmarkPressed=onBookmarkPressed,
                         navigationItemContent = navigationItemContentList,
                         modifier = modifier
                     )
@@ -133,6 +137,7 @@ fun BookshelfHomeScreen(
                     onSearch=onSearch,
                     onBookItemPressed=onBookItemPressed,
                     onBackPressed=onBackPressed,
+                    onBookmarkPressed=onBookmarkPressed,
                     navigationItemContent = navigationItemContentList,
                     modifier = modifier
                 )
@@ -148,6 +153,7 @@ private fun BookshelfAppContent(
     onSearch: (String) -> Unit,
     onBookItemPressed: (BookInfo) -> Unit,
     onBackPressed:()->Unit,
+    onBookmarkPressed:(Book)->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     navigationItemContent: List<NavigationItemContent>,
@@ -176,7 +182,8 @@ private fun BookshelfAppContent(
                         onBackPressed=onBackPressed,
                         input=input,
                         onInputChange = {input=it},
-                        onInputReset = {input=it}
+                        onInputReset = {input=it},
+                        onBookmarkPressed=onBookmarkPressed
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -194,7 +201,8 @@ private fun BookshelfAppContent(
                                 bookshelfUiState=bookshelfUiState,
                                 input=input,
                                 onInputChange = {input=it},
-                                onInputReset = {input=it}
+                                onInputReset = {input=it},
+                                onBookmarkPressed=onBookmarkPressed
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier

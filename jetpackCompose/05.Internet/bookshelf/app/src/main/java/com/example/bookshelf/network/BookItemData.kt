@@ -24,7 +24,8 @@ data class BookInfo(
     val publishedDate:String?=null,
     val description:String?=null,
     @SerialName(value="imageLinks")
-    val img:Image?=null
+    val img:Image?=null,
+    var isBookmarked:Boolean=false
 )
 
 @Serializable

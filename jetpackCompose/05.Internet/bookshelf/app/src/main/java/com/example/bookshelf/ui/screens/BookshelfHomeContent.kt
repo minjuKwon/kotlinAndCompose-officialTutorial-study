@@ -10,19 +10,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,6 +62,7 @@ fun BookshelfListOnlyContent(
     input:String,
     onInputChange:(String)->Unit,
     onInputReset:(String)->Unit,
+    onBookmarkPressed:(Book)->Unit,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -82,7 +91,7 @@ fun BookshelfListOnlyContent(
                     imageVector = Icons.Filled.Close,
                     contentDescription = stringResource(R.string.search_close),
                     modifier= Modifier
-                        .clickable {onInputReset("")}
+                        .clickable { onInputReset("") }
                         .padding(
                             dimensionResource(R.dimen.list_only_content_search_icon_padding)
                         )
@@ -109,18 +118,20 @@ fun BookshelfListOnlyContent(
                 .fillMaxHeight(0.9f)
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
-                items(checkBookmarkList(bookshelfUiState)){
-                    BookShelfListItem(
-                        book = it,
-                        onBookItemPressed=onBookItemPressed,
-                        modifier=modifier
-                    )
-                }
+                    items(checkBookmarkList(bookshelfUiState),key={it.id}){
+                        BookShelfListItem(
+                            book = it,
+                            onBookItemPressed=onBookItemPressed,
+                            onBookMarkPressed = onBookmarkPressed,
+                            modifier=modifier
+                        )
+                    }
             }else{
-                items(books){
+                items(books,key={it.id}){
                     BookShelfListItem(
                         book = it,
                         onBookItemPressed=onBookItemPressed,
+                        onBookMarkPressed = onBookmarkPressed,
                         modifier=modifier
                     )
                 }
@@ -141,6 +152,7 @@ fun BookshelfListAndDetailContent(
     input:String,
     onInputChange:(String)->Unit,
     onInputReset:(String)->Unit,
+    onBookmarkPressed:(Book)->Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -151,7 +163,8 @@ fun BookshelfListAndDetailContent(
             onBookItemPressed = onBookItemPressed,
             input=input,
             onInputChange=onInputChange,
-            onInputReset=onInputReset
+            onInputReset=onInputReset,
+            onBookmarkPressed=onBookmarkPressed
         )
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),
@@ -177,8 +190,10 @@ fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
 private fun BookShelfListItem(
     book: Book,
     onBookItemPressed:(BookInfo)->Unit,
+    onBookMarkPressed:(Book)->Unit,
     modifier:Modifier=Modifier
 ){
+    var isBookmarked by remember{mutableStateOf(book.bookInfo.isBookmarked)}
     Row(
         modifier= Modifier
             .clickable { onBookItemPressed(book.bookInfo) }
@@ -247,6 +262,16 @@ private fun BookShelfListItem(
                     text= it,
                     style=MaterialTheme.typography.bodySmall,
                     modifier=modifier
+                )
+            }
+            IconButton(
+                onClick = {isBookmarked=!isBookmarked
+                onBookMarkPressed(book)}
+            ) {
+                Icon(
+                    imageVector = if(isBookmarked){Icons.Default.Bookmark}
+                    else {Icons.Default.BookmarkBorder},
+                    contentDescription = stringResource(R.string.bookmark),
                 )
             }
         }
