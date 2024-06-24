@@ -3,6 +3,8 @@
     <dimen name="list_only_content_column_padding">8.dp</dimen>
     <dimen name="list_only_content_search_icon_padding">4.dp</dimen>
     <dimen name="list_only_content_search_horizontal_padding">8.dp</dimen>
+    <dimen name="list_only_content_total_text_start_padding">16.dp</dimen>
+    <dimen name="list_only_content_total_text_top_padding">8.dp</dimen>
 
     <dimen name="list_padding">12.dp</dimen>
     <dimen name="list_item_padding">8.dp</dimen>

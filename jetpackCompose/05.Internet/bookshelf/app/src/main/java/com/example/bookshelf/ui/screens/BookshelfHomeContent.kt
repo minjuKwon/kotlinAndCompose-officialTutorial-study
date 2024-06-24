@@ -2,6 +2,7 @@ package com.example.bookshelf.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import com.example.bookshelf.checkBookmarkList
 import com.example.bookshelf.checkCurrentItem
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
+import com.example.bookshelf.getTotalItemsCount
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
@@ -111,6 +113,21 @@ fun BookshelfListOnlyContent(
                     )
                 )
         )
+
+        Row(
+            modifier=Modifier.fillMaxWidth()
+                .padding(
+                    top = dimensionResource(
+                        R.dimen.list_only_content_total_text_top_padding),
+                    start = dimensionResource(
+                        R.dimen.list_only_content_total_text_start_padding)
+                ),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(R.string.totalCount))
+            Text(text = " ${getTotalItemsCount(bookshelfUiState)}")
+        }
 
         LazyColumn(
             modifier= Modifier

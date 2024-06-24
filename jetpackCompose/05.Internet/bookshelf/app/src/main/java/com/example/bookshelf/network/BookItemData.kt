@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Item(
     @SerialName(value="items")
-    val book:List<Book>
+    val book:List<Book>,
+    @SerialName(value="totalItems")
+    val totalCount:Int
 )
 
 @Serializable

@@ -8,7 +8,7 @@ import com.example.bookshelf.network.Item
 
 sealed interface BookshelfUiState{
     data class Success(
-        val list :Item= Item(emptyList()),
+        val list :Item= Item(emptyList(),0),
         val bookmarkList:MutableList<Book> = mutableListOf(),
         val currentTabType:BookType=BookType.Books,
         val currentItem : BookInfo= defaultBookInfo,

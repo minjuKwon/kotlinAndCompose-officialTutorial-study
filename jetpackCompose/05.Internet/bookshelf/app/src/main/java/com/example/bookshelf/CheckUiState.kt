@@ -61,6 +61,16 @@ fun checkBookList(
     )
 }
 
+fun getTotalItemsCount(
+    bookshelfUiState: BookshelfUiState
+):Int{
+    return checkUiState(
+        bookshelfUiState=bookshelfUiState,
+        a={it.list.totalCount},
+        b={0}
+    )
+}
+
 fun <T>checkUiState(
     bookshelfUiState: BookshelfUiState,
     a:(BookshelfUiState.Success)->T,
