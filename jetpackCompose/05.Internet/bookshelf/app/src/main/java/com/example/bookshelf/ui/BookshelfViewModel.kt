@@ -33,7 +33,7 @@ class BookshelfViewModel(
             bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
                 BookshelfUiState.Success(
-                    list=bookshelfRepository.getBookListInformation(search),
+                    list=bookshelfRepository.getBookListInformation(search,0),
                 )
             }catch (e: IOException){
                 BookshelfUiState.Error
