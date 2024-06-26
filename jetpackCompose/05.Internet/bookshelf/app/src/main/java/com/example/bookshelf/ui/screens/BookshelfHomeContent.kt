@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,6 +20,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
@@ -54,10 +56,11 @@ import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
-    books:List<Book>,
+    books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
     onSearch:(String)->Unit,
     onBookItemPressed: (BookInfo) -> Unit,
@@ -72,6 +75,8 @@ fun BookshelfListOnlyContent(
             .padding(dimensionResource(R.dimen.list_only_content_column_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        val totalCount=getTotalItemsCount(bookshelfUiState)
 
         OutlinedTextField(
             value = input,
@@ -126,7 +131,7 @@ fun BookshelfListOnlyContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(R.string.totalCount))
-            Text(text = " ${getTotalItemsCount(bookshelfUiState)}")
+            Text(text = " $totalCount")
         }
 
         LazyColumn(
@@ -144,13 +149,34 @@ fun BookshelfListOnlyContent(
                         )
                     }
             }else{
-                items(books,key={it.id}){
-                    BookShelfListItem(
-                        book = it,
-                        onBookItemPressed=onBookItemPressed,
-                        onBookMarkPressed = onBookmarkPressed,
-                        modifier=modifier
-                    )
+                items(count=books.itemCount){
+                    books[it]?.let { it1 ->
+                        BookShelfListItem(
+                            book = it1,
+                            onBookItemPressed=onBookItemPressed,
+                            onBookMarkPressed = onBookmarkPressed,
+                            modifier=modifier
+                        )
+                    }
+                }
+                books.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        loadState.append is LoadState.Loading -> {
+                            item {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        loadState.append is LoadState.Error -> {
+                            item {
+                                Text("Error loading data")
+                            }
+                        }
+                    }
                 }
             }
 
@@ -161,7 +187,7 @@ fun BookshelfListOnlyContent(
 
 @Composable
 fun BookshelfListAndDetailContent(
-    books:List<Book>,
+    books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
     onSearch: (String) -> Unit,
     onBookItemPressed: (BookInfo) -> Unit,

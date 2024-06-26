@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bookshelf.R
 import com.example.bookshelf.checkBookList
 import com.example.bookshelf.checkBookmarkIsEmpty
@@ -175,7 +176,7 @@ private fun BookshelfAppContent(
             Column(modifier=Modifier.fillMaxSize()) {
                 if(contentType==ContentType.LIST_AND_DETAIL){
                     BookshelfListAndDetailContent(
-                        books = checkBookList(bookshelfUiState) ,
+                        books = checkBookList(bookshelfUiState).collectAsLazyPagingItems() ,
                         bookshelfUiState = bookshelfUiState,
                         onSearch=onSearch,
                         onBookItemPressed=onBookItemPressed,
@@ -195,7 +196,7 @@ private fun BookshelfAppContent(
                     }else{
                         when(bookshelfUiState){
                             is BookshelfUiState.Success -> BookshelfListOnlyContent(
-                                books=bookshelfUiState.list.book,
+                                books=bookshelfUiState.list.book.collectAsLazyPagingItems(),
                                 onSearch=onSearch,
                                 onBookItemPressed=onBookItemPressed,
                                 bookshelfUiState=bookshelfUiState,

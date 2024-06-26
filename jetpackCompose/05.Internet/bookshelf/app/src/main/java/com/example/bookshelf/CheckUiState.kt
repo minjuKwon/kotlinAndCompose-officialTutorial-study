@@ -1,10 +1,13 @@
 package com.example.bookshelf
 
+import androidx.paging.PagingData
 import com.example.bookshelf.data.BookType
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.defaultBookInfo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 fun checkTabPressed(
     bookshelfUiState: BookshelfUiState
@@ -52,12 +55,12 @@ fun checkCurrentItem(
 
 fun checkBookList(
     bookshelfUiState: BookshelfUiState
-):List<Book>
+): Flow<PagingData<Book>>
 {
     return checkUiState(
         bookshelfUiState=bookshelfUiState,
         a={it.list.book},
-        b={ emptyList() }
+        b={ MutableStateFlow(PagingData.from(emptyList())) }
     )
 }
 
