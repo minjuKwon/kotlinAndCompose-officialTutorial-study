@@ -2,6 +2,8 @@ package com.example.bookshelf.ui
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookshelf.ui.screens.BookshelfHomeScreen
@@ -17,6 +19,8 @@ fun BookshelfApp(
 
     val navigationType:NavigationType
     val contentType:ContentType
+
+    val currentPage by bookshelfViewModel.currentPage.collectAsState()
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
@@ -46,6 +50,8 @@ fun BookshelfApp(
         onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
         navigationType = navigationType,
         contentType= contentType,
+        currentPage=currentPage,
+        updatePage={bookshelfViewModel.getInformation(page=it)},
         modifier=modifier
     )
 }

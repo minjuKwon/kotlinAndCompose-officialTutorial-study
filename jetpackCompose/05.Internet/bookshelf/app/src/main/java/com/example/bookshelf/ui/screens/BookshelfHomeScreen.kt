@@ -60,6 +60,8 @@ fun BookshelfHomeScreen(
     onBookmarkPressed:(Book)->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
+    currentPage:Int,
+    updatePage:(Int)->Unit,
     modifier:Modifier=Modifier
 ){
 
@@ -107,6 +109,8 @@ fun BookshelfHomeScreen(
                 onBackPressed=onBackPressed,
                 onBookmarkPressed=onBookmarkPressed,
                 navigationItemContent = navigationItemContentList,
+                currentPage=currentPage,
+                updatePage=updatePage,
                 modifier = modifier
             )
         }
@@ -124,6 +128,8 @@ fun BookshelfHomeScreen(
                         onBackPressed=onBackPressed,
                         onBookmarkPressed=onBookmarkPressed,
                         navigationItemContent = navigationItemContentList,
+                        currentPage=currentPage,
+                        updatePage=updatePage,
                         modifier = modifier
                     )
                 }
@@ -140,6 +146,8 @@ fun BookshelfHomeScreen(
                     onBackPressed=onBackPressed,
                     onBookmarkPressed=onBookmarkPressed,
                     navigationItemContent = navigationItemContentList,
+                    currentPage=currentPage,
+                    updatePage=updatePage,
                     modifier = modifier
                 )
             }
@@ -158,6 +166,8 @@ private fun BookshelfAppContent(
     navigationType: NavigationType,
     contentType: ContentType,
     navigationItemContent: List<NavigationItemContent>,
+    currentPage:Int,
+    updatePage: (Int) -> Unit,
     modifier:Modifier=Modifier
 ){
     var input by remember{ mutableStateOf("android") }
@@ -184,7 +194,9 @@ private fun BookshelfAppContent(
                         input=input,
                         onInputChange = {input=it},
                         onInputReset = {input=it},
-                        onBookmarkPressed=onBookmarkPressed
+                        onBookmarkPressed=onBookmarkPressed,
+                        currentPage=currentPage,
+                        updatePage=updatePage
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -203,7 +215,9 @@ private fun BookshelfAppContent(
                                 input=input,
                                 onInputChange = {input=it},
                                 onInputReset = {input=it},
-                                onBookmarkPressed=onBookmarkPressed
+                                onBookmarkPressed=onBookmarkPressed,
+                                currentPage=currentPage,
+                                updatePage=updatePage
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier

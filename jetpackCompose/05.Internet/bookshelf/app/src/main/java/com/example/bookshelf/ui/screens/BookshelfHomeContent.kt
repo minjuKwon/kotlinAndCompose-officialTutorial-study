@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -56,7 +58,6 @@ import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
@@ -68,7 +69,9 @@ fun BookshelfListOnlyContent(
     onInputChange:(String)->Unit,
     onInputReset:(String)->Unit,
     onBookmarkPressed:(Book)->Unit,
-    modifier:Modifier= Modifier
+    currentPage:Int,
+    updatePage:(Int)->Unit,
+    modifier:Modifier= Modifier,
 ){
     Column(
         modifier= Modifier
@@ -76,7 +79,11 @@ fun BookshelfListOnlyContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val totalCount=getTotalItemsCount(bookshelfUiState)
+        val totalCount= getTotalItemsCount(bookshelfUiState)
+        val pageSize = 10
+        val totalPages = (totalCount + pageSize - 1) / pageSize
+        val pageGroupSize = 3
+        val currentGroup = (currentPage - 1) / pageGroupSize
 
         OutlinedTextField(
             value = input,
@@ -159,6 +166,7 @@ fun BookshelfListOnlyContent(
                         )
                     }
                 }
+
                 books.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
@@ -182,6 +190,36 @@ fun BookshelfListOnlyContent(
 
         }
 
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(4.dp)
+        ) {
+            val startPage = currentGroup * pageGroupSize + 1
+            val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
+
+            if (currentGroup > 0) {
+                Button(onClick = { updatePage(startPage - pageGroupSize) }) {
+                    Text("<")
+                }
+            }
+
+            for (page in startPage..endPage) {
+                Button(
+                    onClick = { updatePage(page) },
+                    modifier=Modifier
+                        .background(if (page == currentPage) Color.Gray else Color.LightGray)
+                ) {
+                    Text(page.toString())
+                }
+            }
+
+            if (endPage < totalPages) {
+                Button(onClick = {updatePage(startPage + pageGroupSize) }) {
+                    Text(">")
+                }
+            }
+        }
+
     }
 }
 
@@ -196,6 +234,8 @@ fun BookshelfListAndDetailContent(
     onInputChange:(String)->Unit,
     onInputReset:(String)->Unit,
     onBookmarkPressed:(Book)->Unit,
+    currentPage: Int,
+    updatePage: (Int) -> Unit,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -207,7 +247,9 @@ fun BookshelfListAndDetailContent(
             input=input,
             onInputChange=onInputChange,
             onInputReset=onInputReset,
-            onBookmarkPressed=onBookmarkPressed
+            onBookmarkPressed=onBookmarkPressed,
+            currentPage=currentPage,
+            updatePage=updatePage
         )
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),
