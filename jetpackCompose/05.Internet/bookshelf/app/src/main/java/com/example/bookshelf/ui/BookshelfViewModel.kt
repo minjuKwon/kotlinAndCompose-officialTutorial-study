@@ -41,7 +41,7 @@ class BookshelfViewModel(
         getInformation()
     }
 
-    fun getInformation(search:String="android",page:Int=0){
+    fun getInformation(search:String="android",page:Int=1){
 
         val pageData: Flow<PagingData<Book>> = Pager(
             config= PagingConfig(
