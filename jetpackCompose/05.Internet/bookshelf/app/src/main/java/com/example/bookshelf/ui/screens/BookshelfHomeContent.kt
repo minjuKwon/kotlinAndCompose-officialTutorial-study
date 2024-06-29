@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,7 +41,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -57,6 +55,7 @@ import com.example.bookshelf.getTotalItemsCount
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
+import com.example.bookshelf.ui.PAGE_SIZE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,10 +79,10 @@ fun BookshelfListOnlyContent(
     ) {
 
         val totalCount= getTotalItemsCount(bookshelfUiState)
-        val pageSize = 10
-        val totalPages = (totalCount + pageSize - 1) / pageSize
+        val pageSize = PAGE_SIZE
+        val totalPages = (totalCount+pageSize-1)/pageSize
         val pageGroupSize = 3
-        val currentGroup = (currentPage - 1) / pageGroupSize
+        val currentGroup = (currentPage-1)/pageGroupSize
 
         OutlinedTextField(
             value = input,
@@ -127,12 +126,15 @@ fun BookshelfListOnlyContent(
         )
 
         Row(
-            modifier=Modifier.fillMaxWidth()
+            modifier= Modifier
+                .fillMaxWidth()
                 .padding(
                     top = dimensionResource(
-                        R.dimen.list_only_content_total_text_top_padding),
+                        R.dimen.list_only_content_total_text_top_padding
+                    ),
                     start = dimensionResource(
-                        R.dimen.list_only_content_total_text_start_padding)
+                        R.dimen.list_only_content_total_text_start_padding
+                    )
                 ),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -156,6 +158,7 @@ fun BookshelfListOnlyContent(
                         )
                     }
             }else{
+
                 items(count=books.itemCount){
                     books[it]?.let { it1 ->
                         BookShelfListItem(
@@ -171,53 +174,83 @@ fun BookshelfListOnlyContent(
                     when {
                         loadState.refresh is LoadState.Loading -> {
                             item {
-                                CircularProgressIndicator()
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier=Modifier.fillMaxWidth()
+                                ){
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+                        loadState.refresh is LoadState.Error ->{
+                            item {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier=Modifier.fillMaxWidth()
+                                ){
+                                    Text(stringResource(R.string.load_data_error))
+                                }
                             }
                         }
                         loadState.append is LoadState.Loading -> {
                             item {
-                                CircularProgressIndicator()
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier=Modifier.fillMaxWidth()
+                                ){
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                         loadState.append is LoadState.Error -> {
                             item {
-                                Text("Error loading data")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier=Modifier.fillMaxWidth()
+                                ){
+                                    Text(stringResource(R.string.load_data_error))
+                                }
                             }
                         }
                     }
                 }
-            }
 
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(4.dp)
-        ) {
-            val startPage = currentGroup * pageGroupSize + 1
-            val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
-
-            if (currentGroup > 0) {
-                Button(onClick = { updatePage(startPage - pageGroupSize) }) {
-                    Text("<")
+                item {
+                    Row(
+                        horizontalArrangement =Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .padding(horizontal=dimensionResource(R.dimen.page_button_padding))
+                            .fillMaxWidth()
+                    ) {
+                        val startPage = currentGroup * pageGroupSize + 1
+                        val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
+                        if (currentGroup > 0) {
+                            Text(
+                                text=stringResource(R.string.previous_page),
+                                modifier=Modifier
+                                    .clickable { updatePage(startPage - pageGroupSize) }
+                            )
+                        }
+                        for (page in startPage..endPage) {
+                            Text(
+                                text=page.toString(),
+                                color = if (page == currentPage) Color.Black else Color.LightGray,
+                                modifier=Modifier
+                                    .clickable { updatePage(page) }
+                            )
+                        }
+                        if (endPage < totalPages) {
+                            Text(
+                                text=stringResource(R.string.next_page),
+                                modifier=Modifier
+                                    .clickable { updatePage(startPage + pageGroupSize) }
+                            )
+                        }
+                    }
                 }
+
             }
 
-            for (page in startPage..endPage) {
-                Button(
-                    onClick = { updatePage(page) },
-                    modifier=Modifier
-                        .background(if (page == currentPage) Color.Gray else Color.LightGray)
-                ) {
-                    Text(page.toString())
-                }
-            }
-
-            if (endPage < totalPages) {
-                Button(onClick = {updatePage(startPage + pageGroupSize) }) {
-                    Text(">")
-                }
-            }
         }
 
     }
