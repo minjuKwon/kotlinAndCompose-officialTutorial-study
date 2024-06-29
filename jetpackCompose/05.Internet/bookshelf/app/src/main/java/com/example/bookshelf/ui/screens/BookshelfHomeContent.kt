@@ -57,7 +57,6 @@ import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.PAGE_SIZE
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfListOnlyContent(
     books:LazyPagingItems<Book>,
@@ -84,45 +83,11 @@ fun BookshelfListOnlyContent(
         val pageGroupSize = 3
         val currentGroup = (currentPage-1)/pageGroupSize
 
-        OutlinedTextField(
-            value = input,
-            onValueChange = onInputChange,
-            label={Text(stringResource(R.string.search_label))},
-            leadingIcon = {
-                Icon(
-                    imageVector= Icons.Filled.Search,
-                    contentDescription=stringResource(R.string.search),
-                    modifier= Modifier
-                        .clickable { onSearch(input) }
-                        .padding(
-                            dimensionResource(R.dimen.list_only_content_search_icon_padding)
-                        )
-                )
-            },
-            trailingIcon={
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.search_close),
-                    modifier= Modifier
-                        .clickable { onInputReset("") }
-                        .padding(
-                            dimensionResource(R.dimen.list_only_content_search_icon_padding)
-                        )
-                )
-            },
-            keyboardOptions= KeyboardOptions.Default.copy(
-                imeAction= ImeAction.Search
-            ),
-            keyboardActions= KeyboardActions(
-                onSearch = {onSearch(input)},
-            ),
-            modifier= Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = dimensionResource(
-                        R.dimen.list_only_content_search_horizontal_padding
-                    )
-                )
+        SearchTextField(
+            input = input,
+            onInputChange = onInputChange,
+            onSearch = onSearch,
+            onInputReset = onInputReset
         )
 
         Row(
@@ -158,7 +123,6 @@ fun BookshelfListOnlyContent(
                         )
                     }
             }else{
-
                 items(count=books.itemCount){
                     books[it]?.let { it1 ->
                         BookShelfListItem(
@@ -169,88 +133,39 @@ fun BookshelfListOnlyContent(
                         )
                     }
                 }
-
-                books.apply {
-                    when {
-                        loadState.refresh is LoadState.Loading -> {
-                            item {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier=Modifier.fillMaxWidth()
-                                ){
+                item{
+                    books.apply  {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier=Modifier.fillMaxWidth()
+                        ){
+                            when{
+                                loadState.refresh is LoadState.Loading -> {
                                     CircularProgressIndicator()
                                 }
-                            }
-                        }
-                        loadState.refresh is LoadState.Error ->{
-                            item {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier=Modifier.fillMaxWidth()
-                                ){
+                                loadState.refresh is LoadState.Error ->{
                                     Text(stringResource(R.string.load_data_error))
                                 }
-                            }
-                        }
-                        loadState.append is LoadState.Loading -> {
-                            item {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier=Modifier.fillMaxWidth()
-                                ){
+                                loadState.append is LoadState.Loading -> {
                                     CircularProgressIndicator()
                                 }
-                            }
-                        }
-                        loadState.append is LoadState.Error -> {
-                            item {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier=Modifier.fillMaxWidth()
-                                ){
+                                loadState.append is LoadState.Error -> {
                                     Text(stringResource(R.string.load_data_error))
                                 }
                             }
                         }
                     }
                 }
-
                 item {
-                    Row(
-                        horizontalArrangement =Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .padding(horizontal=dimensionResource(R.dimen.page_button_padding))
-                            .fillMaxWidth()
-                    ) {
-                        val startPage = currentGroup * pageGroupSize + 1
-                        val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
-                        if (currentGroup > 0) {
-                            Text(
-                                text=stringResource(R.string.previous_page),
-                                modifier=Modifier
-                                    .clickable { updatePage(startPage - pageGroupSize) }
-                            )
-                        }
-                        for (page in startPage..endPage) {
-                            Text(
-                                text=page.toString(),
-                                color = if (page == currentPage) Color.Black else Color.LightGray,
-                                modifier=Modifier
-                                    .clickable { updatePage(page) }
-                            )
-                        }
-                        if (endPage < totalPages) {
-                            Text(
-                                text=stringResource(R.string.next_page),
-                                modifier=Modifier
-                                    .clickable { updatePage(startPage + pageGroupSize) }
-                            )
-                        }
-                    }
+                    PageNumberButton(
+                        currentGroup = currentGroup,
+                        pageGroupSize = pageGroupSize,
+                        totalPages = totalPages,
+                        updatePage = updatePage,
+                        currentPage = currentPage
+                    )
                 }
-
             }
-
         }
 
     }
@@ -304,6 +219,97 @@ fun BookmarkEmptyScreen(modifier:Modifier=Modifier){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchTextField(
+    input:String,
+    onInputChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onInputReset: (String) -> Unit
+){
+    OutlinedTextField(
+        value = input,
+        onValueChange = onInputChange,
+        label={Text(stringResource(R.string.search_label))},
+        leadingIcon = {
+            Icon(
+                imageVector= Icons.Filled.Search,
+                contentDescription=stringResource(R.string.search),
+                modifier= Modifier
+                    .clickable { onSearch(input) }
+                    .padding(
+                        dimensionResource(R.dimen.list_only_content_search_icon_padding)
+                    )
+            )
+        },
+        trailingIcon={
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = stringResource(R.string.search_close),
+                modifier= Modifier
+                    .clickable { onInputReset("") }
+                    .padding(
+                        dimensionResource(R.dimen.list_only_content_search_icon_padding)
+                    )
+            )
+        },
+        keyboardOptions= KeyboardOptions.Default.copy(
+            imeAction= ImeAction.Search
+        ),
+        keyboardActions= KeyboardActions(
+            onSearch = {onSearch(input)},
+        ),
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(
+                    R.dimen.list_only_content_search_horizontal_padding
+                )
+            )
+    )
+}
+
+@Composable
+private fun PageNumberButton(
+    currentGroup:Int,
+    pageGroupSize:Int,
+    totalPages:Int,
+    updatePage: (Int) -> Unit,
+    currentPage: Int
+) {
+    Row(
+        horizontalArrangement =Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.page_button_padding))
+            .fillMaxWidth()
+    ) {
+        val startPage = currentGroup * pageGroupSize + 1
+        val endPage = minOf(startPage + pageGroupSize - 1, totalPages)
+        if (currentGroup > 0) {
+            Text(
+                text=stringResource(R.string.previous_page),
+                modifier=Modifier
+                    .clickable { updatePage(startPage - pageGroupSize) }
+            )
+        }
+        for (page in startPage..endPage) {
+            Text(
+                text=page.toString(),
+                color = if (page == currentPage) Color.Black else Color.LightGray,
+                modifier=Modifier
+                    .clickable { updatePage(page) }
+            )
+        }
+        if (endPage < totalPages) {
+            Text(
+                text=stringResource(R.string.next_page),
+                modifier=Modifier
+                    .clickable { updatePage(startPage + pageGroupSize) }
+            )
+        }
+    }
+}
+
 @Composable
 private fun BookShelfListItem(
     book: Book,
@@ -346,42 +352,7 @@ private fun BookShelfListItem(
         Column(
             modifier=Modifier.padding(dimensionResource(R.dimen.list_item_text_column_padding))
         ) {
-            book.bookInfo.title?.let {
-                Text(
-                    text= it,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier=Modifier.padding(
-                        bottom=dimensionResource(R.dimen.list_item_text_padding)
-                    )
-                )
-            }
-            Row(modifier=modifier){
-               book.bookInfo.authors?.forEach{
-                   Text(
-                       text="$it ",
-                       style=MaterialTheme.typography.bodySmall,
-                       modifier=Modifier.padding(
-                           bottom=dimensionResource(R.dimen.list_item_text_padding)
-                       )
-                   )
-               }
-            }
-            book.bookInfo.publisher?.let {
-                Text(
-                    text= it,
-                    style=MaterialTheme.typography.bodySmall,
-                    modifier=Modifier.padding(
-                        bottom=dimensionResource(R.dimen.list_item_text_padding)
-                    )
-                )
-            }
-            book.bookInfo.publishedDate?.let {
-                Text(
-                    text= it,
-                    style=MaterialTheme.typography.bodySmall,
-                    modifier=modifier
-                )
-            }
+            ItemDescription(book = book,modifier=modifier)
             IconButton(
                 onClick = {isBookmarked=!isBookmarked
                 onBookMarkPressed(book)}
@@ -397,6 +368,45 @@ private fun BookShelfListItem(
     }
 }
 
-
-
-
+@Composable
+private fun ItemDescription(
+    book:Book,
+    modifier:Modifier=Modifier
+){
+    book.bookInfo.title?.let {
+        Text(
+            text= it,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier=Modifier.padding(
+                bottom=dimensionResource(R.dimen.list_item_text_padding)
+            )
+        )
+    }
+    Row(modifier=modifier){
+        book.bookInfo.authors?.forEach{
+            Text(
+                text="$it ",
+                style=MaterialTheme.typography.bodySmall,
+                modifier=Modifier.padding(
+                    bottom=dimensionResource(R.dimen.list_item_text_padding)
+                )
+            )
+        }
+    }
+    book.bookInfo.publisher?.let {
+        Text(
+            text= it,
+            style=MaterialTheme.typography.bodySmall,
+            modifier=Modifier.padding(
+                bottom=dimensionResource(R.dimen.list_item_text_padding)
+            )
+        )
+    }
+    book.bookInfo.publishedDate?.let {
+        Text(
+            text= it,
+            style=MaterialTheme.typography.bodySmall,
+            modifier=modifier
+        )
+    }
+}
