@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -70,6 +71,7 @@ fun BookshelfListOnlyContent(
     currentPage:Int,
     updatePage:(Int)->Unit,
     modifier:Modifier= Modifier,
+    scrollState:LazyListState
 ){
     Column(
         modifier= Modifier
@@ -109,6 +111,7 @@ fun BookshelfListOnlyContent(
         }
 
         LazyColumn(
+            state=scrollState,
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.list_padding))
                 .fillMaxHeight(0.9f)
@@ -184,6 +187,7 @@ fun BookshelfListAndDetailContent(
     onBookmarkPressed:(Book)->Unit,
     currentPage: Int,
     updatePage: (Int) -> Unit,
+    scrollState: LazyListState,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
@@ -197,7 +201,8 @@ fun BookshelfListAndDetailContent(
             onInputReset=onInputReset,
             onBookmarkPressed=onBookmarkPressed,
             currentPage=currentPage,
-            updatePage=updatePage
+            updatePage=updatePage,
+            scrollState=scrollState
         )
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),

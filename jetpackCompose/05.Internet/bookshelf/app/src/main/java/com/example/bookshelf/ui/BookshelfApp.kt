@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,11 +17,11 @@ fun BookshelfApp(
     modifier:Modifier= Modifier
 ){
     val bookshelfViewModel: BookshelfViewModel = viewModel(factory=BookshelfViewModel.Factory)
-
     val navigationType:NavigationType
     val contentType:ContentType
 
     val currentPage by bookshelfViewModel.currentPage.collectAsState()
+    val scrollState  = rememberLazyListState()
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
@@ -52,6 +53,7 @@ fun BookshelfApp(
         contentType= contentType,
         currentPage=currentPage,
         updatePage={bookshelfViewModel.getInformation(page=it)},
-        modifier=modifier
+        modifier=modifier,
+        scrollState=scrollState
     )
 }

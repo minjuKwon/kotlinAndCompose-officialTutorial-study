@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
@@ -62,7 +63,8 @@ fun BookshelfHomeScreen(
     contentType: ContentType,
     currentPage:Int,
     updatePage:(Int)->Unit,
-    modifier:Modifier=Modifier
+    modifier:Modifier=Modifier,
+    scrollState: LazyListState
 ){
 
     val navigationItemContentList = listOf(
@@ -111,7 +113,8 @@ fun BookshelfHomeScreen(
                 navigationItemContent = navigationItemContentList,
                 currentPage=currentPage,
                 updatePage=updatePage,
-                modifier = modifier
+                modifier = modifier,
+                scrollState=scrollState
             )
         }
     }else{
@@ -130,7 +133,8 @@ fun BookshelfHomeScreen(
                         navigationItemContent = navigationItemContentList,
                         currentPage=currentPage,
                         updatePage=updatePage,
-                        modifier = modifier
+                        modifier = modifier,
+                        scrollState=scrollState
                     )
                 }
                 else {BookshelfDetailsScreen(bookshelfUiState.currentItem,onBackPressed,modifier)}
@@ -148,7 +152,8 @@ fun BookshelfHomeScreen(
                     navigationItemContent = navigationItemContentList,
                     currentPage=currentPage,
                     updatePage=updatePage,
-                    modifier = modifier
+                    modifier = modifier,
+                    scrollState=scrollState
                 )
             }
         }
@@ -168,7 +173,8 @@ private fun BookshelfAppContent(
     navigationItemContent: List<NavigationItemContent>,
     currentPage:Int,
     updatePage: (Int) -> Unit,
-    modifier:Modifier=Modifier
+    modifier:Modifier=Modifier,
+    scrollState:LazyListState
 ){
     var input by remember{ mutableStateOf("android") }
 
@@ -196,7 +202,8 @@ private fun BookshelfAppContent(
                         onInputReset = {input=it},
                         onBookmarkPressed=onBookmarkPressed,
                         currentPage=currentPage,
-                        updatePage=updatePage
+                        updatePage=updatePage,
+                        scrollState = scrollState
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -217,7 +224,8 @@ private fun BookshelfAppContent(
                                 onInputReset = {input=it},
                                 onBookmarkPressed=onBookmarkPressed,
                                 currentPage=currentPage,
-                                updatePage=updatePage
+                                updatePage=updatePage,
+                                scrollState = scrollState
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier
