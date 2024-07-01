@@ -19,10 +19,12 @@ import com.example.bookshelf.data.BookType
 import com.example.bookshelf.data.BookshelfRepository
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 const val PAGE_SIZE=10
@@ -51,14 +53,19 @@ class BookshelfViewModel(
             .flow.cachedIn(viewModelScope)
 
         viewModelScope.launch {
-            bookshelfUiState = BookshelfUiState.Loading
             bookshelfUiState = try{
-                val totalCount=bookshelfRepository
-                    .getBookListInformation(search,10,0).totalCount
+                val totalCount=withContext(Dispatchers.IO){
+                    bookshelfRepository
+                        .getBookListInformation(search,10,0).totalCount
+                }
                 _currentPage.value=page
-                BookshelfUiState.Success(
-                    list= PageData(pageData,totalCount)
-                )
+                when(bookshelfUiState){
+                    is BookshelfUiState.Success-> (bookshelfUiState as BookshelfUiState.Success)
+                        .copy(list= PageData(pageData,totalCount))
+                    else-> BookshelfUiState.Success(
+                        list= PageData(pageData,totalCount)
+                    )
+                }
             }catch (e: IOException){
                 BookshelfUiState.Error
             }
