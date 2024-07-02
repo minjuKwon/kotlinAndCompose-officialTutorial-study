@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -74,8 +74,7 @@ fun BookshelfListOnlyContent(
     scrollState:LazyListState
 ){
     Column(
-        modifier= Modifier
-            .padding(dimensionResource(R.dimen.list_only_content_column_padding)),
+        modifier= modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -114,15 +113,13 @@ fun BookshelfListOnlyContent(
             state=scrollState,
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.list_padding))
-                .fillMaxHeight(0.9f)
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
                     items(checkBookmarkList(bookshelfUiState),key={it.id}){
                         BookShelfListItem(
                             book = it,
                             onBookItemPressed=onBookItemPressed,
-                            onBookMarkPressed = onBookmarkPressed,
-                            modifier=modifier
+                            onBookMarkPressed = onBookmarkPressed
                         )
                     }
             }else{
@@ -131,8 +128,7 @@ fun BookshelfListOnlyContent(
                         BookShelfListItem(
                             book = it1,
                             onBookItemPressed=onBookItemPressed,
-                            onBookMarkPressed = onBookmarkPressed,
-                            modifier=modifier
+                            onBookMarkPressed = onBookmarkPressed
                         )
                     }
                 }
@@ -319,8 +315,7 @@ private fun PageNumberButton(
 private fun BookShelfListItem(
     book: Book,
     onBookItemPressed:(BookInfo)->Unit,
-    onBookMarkPressed:(Book)->Unit,
-    modifier:Modifier=Modifier
+    onBookMarkPressed:(Book)->Unit
 ){
     var isBookmarked by remember{mutableStateOf(book.bookInfo.isBookmarked)}
     Row(
@@ -357,7 +352,7 @@ private fun BookShelfListItem(
         Column(
             modifier=Modifier.padding(dimensionResource(R.dimen.list_item_text_column_padding))
         ) {
-            ItemDescription(book = book,modifier=modifier)
+            ItemDescription(book = book)
             IconButton(
                 onClick = {isBookmarked=!isBookmarked
                 onBookMarkPressed(book)}
@@ -374,10 +369,7 @@ private fun BookShelfListItem(
 }
 
 @Composable
-private fun ItemDescription(
-    book:Book,
-    modifier:Modifier=Modifier
-){
+private fun ItemDescription(book:Book){
     book.bookInfo.title?.let {
         Text(
             text= it,
@@ -387,10 +379,11 @@ private fun ItemDescription(
             )
         )
     }
-    Row(modifier=modifier){
-        book.bookInfo.authors?.forEach{
+    Row(modifier=Modifier.wrapContentHeight().fillMaxWidth(0.9f)){
+        book.bookInfo.authors?.joinToString(separator = ",")?.let{
             Text(
-                text="$it ",
+                text= it,
+                maxLines=1,
                 style=MaterialTheme.typography.bodySmall,
                 modifier=Modifier.padding(
                     bottom=dimensionResource(R.dimen.list_item_text_padding)
@@ -410,8 +403,7 @@ private fun ItemDescription(
     book.bookInfo.publishedDate?.let {
         Text(
             text= it,
-            style=MaterialTheme.typography.bodySmall,
-            modifier=modifier
+            style=MaterialTheme.typography.bodySmall
         )
     }
 }

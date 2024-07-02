@@ -225,7 +225,11 @@ private fun BookshelfAppContent(
                                 onBookmarkPressed=onBookmarkPressed,
                                 currentPage=currentPage,
                                 updatePage=updatePage,
-                                scrollState = scrollState
+                                scrollState = scrollState,
+                                modifier=Modifier
+                                    .padding(dimensionResource(R.dimen.list_only_content_column_padding))
+                                    .fillMaxSize()
+                                    .weight(1f),
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier
