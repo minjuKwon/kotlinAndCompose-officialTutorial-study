@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,83 +26,80 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
 import com.example.bookshelf.network.BookInfo
-import com.example.bookshelf.ui.BookshelfViewModel
 
 @Composable
 fun BookshelfDetailsScreen(
     book: BookInfo,
     onBackPressed:()->Unit,
-    modifier: Modifier =Modifier
+    modifier: Modifier =Modifier,
+    isNotFullScreen:Boolean=true
 ){
     BackHandler {
         onBackPressed()
     }
-
-    LazyColumn{
-        item{
-            DetailsScreenContent(book,onBackPressed,modifier)
+    Column(modifier=modifier) {
+        if(isNotFullScreen){
+            IconButton(
+                onClick = {onBackPressed()}
+            ) {
+                Icon(
+                    imageVector= Icons.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.back),
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start)
+                        .padding(dimensionResource(R.dimen.detail_screen_arrow_padding))
+                )
+            }
+        }
+        Spacer(modifier= Modifier
+            .fillMaxWidth()
+            .height(dimensionResource(R.dimen.detail_screen_spacer_height))
+        )
+        LazyColumn{
+            item{
+                DetailsScreenContent(book)
+            }
         }
     }
 
 }
 
 @Composable
-private fun DetailsScreenContent(
-    book: BookInfo,
-    onBackPressed:()->Unit,
-    modifier: Modifier =Modifier
-){
-    Column(modifier=modifier) {
+private fun DetailsScreenContent(book: BookInfo){
+    Column(
+        modifier=Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        IconButton(
-            onClick = {onBackPressed()},
-            modifier=modifier
-        ) {
-            Icon(
-                imageVector= Icons.Default.ArrowBack,
-                contentDescription = stringResource(R.string.back),
-                modifier= Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Start)
-                    .padding(dimensionResource(R.dimen.detail_screen_arrow_padding))
-            )
-        }
-
-        Column(
-            modifier=Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier=Modifier
-                    .padding(dimensionResource(R.dimen.detail_screen_image_padding))
-            ){
-                book.img?.let {
-                    AsyncImage(
-                        model=ImageRequest.Builder(context=LocalContext.current)
-                            .data(it.thumbnail).build(),
-                        error=painterResource(R.drawable.baseline_broken_image_24),
-                        placeholder = painterResource(R.drawable.baseline_rotate_left_24),
-                        contentDescription = null,
-                        modifier= Modifier
-                            .height(dimensionResource(R.dimen.detail_screen_image_height))
-                    )
-                }
-            }
-
-            DetailScreenContentInformation(book)
-
-            book.description?.let {
-                Text(
-                    text = it,
-                    style= MaterialTheme.typography.titleSmall,
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier=Modifier
+                .padding(dimensionResource(R.dimen.detail_screen_image_padding))
+        ){
+            book.img?.let {
+                AsyncImage(
+                    model=ImageRequest.Builder(context=LocalContext.current)
+                        .data(it.thumbnail).build(),
+                    error=painterResource(R.drawable.baseline_broken_image_24),
+                    placeholder = painterResource(R.drawable.baseline_rotate_left_24),
+                    contentDescription = null,
                     modifier= Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(dimensionResource(R.dimen.detail_screen_text_padding))
+                        .height(dimensionResource(R.dimen.detail_screen_image_height))
                 )
             }
+        }
 
+        DetailScreenContentInformation(book)
+
+        book.description?.let {
+            Text(
+                text = it,
+                style= MaterialTheme.typography.titleSmall,
+                modifier= Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(dimensionResource(R.dimen.detail_screen_text_padding))
+            )
         }
 
     }

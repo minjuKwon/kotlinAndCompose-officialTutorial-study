@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -176,7 +177,6 @@ fun BookshelfListAndDetailContent(
     bookshelfUiState: BookshelfUiState,
     onSearch: (String) -> Unit,
     onBookItemPressed: (BookInfo) -> Unit,
-    onBackPressed:()->Unit,
     input:String,
     onInputChange:(String)->Unit,
     onInputReset:(String)->Unit,
@@ -200,9 +200,11 @@ fun BookshelfListAndDetailContent(
             updatePage=updatePage,
             scrollState=scrollState
         )
+        val activity = LocalContext.current as Activity
         BookshelfDetailsScreen(
             book = checkCurrentItem(bookshelfUiState),
-            onBackPressed=onBackPressed
+            onBackPressed= { activity.finish() },
+            isNotFullScreen = false
         )
     }
 }
@@ -379,7 +381,9 @@ private fun ItemDescription(book:Book){
             )
         )
     }
-    Row(modifier=Modifier.wrapContentHeight().fillMaxWidth(0.9f)){
+    Row(modifier= Modifier
+        .wrapContentHeight()
+        .fillMaxWidth(0.9f)){
         book.bookInfo.authors?.joinToString(separator = ",")?.let{
             Text(
                 text= it,
