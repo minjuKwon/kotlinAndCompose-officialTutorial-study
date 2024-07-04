@@ -30,17 +30,17 @@ import com.example.bookshelf.network.BookInfo
 @Composable
 fun BookshelfDetailsScreen(
     book: BookInfo,
-    onBackPressed:()->Unit,
+    onBackPressed:(BookInfo)->Unit,
     modifier: Modifier =Modifier,
     isNotFullScreen:Boolean=true
 ){
     BackHandler {
-        onBackPressed()
+        onBackPressed(book)
     }
     Column(modifier=modifier) {
         if(isNotFullScreen){
             IconButton(
-                onClick = {onBackPressed()}
+                onClick = {onBackPressed(book)}
             ) {
                 Icon(
                     imageVector= Icons.Default.ArrowBack,

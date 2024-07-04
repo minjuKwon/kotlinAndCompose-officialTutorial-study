@@ -7,6 +7,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bookshelf.checkCurrentItem
+import com.example.bookshelf.checkTabPressed
+import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.screens.BookshelfHomeScreen
 import com.example.bookshelf.ui.utils.ContentType
 import com.example.bookshelf.ui.utils.NavigationType
@@ -22,6 +25,8 @@ fun BookshelfApp(
 
     val currentPage by bookshelfViewModel.currentPage.collectAsState()
     val scrollState  = rememberLazyListState()
+
+    val currentOrder by bookshelfViewModel.currentOrder.collectAsState()
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
@@ -47,13 +52,17 @@ fun BookshelfApp(
         onTabPressed={ bookshelfViewModel.updateCurrentBookTabType(it) },
         onSearch={ bookshelfViewModel.getInformation(it)},
         onBookItemPressed={bookshelfViewModel.updateDetailsScreenState(it)},
-        onBackPressed={bookshelfViewModel.resetHomeScreenState()},
+        onBackPressed={bookshelfViewModel.resetHomeScreenState(it)},
         onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
         navigationType = navigationType,
         contentType= contentType,
         currentPage=currentPage,
         updatePage={bookshelfViewModel.getInformation(page=it)},
-        modifier=modifier,
-        scrollState=scrollState
+        scrollState=scrollState,
+        initCurrentItem={v1,v2->
+            bookshelfViewModel.initCurrentItem(v1,v2) },
+        currentOrder=currentOrder,
+        updateOrder={bookshelfViewModel.updateOrder(it)},
+        modifier=modifier
     )
 }

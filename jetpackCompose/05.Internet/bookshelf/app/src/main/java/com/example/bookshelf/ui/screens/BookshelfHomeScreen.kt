@@ -28,6 +28,7 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,14 +58,17 @@ fun BookshelfHomeScreen(
     onTabPressed: (BookType) -> Unit,
     onSearch:(String)->Unit,
     onBookItemPressed: (BookInfo) -> Unit,
-    onBackPressed:()->Unit,
+    onBackPressed:(BookInfo)->Unit,
     onBookmarkPressed:(Book)->Unit,
     navigationType: NavigationType,
     contentType: ContentType,
     currentPage:Int,
     updatePage:(Int)->Unit,
+    scrollState: LazyListState,
+    initCurrentItem:(BookType,BookInfo)->Unit,
     modifier:Modifier=Modifier,
-    scrollState: LazyListState
+    updateOrder: (Boolean)->Unit,
+    currentOrder:Boolean
 ){
 
     val navigationItemContentList = listOf(
@@ -113,7 +117,10 @@ fun BookshelfHomeScreen(
                 currentPage=currentPage,
                 updatePage=updatePage,
                 modifier = modifier,
-                scrollState=scrollState
+                scrollState=scrollState,
+                initCurrentItem=initCurrentItem,
+                updateOrder=updateOrder,
+                currentOrder=currentOrder
             )
         }
     }else{
@@ -132,10 +139,18 @@ fun BookshelfHomeScreen(
                         currentPage=currentPage,
                         updatePage=updatePage,
                         modifier = modifier,
-                        scrollState=scrollState
+                        scrollState=scrollState,
+                        initCurrentItem=initCurrentItem,
+                        currentOrder=currentOrder,
+                        updateOrder=updateOrder
                     )
                 }
-                else {BookshelfDetailsScreen(bookshelfUiState.currentItem,onBackPressed,modifier)}
+                else {
+                    bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
+                        BookshelfDetailsScreen(
+                            it,onBackPressed,modifier)
+                    }
+                }
             }
             else ->{
                 BookshelfAppContent(
@@ -150,7 +165,10 @@ fun BookshelfHomeScreen(
                     currentPage=currentPage,
                     updatePage=updatePage,
                     modifier = modifier,
-                    scrollState=scrollState
+                    scrollState=scrollState,
+                    initCurrentItem=initCurrentItem,
+                    currentOrder=currentOrder,
+                    updateOrder=updateOrder
                 )
             }
         }
@@ -169,8 +187,11 @@ private fun BookshelfAppContent(
     navigationItemContent: List<NavigationItemContent>,
     currentPage:Int,
     updatePage: (Int) -> Unit,
+    scrollState:LazyListState,
+    initCurrentItem: (BookType, BookInfo) -> Unit,
     modifier:Modifier=Modifier,
-    scrollState:LazyListState
+    updateOrder:(Boolean)->Unit,
+    currentOrder: Boolean
 ){
     var input by remember{ mutableStateOf("android") }
 
@@ -198,7 +219,10 @@ private fun BookshelfAppContent(
                         onBookmarkPressed=onBookmarkPressed,
                         currentPage=currentPage,
                         updatePage=updatePage,
-                        scrollState = scrollState
+                        scrollState = scrollState,
+                        initCurrentItem=initCurrentItem,
+                        updateOrder=updateOrder,
+                        currentOrder=currentOrder
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -221,10 +245,12 @@ private fun BookshelfAppContent(
                                 currentPage=currentPage,
                                 updatePage=updatePage,
                                 scrollState = scrollState,
+                                initCurrentItem=initCurrentItem,
                                 modifier=Modifier
                                     .padding(dimensionResource(R.dimen.list_only_content_column_padding))
                                     .fillMaxSize()
                                     .weight(1f),
+                                updateOrder=updateOrder
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier

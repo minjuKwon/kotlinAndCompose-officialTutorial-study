@@ -12,7 +12,7 @@ sealed interface BookshelfUiState{
         val list :PageData,
         val bookmarkList:MutableList<Book> = mutableListOf(),
         val currentTabType:BookType=BookType.Books,
-        val currentItem : BookInfo= defaultBookInfo,
+        val currentItem : MutableMap <BookType,BookInfo> = mutableMapOf(),
         val isShowingHomepage: Boolean = true
     ):BookshelfUiState
     object Error : BookshelfUiState

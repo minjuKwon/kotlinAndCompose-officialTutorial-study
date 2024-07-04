@@ -48,7 +48,7 @@ fun checkCurrentItem(
 {
     return checkUiState(
         bookshelfUiState=bookshelfUiState,
-        a={it.currentItem},
+        a={it.currentItem?.get(it.currentTabType)?: defaultBookInfo},
         b={ defaultBookInfo}
     )
 }

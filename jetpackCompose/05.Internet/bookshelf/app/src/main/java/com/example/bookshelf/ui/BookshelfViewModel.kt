@@ -39,6 +39,14 @@ class BookshelfViewModel(
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage
 
+    private val _currentOrder = MutableStateFlow(false)
+    val currentOrder:StateFlow<Boolean> = _currentOrder
+
+
+    fun updateOrder(b:Boolean){
+        _currentOrder.value=b
+    }
+
     init {
         getInformation()
     }
@@ -52,6 +60,11 @@ class BookshelfViewModel(
             )){BookPagingSource(bookshelfRepository,input=search,page=page,pageSize=PAGE_SIZE)}
             .flow.cachedIn(viewModelScope)
 
+        val currentItemMap: MutableMap<BookType, BookInfo> = mutableMapOf()
+        for(type in BookType.values()){
+            currentItemMap[type] = defaultBookInfo
+        }
+
         viewModelScope.launch {
             bookshelfUiState = try{
                 val totalCount=withContext(Dispatchers.IO){
@@ -61,9 +74,9 @@ class BookshelfViewModel(
                 _currentPage.value=page
                 when(bookshelfUiState){
                     is BookshelfUiState.Success-> (bookshelfUiState as BookshelfUiState.Success)
-                        .copy(list= PageData(pageData,totalCount))
+                        .copy(list= PageData(pageData,totalCount), currentItem = currentItemMap)
                     else-> BookshelfUiState.Success(
-                        list= PageData(pageData,totalCount)
+                        list= PageData(pageData,totalCount), currentItem = currentItemMap
                     )
                 }
             }catch (e: IOException){
@@ -85,13 +98,17 @@ class BookshelfViewModel(
 
     fun updateDetailsScreenState(bookInfo: BookInfo){
         bookshelfUiState=updateCopiedUiState(bookshelfUiState){
-            it.copy(currentItem = bookInfo, isShowingHomepage = false)
+            it.currentItem[it.currentTabType] = bookInfo
+            it.copy(currentItem = it.currentItem, isShowingHomepage = false)
         }
     }
 
-    fun resetHomeScreenState(){
+    fun resetHomeScreenState(bookInfo:BookInfo){
         bookshelfUiState=updateCopiedUiState(bookshelfUiState){
-            it.copy(isShowingHomepage = true)
+            it.currentItem[it.currentTabType] = bookInfo
+            it.copy(
+                currentItem = it.currentItem, isShowingHomepage = true
+            )
         }
     }
 
@@ -111,6 +128,13 @@ class BookshelfViewModel(
                 (tempList-book) as MutableList<Book>
             }
             it.copy(bookmarkList = tempList)
+        }
+    }
+
+    fun initCurrentItem(bookType: BookType,bookInfo: BookInfo){
+        bookshelfUiState=updateCopiedUiState(bookshelfUiState){
+            it.currentItem[bookType]=bookInfo
+            it.copy(currentItem = it.currentItem)
         }
     }
 

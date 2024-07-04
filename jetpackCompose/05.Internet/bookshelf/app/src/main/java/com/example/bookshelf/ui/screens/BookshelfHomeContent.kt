@@ -58,6 +58,7 @@ import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.PAGE_SIZE
+import com.example.bookshelf.ui.defaultBookInfo
 
 @Composable
 fun BookshelfListOnlyContent(
@@ -71,8 +72,10 @@ fun BookshelfListOnlyContent(
     onBookmarkPressed:(Book)->Unit,
     currentPage:Int,
     updatePage:(Int)->Unit,
-    modifier:Modifier= Modifier,
-    scrollState:LazyListState
+    scrollState:LazyListState,
+    initCurrentItem:(BookType,BookInfo)->Unit,
+    updateOrder:(Boolean)->Unit,
+    modifier:Modifier= Modifier
 ){
     Column(
         modifier= modifier,
@@ -117,6 +120,10 @@ fun BookshelfListOnlyContent(
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
                     items(checkBookmarkList(bookshelfUiState),key={it.id}){
+                        initCurrentItem(
+                            checkTabPressed(bookshelfUiState),
+                            checkBookmarkList(bookshelfUiState)[0].bookInfo
+                        )
                         BookShelfListItem(
                             book = it,
                             onBookItemPressed=onBookItemPressed,
@@ -126,6 +133,12 @@ fun BookshelfListOnlyContent(
             }else{
                 items(count=books.itemCount){
                     books[it]?.let { it1 ->
+                        if(it==0){
+                            initCurrentItem(
+                                checkTabPressed(bookshelfUiState), it1.bookInfo
+                            )
+                            updateOrder(true)
+                        }
                         BookShelfListItem(
                             book = it1,
                             onBookItemPressed=onBookItemPressed,
@@ -184,7 +197,10 @@ fun BookshelfListAndDetailContent(
     currentPage: Int,
     updatePage: (Int) -> Unit,
     scrollState: LazyListState,
-    modifier:Modifier= Modifier
+    initCurrentItem: (BookType, BookInfo) -> Unit,
+    modifier:Modifier= Modifier,
+    updateOrder:(Boolean)->Unit,
+    currentOrder: Boolean
 ){
     Row(modifier=modifier){
         BookshelfListOnlyContent(
@@ -198,14 +214,27 @@ fun BookshelfListAndDetailContent(
             onBookmarkPressed=onBookmarkPressed,
             currentPage=currentPage,
             updatePage=updatePage,
-            scrollState=scrollState
+            scrollState=scrollState,
+            initCurrentItem = initCurrentItem,
+            modifier=Modifier.weight(1f),
+            updateOrder=updateOrder
         )
+
         val activity = LocalContext.current as Activity
-        BookshelfDetailsScreen(
-            book = checkCurrentItem(bookshelfUiState),
-            onBackPressed= { activity.finish() },
-            isNotFullScreen = false
-        )
+
+        if(books.loadState.refresh is LoadState.NotLoading){
+            BookshelfDetailsScreen(
+                book = if(currentOrder){
+                    updateOrder(false)
+                    checkCurrentItem(bookshelfUiState)
+                }else defaultBookInfo,
+                onBackPressed= { activity.finish() },
+                isNotFullScreen = false,
+                modifier=Modifier.weight(1f)
+            )
+        }
+
+
     }
 }
 
