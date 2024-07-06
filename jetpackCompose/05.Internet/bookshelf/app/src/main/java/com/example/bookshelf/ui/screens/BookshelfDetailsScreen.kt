@@ -31,6 +31,8 @@ import com.example.bookshelf.network.BookInfo
 fun BookshelfDetailsScreen(
     book: BookInfo,
     onBackPressed:(BookInfo)->Unit,
+    order:Boolean,
+    onOrderChange:()->Unit,
     modifier: Modifier =Modifier,
     isNotFullScreen:Boolean=true
 ){
@@ -58,7 +60,10 @@ fun BookshelfDetailsScreen(
         )
         LazyColumn{
             item{
-                DetailsScreenContent(book)
+                if(order){
+                    DetailsScreenContent(book)
+                    onOrderChange()
+                }
             }
         }
     }

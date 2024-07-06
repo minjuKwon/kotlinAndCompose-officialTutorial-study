@@ -67,7 +67,7 @@ fun BookshelfHomeScreen(
     scrollState: LazyListState,
     initCurrentItem:(BookType,BookInfo)->Unit,
     modifier:Modifier=Modifier,
-    updateOrder: (Boolean)->Unit,
+    updateOrder: ()->Unit,
     currentOrder:Boolean
 ){
 
@@ -148,7 +148,12 @@ fun BookshelfHomeScreen(
                 else {
                     bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
                         BookshelfDetailsScreen(
-                            it,onBackPressed,modifier)
+                            book = it,
+                            onBackPressed=onBackPressed,
+                            modifier=modifier,
+                            order=currentOrder,
+                            onOrderChange=updateOrder
+                        )
                     }
                 }
             }
@@ -190,7 +195,7 @@ private fun BookshelfAppContent(
     scrollState:LazyListState,
     initCurrentItem: (BookType, BookInfo) -> Unit,
     modifier:Modifier=Modifier,
-    updateOrder:(Boolean)->Unit,
+    updateOrder:()->Unit,
     currentOrder: Boolean
 ){
     var input by remember{ mutableStateOf("android") }

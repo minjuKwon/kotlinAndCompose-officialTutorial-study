@@ -7,9 +7,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bookshelf.checkCurrentItem
-import com.example.bookshelf.checkTabPressed
-import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.screens.BookshelfHomeScreen
 import com.example.bookshelf.ui.utils.ContentType
 import com.example.bookshelf.ui.utils.NavigationType
@@ -62,7 +59,7 @@ fun BookshelfApp(
         initCurrentItem={v1,v2->
             bookshelfViewModel.initCurrentItem(v1,v2) },
         currentOrder=currentOrder,
-        updateOrder={bookshelfViewModel.updateOrder(it)},
+        updateOrder={bookshelfViewModel.updateOrder()},
         modifier=modifier
     )
 }

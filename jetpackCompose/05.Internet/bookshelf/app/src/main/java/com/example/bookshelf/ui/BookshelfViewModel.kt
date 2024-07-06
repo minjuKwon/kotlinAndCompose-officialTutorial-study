@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,9 +43,8 @@ class BookshelfViewModel(
     private val _currentOrder = MutableStateFlow(false)
     val currentOrder:StateFlow<Boolean> = _currentOrder
 
-
-    fun updateOrder(b:Boolean){
-        _currentOrder.value=b
+    fun updateOrder(){
+        _currentOrder.value= !_currentOrder.value
     }
 
     init {
@@ -60,11 +60,6 @@ class BookshelfViewModel(
             )){BookPagingSource(bookshelfRepository,input=search,page=page,pageSize=PAGE_SIZE)}
             .flow.cachedIn(viewModelScope)
 
-        val currentItemMap: MutableMap<BookType, BookInfo> = mutableMapOf()
-        for(type in BookType.values()){
-            currentItemMap[type] = defaultBookInfo
-        }
-
         viewModelScope.launch {
             bookshelfUiState = try{
                 val totalCount=withContext(Dispatchers.IO){
@@ -74,9 +69,9 @@ class BookshelfViewModel(
                 _currentPage.value=page
                 when(bookshelfUiState){
                     is BookshelfUiState.Success-> (bookshelfUiState as BookshelfUiState.Success)
-                        .copy(list= PageData(pageData,totalCount), currentItem = currentItemMap)
+                        .copy(list= PageData(pageData,totalCount))
                     else-> BookshelfUiState.Success(
-                        list= PageData(pageData,totalCount), currentItem = currentItemMap
+                        list= PageData(pageData,totalCount)
                     )
                 }
             }catch (e: IOException){

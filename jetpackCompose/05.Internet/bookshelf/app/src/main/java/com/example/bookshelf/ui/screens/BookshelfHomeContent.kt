@@ -58,7 +58,6 @@ import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
 import com.example.bookshelf.ui.PAGE_SIZE
-import com.example.bookshelf.ui.defaultBookInfo
 
 @Composable
 fun BookshelfListOnlyContent(
@@ -74,7 +73,7 @@ fun BookshelfListOnlyContent(
     updatePage:(Int)->Unit,
     scrollState:LazyListState,
     initCurrentItem:(BookType,BookInfo)->Unit,
-    updateOrder:(Boolean)->Unit,
+    updateOrder:()->Unit,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -137,7 +136,7 @@ fun BookshelfListOnlyContent(
                             initCurrentItem(
                                 checkTabPressed(bookshelfUiState), it1.bookInfo
                             )
-                            updateOrder(true)
+                            updateOrder()
                         }
                         BookShelfListItem(
                             book = it1,
@@ -198,9 +197,9 @@ fun BookshelfListAndDetailContent(
     updatePage: (Int) -> Unit,
     scrollState: LazyListState,
     initCurrentItem: (BookType, BookInfo) -> Unit,
-    modifier:Modifier= Modifier,
-    updateOrder:(Boolean)->Unit,
-    currentOrder: Boolean
+    updateOrder:()->Unit,
+    currentOrder: Boolean,
+    modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
         BookshelfListOnlyContent(
@@ -224,16 +223,14 @@ fun BookshelfListAndDetailContent(
 
         if(books.loadState.refresh is LoadState.NotLoading){
             BookshelfDetailsScreen(
-                book = if(currentOrder){
-                    updateOrder(false)
-                    checkCurrentItem(bookshelfUiState)
-                }else defaultBookInfo,
+                book= checkCurrentItem(bookshelfUiState),
                 onBackPressed= { activity.finish() },
                 isNotFullScreen = false,
+                order=currentOrder,
+                onOrderChange = updateOrder,
                 modifier=Modifier.weight(1f)
             )
         }
-
 
     }
 }
