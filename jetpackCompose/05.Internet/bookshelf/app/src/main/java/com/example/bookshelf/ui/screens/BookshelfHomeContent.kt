@@ -223,7 +223,7 @@ fun BookshelfListAndDetailContent(
 
         if(books.loadState.refresh is LoadState.NotLoading){
             BookshelfDetailsScreen(
-                book= checkCurrentItem(bookshelfUiState),
+                bookshelfUiState=bookshelfUiState,
                 onBackPressed= { activity.finish() },
                 isNotFullScreen = false,
                 order=currentOrder,

@@ -25,14 +25,18 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
+import com.example.bookshelf.checkCurrentItem
 import com.example.bookshelf.network.BookInfo
+import com.example.bookshelf.ui.BookshelfUiState
+import com.example.bookshelf.ui.defaultBookInfo
 
 @Composable
 fun BookshelfDetailsScreen(
-    book: BookInfo,
+    book: BookInfo= defaultBookInfo,
     onBackPressed:(BookInfo)->Unit,
     order:Boolean,
     onOrderChange:()->Unit,
+    bookshelfUiState: BookshelfUiState,
     modifier: Modifier =Modifier,
     isNotFullScreen:Boolean=true
 ){
@@ -61,7 +65,7 @@ fun BookshelfDetailsScreen(
         LazyColumn{
             item{
                 if(order){
-                    DetailsScreenContent(book)
+                    DetailsScreenContent(checkCurrentItem(bookshelfUiState))
                     onOrderChange()
                 }
             }

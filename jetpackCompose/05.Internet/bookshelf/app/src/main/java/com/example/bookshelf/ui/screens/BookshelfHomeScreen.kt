@@ -152,7 +152,8 @@ fun BookshelfHomeScreen(
                             onBackPressed=onBackPressed,
                             modifier=modifier,
                             order=currentOrder,
-                            onOrderChange=updateOrder
+                            onOrderChange=updateOrder,
+                            bookshelfUiState = bookshelfUiState,
                         )
                     }
                 }
