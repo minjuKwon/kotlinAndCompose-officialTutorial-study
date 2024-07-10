@@ -28,7 +28,6 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,9 +65,9 @@ fun BookshelfHomeScreen(
     updatePage:(Int)->Unit,
     scrollState: LazyListState,
     initCurrentItem:(BookType,BookInfo)->Unit,
-    modifier:Modifier=Modifier,
-    updateOrder: ()->Unit,
-    currentOrder:Boolean
+    updateOrder: (Boolean)->Unit,
+    currentOrder:Boolean,
+    modifier:Modifier=Modifier
 ){
 
     val navigationItemContentList = listOf(
@@ -148,12 +147,11 @@ fun BookshelfHomeScreen(
                 else {
                     bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
                         BookshelfDetailsScreen(
-                            book = it,
                             onBackPressed=onBackPressed,
                             modifier=modifier,
                             order=currentOrder,
                             onOrderChange=updateOrder,
-                            bookshelfUiState = bookshelfUiState,
+                            bookshelfUiState = bookshelfUiState
                         )
                     }
                 }
@@ -195,9 +193,9 @@ private fun BookshelfAppContent(
     updatePage: (Int) -> Unit,
     scrollState:LazyListState,
     initCurrentItem: (BookType, BookInfo) -> Unit,
-    modifier:Modifier=Modifier,
-    updateOrder:()->Unit,
-    currentOrder: Boolean
+    updateOrder:(Boolean)->Unit,
+    currentOrder: Boolean,
+    modifier:Modifier=Modifier
 ){
     var input by remember{ mutableStateOf("android") }
 
@@ -255,8 +253,7 @@ private fun BookshelfAppContent(
                                 modifier=Modifier
                                     .padding(dimensionResource(R.dimen.list_only_content_column_padding))
                                     .fillMaxSize()
-                                    .weight(1f),
-                                updateOrder=updateOrder
+                                    .weight(1f)
                             )
                             is BookshelfUiState.Loading -> {
                                 LoadingScreen(modifier= Modifier

@@ -28,25 +28,24 @@ import com.example.bookshelf.R
 import com.example.bookshelf.checkCurrentItem
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
-import com.example.bookshelf.ui.defaultBookInfo
 
 @Composable
 fun BookshelfDetailsScreen(
-    book: BookInfo= defaultBookInfo,
     onBackPressed:(BookInfo)->Unit,
-    order:Boolean,
-    onOrderChange:()->Unit,
     bookshelfUiState: BookshelfUiState,
+    order:Boolean,
+    onOrderChange:(Boolean)->Unit,
     modifier: Modifier =Modifier,
     isNotFullScreen:Boolean=true
 ){
+    val data=checkCurrentItem(bookshelfUiState)
     BackHandler {
-        onBackPressed(book)
+        onBackPressed(data)
     }
     Column(modifier=modifier) {
         if(isNotFullScreen){
             IconButton(
-                onClick = {onBackPressed(book)}
+                onClick = {onBackPressed(data)}
             ) {
                 Icon(
                     imageVector= Icons.Default.ArrowBack,
@@ -64,9 +63,10 @@ fun BookshelfDetailsScreen(
         )
         LazyColumn{
             item{
-                if(order){
+                DetailsScreenContent(checkCurrentItem(bookshelfUiState))
+                if (order) {
                     DetailsScreenContent(checkCurrentItem(bookshelfUiState))
-                    onOrderChange()
+                    onOrderChange(false)
                 }
             }
         }

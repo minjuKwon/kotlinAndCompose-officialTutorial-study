@@ -48,7 +48,9 @@ fun BookshelfApp(
         bookshelfUiState=bookshelfViewModel.bookshelfUiState,
         onTabPressed={ bookshelfViewModel.updateCurrentBookTabType(it) },
         onSearch={ bookshelfViewModel.getInformation(it)},
-        onBookItemPressed={bookshelfViewModel.updateDetailsScreenState(it)},
+        onBookItemPressed={
+            bookshelfViewModel.updateOrder(true)
+            bookshelfViewModel.updateDetailsScreenState(it)},
         onBackPressed={bookshelfViewModel.resetHomeScreenState(it)},
         onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
         navigationType = navigationType,
@@ -59,7 +61,7 @@ fun BookshelfApp(
         initCurrentItem={v1,v2->
             bookshelfViewModel.initCurrentItem(v1,v2) },
         currentOrder=currentOrder,
-        updateOrder={bookshelfViewModel.updateOrder()},
+        updateOrder={bookshelfViewModel.updateOrder(it)},
         modifier=modifier
     )
 }

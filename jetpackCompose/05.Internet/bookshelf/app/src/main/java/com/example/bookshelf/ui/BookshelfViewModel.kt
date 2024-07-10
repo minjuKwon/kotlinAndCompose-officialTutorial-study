@@ -43,8 +43,8 @@ class BookshelfViewModel(
     private val _currentOrder = MutableStateFlow(false)
     val currentOrder:StateFlow<Boolean> = _currentOrder
 
-    fun updateOrder(){
-        _currentOrder.value= !_currentOrder.value
+    fun updateOrder(b:Boolean){
+        _currentOrder.value= b
     }
 
     init {

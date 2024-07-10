@@ -50,7 +50,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
 import com.example.bookshelf.checkBookmarkList
-import com.example.bookshelf.checkCurrentItem
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
 import com.example.bookshelf.getTotalItemsCount
@@ -73,7 +72,6 @@ fun BookshelfListOnlyContent(
     updatePage:(Int)->Unit,
     scrollState:LazyListState,
     initCurrentItem:(BookType,BookInfo)->Unit,
-    updateOrder:()->Unit,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -136,7 +134,6 @@ fun BookshelfListOnlyContent(
                             initCurrentItem(
                                 checkTabPressed(bookshelfUiState), it1.bookInfo
                             )
-                            updateOrder()
                         }
                         BookShelfListItem(
                             book = it1,
@@ -197,7 +194,7 @@ fun BookshelfListAndDetailContent(
     updatePage: (Int) -> Unit,
     scrollState: LazyListState,
     initCurrentItem: (BookType, BookInfo) -> Unit,
-    updateOrder:()->Unit,
+    updateOrder:(Boolean)->Unit,
     currentOrder: Boolean,
     modifier:Modifier= Modifier
 ){
@@ -215,19 +212,18 @@ fun BookshelfListAndDetailContent(
             updatePage=updatePage,
             scrollState=scrollState,
             initCurrentItem = initCurrentItem,
-            modifier=Modifier.weight(1f),
-            updateOrder=updateOrder
+            modifier=Modifier.weight(1f)
         )
 
         val activity = LocalContext.current as Activity
 
         if(books.loadState.refresh is LoadState.NotLoading){
             BookshelfDetailsScreen(
-                bookshelfUiState=bookshelfUiState,
                 onBackPressed= { activity.finish() },
                 isNotFullScreen = false,
                 order=currentOrder,
                 onOrderChange = updateOrder,
+                bookshelfUiState=bookshelfUiState,
                 modifier=Modifier.weight(1f)
             )
         }
