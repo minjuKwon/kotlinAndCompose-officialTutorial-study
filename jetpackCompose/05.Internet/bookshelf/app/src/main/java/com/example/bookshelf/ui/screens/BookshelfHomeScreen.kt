@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -102,7 +103,7 @@ fun BookshelfHomeScreen(
                     )
                 }
 
-            }
+            },modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ) {
             BookshelfAppContent(
                 navigationType = navigationType,
@@ -206,7 +207,8 @@ private fun BookshelfAppContent(
                 BookNavigationRail(
                     currentTab = checkTabPressed(bookshelfUiState),
                     onTabPressed = onTabPressed,
-                    navigationItemContentList = navigationItemContent
+                    navigationItemContentList = navigationItemContent,
+                    modifier=Modifier.testTag(stringResource(R.string.navigation_rail))
                 )
             }
 
@@ -250,7 +252,7 @@ private fun BookshelfAppContent(
                                 updatePage=updatePage,
                                 scrollState = scrollState,
                                 initCurrentItem=initCurrentItem,
-                                modifier=Modifier
+                                modifier= Modifier
                                     .padding(dimensionResource(R.dimen.list_only_content_column_padding))
                                     .fillMaxSize()
                                     .weight(1f)
@@ -395,7 +397,7 @@ private fun BookBottomNavigationBar(
     navigationItemContentList: List<NavigationItemContent>,
     modifier:Modifier=Modifier
 ){
-    NavigationBar(modifier=modifier) {
+    NavigationBar(modifier=modifier.testTag(stringResource(R.string.navigation_bottom))) {
         for(naviItem in navigationItemContentList){
             NavigationBarItem(
                 selected = currentTab== naviItem.bookType,
