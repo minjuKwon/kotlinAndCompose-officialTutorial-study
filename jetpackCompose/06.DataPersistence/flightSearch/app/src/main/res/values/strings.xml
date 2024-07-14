@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">FlightSearch</string>
+    
+    <string name="search_label">Enter departure airport</string>
+
+    <string name="depart">DEPART</string>
+    <string name="arrive">ARRIVE</string>
+
+    <string name="search">search icon</string>
+    <string name="bookmark">bookmark icon</string>
 </resources>
