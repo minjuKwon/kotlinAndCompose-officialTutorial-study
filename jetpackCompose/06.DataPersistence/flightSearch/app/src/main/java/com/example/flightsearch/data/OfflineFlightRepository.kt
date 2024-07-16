@@ -37,6 +37,9 @@ class OfflineFlightRepository(
     override suspend fun insertBookmarkData(bookmark: Bookmark)
     =bookmarkDao.insertBookmark(bookmark)
 
+    override suspend fun deleteBookmarkData(bookmark: Bookmark)
+    =bookmarkDao.deleteBookmark(bookmark)
+
     suspend fun saveSearchWordPreference(searchWord:String){
         dataStore.edit{ preferences->
             preferences[SEARCH_WORD]=searchWord

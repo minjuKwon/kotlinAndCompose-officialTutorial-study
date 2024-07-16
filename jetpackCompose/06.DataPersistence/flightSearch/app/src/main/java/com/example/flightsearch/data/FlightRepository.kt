@@ -14,4 +14,6 @@ interface FlightRepository {
 
     suspend fun insertBookmarkData(bookmark: Bookmark)
 
+    suspend fun deleteBookmarkData(bookmark: Bookmark)
+
 }
