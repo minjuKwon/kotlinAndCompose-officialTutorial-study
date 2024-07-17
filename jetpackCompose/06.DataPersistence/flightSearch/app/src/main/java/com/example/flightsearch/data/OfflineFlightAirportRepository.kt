@@ -11,11 +11,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-class OfflineFlightRepository(
+class OfflineFlightAirportRepository(
     private val airportDao: AirportDao,
-    private val bookmarkDao: BookmarkDao,
     private val dataStore: DataStore<Preferences>
-) :FlightRepository {
+) :FlightAirportRepository {
 
     private companion object{
         val SEARCH_WORD= stringPreferencesKey("search_word")
@@ -30,15 +29,6 @@ class OfflineFlightRepository(
 
     override fun searchByKeywordStream(keyword: String): Flow<List<Airport>>
     = airportDao.searchByKeyword(keyword)
-
-    override fun getAllBookmarkStream(): Flow<List<Bookmark>>
-    =bookmarkDao.getAllBookmark()
-
-    override suspend fun insertBookmarkData(bookmark: Bookmark)
-    =bookmarkDao.insertBookmark(bookmark)
-
-    override suspend fun deleteBookmarkData(bookmark: Bookmark)
-    =bookmarkDao.deleteBookmark(bookmark)
 
     suspend fun saveSearchWordPreference(searchWord:String){
         dataStore.edit{ preferences->

@@ -6,7 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 
 interface AppContainer{
-    val flightRepository:FlightRepository
+    val flightAirportRepository:FlightAirportRepository
+    val flightBookmarkRepository:FlightBookmarkRepository
 }
 
 private const val SEARCH_PREFERENCE_NAME="search_preferences"
@@ -15,11 +16,15 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 )
 
 class AppDataContainer(private val context: Context) :AppContainer {
-    override val flightRepository:FlightRepository by lazy{
-        OfflineFlightRepository(
+    override val flightAirportRepository:FlightAirportRepository by lazy{
+        OfflineFlightAirportRepository(
             airportDao=FlightDatabase.getDatabase(context).airportDao(),
-            bookmarkDao=FlightDatabase.getDatabase(context).bookmarkDao(),
             dataStore = context.dataStore
+        )
+    }
+    override val flightBookmarkRepository: FlightBookmarkRepository by lazy{
+        OfflineFlightBookmarkRepository(
+            bookmarkDao=FlightDatabase.getDatabase(context).bookmarkDao()
         )
     }
 }
