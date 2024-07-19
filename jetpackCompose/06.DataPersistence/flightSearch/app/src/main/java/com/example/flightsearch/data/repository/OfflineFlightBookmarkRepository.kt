@@ -1,10 +1,12 @@
-package com.example.flightsearch.data
+package com.example.flightsearch.data.repository
 
+import com.example.flightsearch.data.database.BookmarkDao
+import com.example.flightsearch.data.model.Bookmark
 import kotlinx.coroutines.flow.Flow
 
 class OfflineFlightBookmarkRepository(
     private val bookmarkDao: BookmarkDao
-):FlightBookmarkRepository {
+): FlightBookmarkRepository {
 
     override fun getAllBookmarkStream(): Flow<List<Bookmark>>
             =bookmarkDao.getAllBookmark()

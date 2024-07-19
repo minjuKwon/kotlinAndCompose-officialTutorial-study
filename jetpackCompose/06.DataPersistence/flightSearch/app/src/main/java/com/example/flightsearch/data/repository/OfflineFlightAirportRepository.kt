@@ -1,4 +1,4 @@
-package com.example.flightsearch.data
+package com.example.flightsearch.data.repository
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.flightsearch.data.database.AirportDao
+import com.example.flightsearch.data.model.Airport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,7 @@ import java.io.IOException
 class OfflineFlightAirportRepository(
     private val airportDao: AirportDao,
     private val dataStore: DataStore<Preferences>
-) :FlightAirportRepository {
+) : FlightAirportRepository {
 
     private companion object{
         val SEARCH_WORD= stringPreferencesKey("search_word")

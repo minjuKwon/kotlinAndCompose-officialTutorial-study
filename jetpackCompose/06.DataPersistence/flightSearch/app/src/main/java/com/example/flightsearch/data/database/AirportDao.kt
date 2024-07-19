@@ -1,7 +1,8 @@
-package com.example.flightsearch.data
+package com.example.flightsearch.data.database
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.example.flightsearch.data.model.Airport
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -10,7 +11,7 @@ interface AirportDao {
     @Query("SELECT iata_code,name FROM airport WHERE iata_code =:keyword")
     fun getAirport(keyword:String): Flow<Airport>
 
-    @Query("SELECT iata_code,name FROM airport " +
+    @Query("SELECT * FROM airport " +
             "WHERE iata_code != :keyword ORDER BY passengers DESC")
     fun getAirportsList(keyword: String): Flow<List<Airport>>
 

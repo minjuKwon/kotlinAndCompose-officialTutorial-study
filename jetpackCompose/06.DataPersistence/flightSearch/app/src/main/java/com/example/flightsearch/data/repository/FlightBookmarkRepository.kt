@@ -1,5 +1,6 @@
-package com.example.flightsearch.data
+package com.example.flightsearch.data.repository
 
+import com.example.flightsearch.data.model.Bookmark
 import kotlinx.coroutines.flow.Flow
 
 interface FlightBookmarkRepository {

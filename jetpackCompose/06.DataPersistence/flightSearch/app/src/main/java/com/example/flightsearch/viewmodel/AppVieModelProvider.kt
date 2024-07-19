@@ -1,4 +1,4 @@
-package com.example.flightsearch.ui
+package com.example.flightsearch.viewmodel
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras

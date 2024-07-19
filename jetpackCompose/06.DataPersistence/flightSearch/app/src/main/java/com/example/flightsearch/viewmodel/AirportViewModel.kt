@@ -1,12 +1,9 @@
-package com.example.flightsearch.ui
+package com.example.flightsearch.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flightsearch.data.Airport
-import com.example.flightsearch.data.FlightAirportRepository
+import com.example.flightsearch.data.model.Airport
+import com.example.flightsearch.data.repository.FlightAirportRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -56,7 +53,7 @@ class AirportViewModel(
 data class AirportUiState(
     val itemList:List<Airport> = listOf(),
     val searchList:List<Airport> = listOf(),
-    val item:Item = Item()
+    val item: Item = Item()
 )
 
 data class Item(
@@ -64,7 +61,7 @@ data class Item(
     val iataCode:String=""
 )
 
-fun Airport.toItem():Item=Item(
+fun Airport.toItem(): Item = Item(
     name=name,
     iataCode=iataCode
 )

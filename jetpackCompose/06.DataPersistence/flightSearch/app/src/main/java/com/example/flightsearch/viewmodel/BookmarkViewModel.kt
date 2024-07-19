@@ -1,9 +1,9 @@
-package com.example.flightsearch.ui
+package com.example.flightsearch.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flightsearch.data.Bookmark
-import com.example.flightsearch.data.FlightBookmarkRepository
+import com.example.flightsearch.data.model.Bookmark
+import com.example.flightsearch.data.repository.FlightBookmarkRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -18,14 +18,14 @@ class BookmarkViewModel(
         .stateIn(
             scope=viewModelScope,
             started= SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue=BookmarkUiState()
+            initialValue= BookmarkUiState()
         )
 
     companion object{
         private const val TIMEOUT_MILLIS=5_000L
     }
 
-    suspend fun insertItem(item:Bookmark){
+    suspend fun insertItem(item: Bookmark){
         repository.insertBookmarkData(item)
     }
 
