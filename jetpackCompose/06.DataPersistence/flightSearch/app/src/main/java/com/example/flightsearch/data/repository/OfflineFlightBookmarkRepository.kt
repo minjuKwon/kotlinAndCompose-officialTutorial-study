@@ -17,4 +17,7 @@ class OfflineFlightBookmarkRepository(
     override suspend fun deleteBookmarkData(bookmark: Bookmark)
             =bookmarkDao.deleteBookmark(bookmark)
 
+    override suspend fun getBookmarkDataCount(): Int
+            =bookmarkDao.getBookmarkCount()
+
 }
