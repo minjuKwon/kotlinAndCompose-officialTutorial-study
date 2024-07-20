@@ -38,7 +38,7 @@ class OfflineFlightAirportRepository(
         }
     }
 
-    val searchWord:Flow<String> = dataStore.data
+    override val searchWord:Flow<String> = dataStore.data
         .catch {
             if(it is IOException){
                 Log.e(TAG,"Error reading preferences $it")
