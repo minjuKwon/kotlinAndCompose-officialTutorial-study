@@ -8,7 +8,7 @@ interface FlightBookmarkRepository {
 
     suspend fun insertBookmarkData(bookmark: Bookmark)
 
-    suspend fun deleteBookmarkData(bookmark: Bookmark)
+    fun deleteBookmarkData(bookmark: Bookmark)
 
     suspend fun getBookmarkDataCount():Int
 }

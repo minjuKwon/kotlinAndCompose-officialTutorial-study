@@ -14,7 +14,7 @@ interface BookmarkDao {
     suspend fun insertBookmark(bookmark: Bookmark)
 
     @Delete
-    suspend fun deleteBookmark(bookmark: Bookmark)
+    fun deleteBookmark(bookmark: Bookmark)
 
     @Query("SELECT * FROM favorite")
     fun getAllBookmark(): Flow<List<Bookmark>>
