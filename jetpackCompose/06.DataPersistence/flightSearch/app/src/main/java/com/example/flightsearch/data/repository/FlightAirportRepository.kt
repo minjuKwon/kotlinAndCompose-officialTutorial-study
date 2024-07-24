@@ -10,4 +10,6 @@ interface FlightAirportRepository {
     fun getAirportsListStream(keyword:String):Flow<List<Airport>>
 
     fun searchByKeywordStream(keyword: String):Flow<List<Airport>>
+
+    suspend fun saveSearchWordPreference(searchWord:String)
 }

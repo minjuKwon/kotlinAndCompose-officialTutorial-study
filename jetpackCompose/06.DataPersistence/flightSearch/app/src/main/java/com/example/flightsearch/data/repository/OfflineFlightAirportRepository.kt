@@ -32,7 +32,7 @@ class OfflineFlightAirportRepository(
     override fun searchByKeywordStream(keyword: String): Flow<List<Airport>>
     = airportDao.searchByKeyword(keyword)
 
-    suspend fun saveSearchWordPreference(searchWord:String){
+    override suspend fun saveSearchWordPreference(searchWord:String){
         dataStore.edit{ preferences->
             preferences[SEARCH_WORD]=searchWord
         }

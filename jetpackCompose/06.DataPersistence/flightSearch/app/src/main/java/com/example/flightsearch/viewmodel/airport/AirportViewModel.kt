@@ -31,7 +31,11 @@ class AirportViewModel(
                         airportUiState= _airportUiState.value,
                         searchingUiState = { _airportUiState.value},
                         resultUiState = {
-                            AirportUiState.SearchResult(itemList= itemList, item=item)
+                            AirportUiState.SearchResult(
+                                itemList= itemList,
+                                item=item,
+                                searchText = keyword
+                            )
                         }
                     )
                 }
@@ -50,7 +54,7 @@ class AirportViewModel(
                     checkAirportScreenState(
                         airportUiState=_airportUiState.value,
                         searchingUiState = {
-                            AirportUiState.Searching(searchList=searchList)
+                            AirportUiState.Searching(searchList=searchList, searchText = keyword)
                         },
                         resultUiState = { _airportUiState.value }
                     )
@@ -61,7 +65,7 @@ class AirportViewModel(
 
     fun saveKeyword(keyword:String){
         viewModelScope.launch {
-            repository.searchByKeywordStream(keyword)
+            repository.saveSearchWordPreference(keyword)
         }
     }
 
