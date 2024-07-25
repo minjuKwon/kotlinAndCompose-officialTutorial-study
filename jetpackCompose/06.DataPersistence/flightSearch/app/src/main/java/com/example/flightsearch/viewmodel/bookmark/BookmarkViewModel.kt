@@ -7,6 +7,7 @@ import com.example.flightsearch.data.repository.FlightBookmarkRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel(
@@ -41,7 +42,9 @@ class BookmarkViewModel(
         _bookmarkUiState.value=BookmarkUiState.Loading
         viewModelScope.launch {
             _bookmarkUiState.value=try{
-                BookmarkUiState.Success(repository.getAllBookmarkStream().first())
+                BookmarkUiState.Success(
+                    repository.getAllBookmarkStream()?.firstOrNull()?: emptyList()
+                )
             }catch (e:Exception){BookmarkUiState.Error}
         }
     }

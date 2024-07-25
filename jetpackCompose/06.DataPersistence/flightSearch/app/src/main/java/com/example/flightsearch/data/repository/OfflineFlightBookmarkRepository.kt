@@ -8,7 +8,7 @@ class OfflineFlightBookmarkRepository(
     private val bookmarkDao: BookmarkDao
 ): FlightBookmarkRepository {
 
-    override fun getAllBookmarkStream(): Flow<List<Bookmark>>
+    override fun getAllBookmarkStream(): Flow<List<Bookmark>>?
             =bookmarkDao.getAllBookmark()
 
     override suspend fun insertBookmarkData(bookmark: Bookmark)
