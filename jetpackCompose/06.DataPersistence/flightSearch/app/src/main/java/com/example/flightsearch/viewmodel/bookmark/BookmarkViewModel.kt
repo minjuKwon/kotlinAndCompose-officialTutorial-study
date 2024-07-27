@@ -6,7 +6,6 @@ import com.example.flightsearch.data.model.Bookmark
 import com.example.flightsearch.data.repository.FlightBookmarkRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -14,7 +13,7 @@ class BookmarkViewModel(
     private val repository: FlightBookmarkRepository
 ):ViewModel() {
 
-    private val _bookmarkUiState = MutableStateFlow<BookmarkUiState>(BookmarkUiState.Empty)
+    private val _bookmarkUiState = MutableStateFlow<BookmarkUiState>(BookmarkUiState.Success())
     val bookmarkUiState:StateFlow<BookmarkUiState> = _bookmarkUiState
 
     suspend fun insertItem(item: Bookmark){
@@ -30,10 +29,7 @@ class BookmarkViewModel(
         viewModelScope.launch {
             try{
                 repository.deleteBookmarkData(item)
-                if(repository.getBookmarkDataCount()==0){
-                    _bookmarkUiState.value=BookmarkUiState.Empty
-                }
-                else {getAllBookmarks()}
+                getAllBookmarks()
             }catch (e:Exception){BookmarkUiState.Error}
         }
     }
