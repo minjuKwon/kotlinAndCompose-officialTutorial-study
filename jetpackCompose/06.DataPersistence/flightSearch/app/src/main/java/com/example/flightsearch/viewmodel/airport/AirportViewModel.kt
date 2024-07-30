@@ -1,11 +1,12 @@
 package com.example.flightsearch.viewmodel.airport
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flightsearch.data.model.Airport
 import com.example.flightsearch.data.repository.FlightAirportRepository
-import com.example.flightsearch.viewmodel.checkAirportScreenState
-import com.example.flightsearch.viewmodel.checkAirportUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -18,25 +19,25 @@ class AirportViewModel(
     private val _airportUiState = MutableStateFlow<AirportUiState>(AirportUiState.EmptySearch)
     val airportUiState: StateFlow<AirportUiState> = _airportUiState
 
+    var searchingText by mutableStateOf("")
+        private set
+
+    fun updateText(text:String){
+        searchingText=text
+    }
+
     fun getAirportList(){
-        _airportUiState.value= AirportUiState.Loading
         viewModelScope.launch {
+            _airportUiState.value= AirportUiState.Loading
             _airportUiState.value=try{
-                val keyword=repository.searchWord.first()
-                if(keyword.isEmpty()) AirportUiState.EmptySearch
+                searchingText=repository.searchWord.first()
+                if(searchingText.isEmpty()) AirportUiState.EmptySearch
                 else{
-                    val item=repository.getAirportStream(keyword).first().toItem()
-                    val itemList = repository.getAirportsListStream(keyword).first()
-                    checkAirportScreenState(
-                        airportUiState= _airportUiState.value,
-                        searchingUiState = { _airportUiState.value},
-                        resultUiState = {
-                            AirportUiState.SearchResult(
-                                itemList= itemList,
-                                item=item,
-                                searchText = keyword
-                            )
-                        }
+                    val item=repository.getAirportStream(searchingText).first().toItem()
+                    val itemList = repository.getAirportsListStream(searchingText).first()
+                    AirportUiState.SearchResult(
+                        itemList= itemList,
+                        item=item
                     )
                 }
             }catch(e:Exception){AirportUiState.Error}
@@ -44,28 +45,21 @@ class AirportViewModel(
     }
 
     fun searchByKeyword(){
-        _airportUiState.value= AirportUiState.Loading
         viewModelScope.launch {
+            _airportUiState.value= AirportUiState.Loading
             _airportUiState.value=try{
-                val keyword=repository.searchWord.first()
-                if(keyword.isEmpty()) AirportUiState.EmptySearch
-                else{
-                    val searchList = repository.searchByKeywordStream(keyword).first()
-                    checkAirportScreenState(
-                        airportUiState=_airportUiState.value,
-                        searchingUiState = {
-                            AirportUiState.Searching(searchList=searchList, searchText = keyword)
-                        },
-                        resultUiState = { _airportUiState.value }
-                    )
+                if(searchingText.isEmpty()){
+                    AirportUiState.EmptySearch
+                }else{
+                    val searchList = repository.searchByKeywordStream(searchingText).first()
+                    if(searchList.isEmpty()){
+                        AirportUiState.EmptySearch
+                    }else{
+                        repository.saveSearchWordPreference(searchingText)
+                        AirportUiState.Searching(searchList=searchList)
+                    }
                 }
             }catch(e:Exception){AirportUiState.Error}
-        }
-    }
-
-    fun saveKeyword(keyword:String){
-        viewModelScope.launch {
-            repository.saveSearchWordPreference(keyword)
         }
     }
 

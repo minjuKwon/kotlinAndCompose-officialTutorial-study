@@ -4,13 +4,11 @@ import com.example.flightsearch.data.model.Airport
 
 sealed class AirportUiState{
     data class Searching(
-        val searchList:List<Airport> = emptyList(),
-        val searchText:String=""
+        val searchList:List<Airport> = emptyList()
     ): AirportUiState()
     data class SearchResult(
         val itemList:List<Airport> = emptyList(),
-        val item: Item = Item(),
-        val searchText:String=""
+        val item: Item = Item()
     ): AirportUiState()
     object EmptySearch: AirportUiState()
     object Error:AirportUiState()
