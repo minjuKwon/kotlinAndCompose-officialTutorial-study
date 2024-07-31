@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flightsearch.data.model.Bookmark
 import com.example.flightsearch.data.repository.FlightBookmarkRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -16,33 +17,38 @@ class BookmarkViewModel(
     private val _bookmarkUiState = MutableStateFlow<BookmarkUiState>(BookmarkUiState.Success())
     val bookmarkUiState:StateFlow<BookmarkUiState> = _bookmarkUiState
 
+    private var isLoading = true
+
     suspend fun insertItem(item: Bookmark){
-        _bookmarkUiState.value = BookmarkUiState.Loading
-        _bookmarkUiState.value = try {
+        try {
             repository.insertBookmarkData(item)
-            BookmarkUiState.Success()
-        }catch (e:Exception) {BookmarkUiState.Error}
+            isLoading=true
+        }catch (e:Exception) {
+            BookmarkUiState.Error}
     }
 
     fun deleteItem(item: Bookmark){
-        _bookmarkUiState.value=BookmarkUiState.Loading
         viewModelScope.launch {
             try{
                 repository.deleteBookmarkData(item)
-                getAllBookmarks()
+                isLoading=true
             }catch (e:Exception){BookmarkUiState.Error}
         }
     }
 
     fun getAllBookmarks(){
-        _bookmarkUiState.value=BookmarkUiState.Loading
-        viewModelScope.launch {
-            _bookmarkUiState.value=try{
-                BookmarkUiState.Success(
-                    repository.getAllBookmarkStream()?.firstOrNull()?: emptyList()
-                )
-            }catch (e:Exception){BookmarkUiState.Error}
+        if(isLoading){//ui 상태 업데이트에 따른 무한 반복 방지
+            viewModelScope.launch {
+                _bookmarkUiState.value=BookmarkUiState.Loading
+                delay(500)
+                _bookmarkUiState.value=try{
+                    BookmarkUiState.Success(
+                        repository.getAllBookmarkStream()?.firstOrNull()?: emptyList()
+                    )
+                }catch (e:Exception){BookmarkUiState.Error}
+            }
         }
+        isLoading=false
     }
 
 }

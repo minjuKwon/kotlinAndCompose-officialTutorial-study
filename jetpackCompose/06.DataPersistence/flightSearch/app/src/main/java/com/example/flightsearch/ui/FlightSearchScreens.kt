@@ -1,77 +1,132 @@
 package com.example.flightsearch.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flightsearch.R
+import com.example.flightsearch.data.model.Bookmark
+import com.example.flightsearch.viewmodel.AppVieModelProvider
+import com.example.flightsearch.viewmodel.airport.AirportUiState
+import com.example.flightsearch.viewmodel.airport.AirportViewModel
+import com.example.flightsearch.viewmodel.bookmark.BookmarkUiState
+import com.example.flightsearch.viewmodel.bookmark.BookmarkViewModel
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchScreen(
-
+    modifier:Modifier=Modifier,
+    airPortViewModel:AirportViewModel=viewModel(factory=AppVieModelProvider.Factory),
+    bookmarkViewModel:BookmarkViewModel=viewModel(factory=AppVieModelProvider.Factory)
 ){
-    Column {
-        TextField(
-            value = "",
-            onValueChange = {},
-            label={Text(stringResource(R.string.search_label))},
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search)
+    val airportUiState by airPortViewModel.airportUiState.collectAsState()
+    val bookmarkUiState by bookmarkViewModel.bookmarkUiState.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var text by remember{mutableStateOf(airPortViewModel.searchingText)}
+
+    when(airportUiState){
+        is AirportUiState.Loading->{
+            LoadingScreen(modifier=modifier)
+        }
+        is AirportUiState.Error->{
+            ErrorScreen(modifier=modifier)
+        }
+        is AirportUiState.Searching->{
+            val searchingUiState = (airportUiState as AirportUiState.Searching)
+            if(text.isEmpty()){
+                airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
+            }else{
+                SearchingScreen(
+                    searchQuery = text,
+                    onSearchQueryChange={
+                        text=it
+                        airPortViewModel.updateText(it)
+                        airPortViewModel.searchByKeyword()
+                    },
+                    items= searchingUiState.searchList,
+                    onSearch={airPortViewModel.getAirportList(text)},
+                    modifier=modifier
                 )
-            },
-            modifier=Modifier.fillMaxWidth()
-        )
-        Text(text="")
-        LazyColumn{}
-    }
-}
-
-@Composable
-fun FlightSearchItem(
-
-){
-    Card{
-        Row{
-            Column {
-                Text(text=stringResource(R.string.depart))
-                Row{
-                    Text(text="")
-                    Text(text="")
-                }
-                Text(text=stringResource(R.string.depart))
-                Row{
-                    Text(text="")
-                    Text(text="")
-                }
             }
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = stringResource(R.string.bookmark)
+        }
+        is AirportUiState.SearchResult->{
+            val searchResultUiState = (airportUiState as AirportUiState.SearchResult)
+            SearchResultScreen(
+                searchQuery=text,
+                onSearchQueryChange = {
+                    text=it
+                    airPortViewModel.updateText(it)
+                    airPortViewModel.searchByKeyword()
+                },
+                listTitle=stringResource(R.string.result_list_title),
+                items=searchResultUiState.itemList,
+                item=searchResultUiState.item,
+                onSearch={airPortViewModel.getAirportList(text)},
+                onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
+                onDelete={bookmarkViewModel.deleteItem(it)},
+                modifier=modifier
+            )
+        }
+        is AirportUiState.EmptySearch->{
+            CheckBookmarkUiStateScreen(
+                bookmarkUiState=bookmarkUiState,
+                bookmarkViewModel = bookmarkViewModel,
+                text=text,
+                onTextChange={
+                    text=it
+                    airPortViewModel.updateText(it)
+                    airPortViewModel.searchByKeyword()
+                    },
+                onSearch={airPortViewModel.getAirportList(text)},
+                onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
+                onDelete={bookmarkViewModel.deleteItem(it)},
+                modifier=modifier
             )
         }
     }
+
 }
 
 @Composable
-fun FlightSearchRecommendItem(
-
+fun CheckBookmarkUiStateScreen(
+    bookmarkUiState: BookmarkUiState,
+    bookmarkViewModel:BookmarkViewModel,
+    text:String,
+    onTextChange:(String)->Unit,
+    onSearch:(String)->Unit,
+    onInsert:(Bookmark)->Unit,
+    onDelete:(Bookmark)->Unit,
+    modifier: Modifier=Modifier
 ){
-    Row{
-        Text(text="")
-        Text(text="")
+    when(bookmarkUiState){
+        is BookmarkUiState.Loading->{
+            LoadingScreen(modifier=modifier)
+        }
+        is BookmarkUiState.Success->{
+            bookmarkViewModel.getAllBookmarks()
+            BookmarkScreen(
+                searchQuery = text,
+                onSearchQueryChange = {
+                    onTextChange(it)
+                },
+                listTitle=stringResource(R.string.bookmark_list_title),
+                items= bookmarkUiState.itemList,
+                onSearch= {onSearch(text)},
+                onInsert=onInsert,
+                onDelete=onDelete,
+                modifier=modifier
+            )
+        }
+        is BookmarkUiState.Error->{
+            ErrorScreen(modifier=modifier)
+        }
     }
 }

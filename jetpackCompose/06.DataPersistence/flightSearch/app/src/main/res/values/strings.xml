@@ -8,4 +8,10 @@
 
     <string name="search">search icon</string>
     <string name="bookmark">bookmark icon</string>
+    
+    <string name="result_list_title">Flights from</string>
+    <string name="bookmark_list_title">Favorite routes</string>
+
+    <string name="error">오류 발생</string>
+    <string name="empty">검색창에 검색어를 입력하세요</string>
 </resources>

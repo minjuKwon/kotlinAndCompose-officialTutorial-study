@@ -22,19 +22,22 @@ class AirportViewModel(
     var searchingText by mutableStateOf("")
         private set
 
+    fun updateAirportUiState(newState: AirportUiState) {
+        _airportUiState.value = newState
+    }
+
     fun updateText(text:String){
         searchingText=text
     }
 
-    fun getAirportList(){
+    fun getAirportList(word:String){
         viewModelScope.launch {
             _airportUiState.value= AirportUiState.Loading
             _airportUiState.value=try{
-                searchingText=repository.searchWord.first()
-                if(searchingText.isEmpty()) AirportUiState.EmptySearch
+                if(word.isEmpty()) AirportUiState.EmptySearch
                 else{
-                    val item=repository.getAirportStream(searchingText).first().toItem()
-                    val itemList = repository.getAirportsListStream(searchingText).first()
+                    val item=repository.getAirportStream(word).first().toItem()
+                    val itemList = repository.getAirportsListStream(word).first()
                     AirportUiState.SearchResult(
                         itemList= itemList,
                         item=item
@@ -46,7 +49,6 @@ class AirportViewModel(
 
     fun searchByKeyword(){
         viewModelScope.launch {
-            _airportUiState.value= AirportUiState.Loading
             _airportUiState.value=try{
                 if(searchingText.isEmpty()){
                     AirportUiState.EmptySearch
