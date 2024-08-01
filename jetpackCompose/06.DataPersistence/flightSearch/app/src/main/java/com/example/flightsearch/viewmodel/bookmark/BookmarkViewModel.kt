@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flightsearch.data.model.Bookmark
 import com.example.flightsearch.data.repository.FlightBookmarkRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,15 +24,15 @@ class BookmarkViewModel(
         try {
             repository.insertBookmarkData(item)
             isLoading=true
-        }catch (e:Exception) {
-            BookmarkUiState.Error}
+        }catch (e:Exception) {BookmarkUiState.Error}
     }
 
     fun deleteItem(item: Bookmark){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try{
                 repository.deleteBookmarkData(item)
                 isLoading=true
+                getAllBookmarks()
             }catch (e:Exception){BookmarkUiState.Error}
         }
     }
