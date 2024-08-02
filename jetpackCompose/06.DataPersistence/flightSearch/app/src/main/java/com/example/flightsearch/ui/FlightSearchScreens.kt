@@ -53,6 +53,7 @@ fun FlightSearchScreen(
                     },
                     items= searchingUiState.searchList,
                     onSearch={airPortViewModel.getAirportList(text)},
+                    onReset={ text=it },
                     modifier=modifier
                 )
             }
@@ -69,7 +70,8 @@ fun FlightSearchScreen(
                 listTitle=stringResource(R.string.result_list_title),
                 items=searchResultUiState.itemList,
                 item=searchResultUiState.item,
-                onSearch={airPortViewModel.getAirportList(text)},
+                onSearch={airPortViewModel.getAirportList(it)},
+                onReset={text=it},
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
                 onDelete={bookmarkViewModel.deleteItem(it)},
                 modifier=modifier
@@ -86,6 +88,7 @@ fun FlightSearchScreen(
                     airPortViewModel.searchByKeyword()
                     },
                 onSearch={airPortViewModel.getAirportList(text)},
+                onReset = { text=it },
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
                 onDelete={bookmarkViewModel.deleteItem(it)},
                 modifier=modifier
@@ -102,6 +105,7 @@ fun CheckBookmarkUiStateScreen(
     text:String,
     onTextChange:(String)->Unit,
     onSearch:(String)->Unit,
+    onReset: (String) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier: Modifier=Modifier
@@ -120,6 +124,7 @@ fun CheckBookmarkUiStateScreen(
                 listTitle=stringResource(R.string.bookmark_list_title),
                 items= bookmarkUiState.itemList,
                 onSearch= {onSearch(text)},
+                onReset= onReset,
                 onInsert=onInsert,
                 onDelete=onDelete,
                 modifier=modifier

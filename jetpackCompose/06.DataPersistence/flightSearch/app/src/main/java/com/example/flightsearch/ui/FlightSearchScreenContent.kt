@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
@@ -26,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Airport
 import com.example.flightsearch.data.model.Bookmark
@@ -67,13 +72,15 @@ fun SearchingScreen(
     onSearchQueryChange:(String)->Unit,
     items:List<Airport>,
     onSearch:(String)->Unit,
+    onReset: (String) -> Unit,
     modifier:Modifier=Modifier
 ){
     Column(modifier=modifier) {
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
-            onSearch= {onSearch(searchQuery)}
+            onSearch= onSearch,
+            onReset = onReset
         )
         LazyColumn{
             items(items,key={it.id}){
@@ -91,6 +98,7 @@ fun SearchResultScreen(
     items:List<Airport>,
     item:Item,
     onSearch:(String)->Unit,
+    onReset: (String) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
@@ -99,7 +107,8 @@ fun SearchResultScreen(
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
-            onSearch= {onSearch(searchQuery)}
+            onSearch= onSearch,
+            onReset = onReset
         )
         Text(listTitle)
         LazyColumn{
@@ -122,6 +131,7 @@ fun BookmarkScreen(
     listTitle:String,
     items:List<Bookmark>?,
     onSearch:(String)->Unit,
+    onReset: (String) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
@@ -130,7 +140,8 @@ fun BookmarkScreen(
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
-            onSearch= {onSearch(searchQuery)}
+            onSearch= onSearch,
+            onReset = onReset
         )
         Text(listTitle)
         if(items?.isEmpty()==false){
@@ -154,7 +165,8 @@ fun BookmarkScreen(
 fun SearchField(
     query:String,
     onQueryChange:(String)->Unit,
-    onSearch:(String)->Unit
+    onSearch:(String)->Unit,
+    onReset:(String)->Unit
 ){
     TextField(
         value = query,
@@ -167,6 +179,21 @@ fun SearchField(
                 modifier=Modifier.clickable{onSearch(query)}
             )
         },
+        trailingIcon={
+            Icon(
+                imageVector=Icons.Default.Close,
+                contentDescription = stringResource(R.string.keyword_reset),
+                modifier=Modifier.clickable{onReset("")}
+
+            )
+        },
+        keyboardOptions=KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Search,
+            keyboardType = KeyboardType.Text
+        ),
+        keyboardActions= KeyboardActions(
+            onSearch = {onSearch(query)},
+        ),
         modifier= Modifier.fillMaxWidth()
     )
 }
