@@ -19,7 +19,4 @@ interface BookmarkDao {
     @Query("SELECT * FROM favorite")
     fun getAllBookmark(): Flow<List<Bookmark>>
 
-    @Query("SELECT COUNT(id) FROM favorite")
-    suspend fun getBookmarkCount():Int
-
 }
