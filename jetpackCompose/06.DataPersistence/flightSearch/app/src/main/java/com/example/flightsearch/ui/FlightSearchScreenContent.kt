@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,13 +49,21 @@ fun LoadingScreen(
 
 @Composable
 fun ErrorScreen(
+    onHomeScreenChange:()->Unit,
+    onSearchScreenChange:()->Unit,
     modifier:Modifier=Modifier
 ){
-    Box(modifier=modifier){
+    Column(modifier=modifier){
         Icon(
             imageVector = Icons.Default.Warning,
             contentDescription = stringResource(R.string.error)
         )
+        Button(onClick = onHomeScreenChange) {
+            Text(stringResource(R.string.back_to_home))
+        }
+        Button(onClick = onSearchScreenChange) {
+            Text(stringResource(R.string.back_to_search))
+        }
     }
 }
 

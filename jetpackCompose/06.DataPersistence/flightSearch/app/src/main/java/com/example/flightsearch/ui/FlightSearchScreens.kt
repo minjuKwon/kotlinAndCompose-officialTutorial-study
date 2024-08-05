@@ -37,7 +37,13 @@ fun FlightSearchScreen(
             LoadingScreen(modifier=modifier)
         }
         is AirportUiState.Error->{
-            ErrorScreen(modifier=modifier)
+            ErrorScreen(
+                onHomeScreenChange={ airPortViewModel
+                        .updateAirportUiState(AirportUiState.EmptySearch)},
+                onSearchScreenChange={ airPortViewModel
+                    .updateAirportUiState(AirportUiState.Searching())},
+                modifier=modifier
+            )
         }
         is AirportUiState.Searching->{
             val searchingUiState = (airportUiState as AirportUiState.Searching)
@@ -81,6 +87,7 @@ fun FlightSearchScreen(
             CheckBookmarkUiStateScreen(
                 bookmarkUiState=bookmarkUiState,
                 bookmarkViewModel = bookmarkViewModel,
+                airPortViewModel=airPortViewModel,
                 text=text,
                 onTextChange={
                     text=it
@@ -102,6 +109,7 @@ fun FlightSearchScreen(
 fun CheckBookmarkUiStateScreen(
     bookmarkUiState: BookmarkUiState,
     bookmarkViewModel:BookmarkViewModel,
+    airPortViewModel: AirportViewModel,
     text:String,
     onTextChange:(String)->Unit,
     onSearch:(String)->Unit,
@@ -131,7 +139,13 @@ fun CheckBookmarkUiStateScreen(
             )
         }
         is BookmarkUiState.Error->{
-            ErrorScreen(modifier=modifier)
+            ErrorScreen(
+                onHomeScreenChange={ airPortViewModel
+                    .updateAirportUiState(AirportUiState.EmptySearch)},
+                onSearchScreenChange={ airPortViewModel
+                    .updateAirportUiState(AirportUiState.Searching())}
+                ,modifier=modifier
+            )
         }
     }
 }
