@@ -1,10 +1,14 @@
 package com.example.flightsearch.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,7 +33,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,7 +48,10 @@ import com.example.flightsearch.viewmodel.airport.Item
 fun LoadingScreen(
     modifier:Modifier=Modifier
 ){
-    Box(modifier=modifier){
+    Box(
+        modifier=modifier,
+        contentAlignment = Alignment.Center
+    ){
         CircularProgressIndicator()
     }
 }
@@ -53,12 +62,29 @@ fun ErrorScreen(
     onSearchScreenChange:()->Unit,
     modifier:Modifier=Modifier
 ){
-    Column(modifier=modifier){
+    Column(
+        modifier=modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
         Icon(
             imageVector = Icons.Default.Warning,
-            contentDescription = stringResource(R.string.error)
+            contentDescription = stringResource(R.string.error),
+            modifier= Modifier
+                .size(
+                    dimensionResource(R.dimen.error_screen_icon_size)
+                )
+                .padding(
+                    bottom = dimensionResource(R.dimen.error_screen_icon_padding_bottom)
+                )
         )
-        Button(onClick = onHomeScreenChange) {
+        Button(
+            onClick = onHomeScreenChange,
+            modifier=Modifier
+                .padding(
+                    bottom=dimensionResource(R.dimen.error_screen_button_padding_bottom)
+                )
+        ) {
             Text(stringResource(R.string.back_to_home))
         }
         Button(onClick = onSearchScreenChange) {
@@ -71,8 +97,15 @@ fun ErrorScreen(
 fun EmptyScreen(
     modifier:Modifier=Modifier
 ){
-    Box(modifier=modifier){
-        Text(stringResource(R.string.empty))
+    Box(
+        modifier=modifier,
+        contentAlignment = Alignment.TopCenter
+    ){
+        Text(
+            stringResource(R.string.empty),
+            modifier=Modifier
+                .padding(top=dimensionResource(R.dimen.empty_screen_text_padding_top))
+        )
     }
 }
 
@@ -85,7 +118,10 @@ fun SearchingScreen(
     onReset: (String) -> Unit,
     modifier:Modifier=Modifier
 ){
-    Column(modifier=modifier) {
+    Column(
+        modifier=modifier,
+        horizontalAlignment=Alignment.CenterHorizontally
+    ) {
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
@@ -113,14 +149,22 @@ fun SearchResultScreen(
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
 ){
-    Column(modifier=modifier) {
+    Column(
+        modifier=modifier,
+        horizontalAlignment=Alignment.CenterHorizontally
+    ) {
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
             onSearch= onSearch,
             onReset = onReset
         )
-        Text(listTitle)
+        Text(
+            text=listTitle,
+            modifier= Modifier
+                .align(Alignment.Start)
+                .padding(dimensionResource(R.dimen.search_result_screen_title_text_padding))
+        )
         LazyColumn{
             items(items,key={it.id}){
                 FlightSearchAirportList(
@@ -146,14 +190,22 @@ fun BookmarkScreen(
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
 ){
-    Column(modifier=modifier) {
+    Column(
+        modifier=modifier,
+        horizontalAlignment=Alignment.CenterHorizontally
+    ) {
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
             onSearch= onSearch,
             onReset = onReset
         )
-        Text(listTitle)
+        Text(
+            text=listTitle,
+            modifier= Modifier
+                .align(Alignment.Start)
+                .padding(dimensionResource(R.dimen.bookmark_screen_title_text_padding))
+        )
         if(items?.isEmpty()==false){
             LazyColumn{
                 items(items=items,key={it.id}){
@@ -204,7 +256,9 @@ fun SearchField(
         keyboardActions= KeyboardActions(
             onSearch = {onSearch(query)},
         ),
-        modifier= Modifier.fillMaxWidth()
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(R.dimen.search_field_padding))
     )
 }
 
@@ -216,21 +270,51 @@ fun FlightSearchAirportList(
     onDelete:(Bookmark)->Unit
 ){
     var isBookmarked by rememberSaveable{mutableStateOf(false)}
-    Card{
-        Row{
+    Card(
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(R.dimen.airport_list_item_padding_horizontal),
+                vertical = dimensionResource(R.dimen.airport_list_item_padding_vertical)
+            )
+    ){
+        Row(
+            modifier= Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.airport_list_item_content_padding)),
+            verticalAlignment = Alignment.CenterVertically
+        ){
             Column {
                 Text(text= stringResource(R.string.depart))
-                Row{
+                Row(modifier=Modifier
+                    .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
+                ){
                     Text(text=item.iataCode)
-                    Text(text=item.name)
+                    Text(
+                        text=item.name,
+                        modifier=Modifier.padding(start= dimensionResource(R.dimen.airport_list_item_content_text_padding_start))
+                    )
                 }
-                Text(text= stringResource(R.string.arrive))
-                Row{
+                Text(
+                    text= stringResource(R.string.arrive),
+                    modifier=Modifier
+                        .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
+                )
+                Row(
+                    modifier=Modifier
+                        .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
+                ){
                     Text(text=airport.name)
-                    Text(text=airport.iataCode)
+                    Text(
+                        text=airport.iataCode,
+                        modifier=Modifier
+                            .padding(start= dimensionResource(R.dimen.airport_list_item_content_text_padding_start))
+                    )
                 }
             }
-            IconButton(onClick = {
+            Spacer(modifier=Modifier.weight(1f))
+            IconButton(
+                onClick = {
                 isBookmarked = if(isBookmarked){
                     onDelete(
                         Bookmark(
@@ -266,14 +350,31 @@ fun FlightSearchBookmarkList(
     onDelete:(Bookmark)->Unit
 ){
     var isBookmarked by remember{mutableStateOf(true)}
-    Card{
-        Row{
-            Column {
+    Card(
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(R.dimen.bookmark_list_item_padding_horizontal),
+                vertical = dimensionResource(R.dimen.bookmark_list_item_padding_vertical)
+            )
+    ){
+        Row(
+            modifier= Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.bookmark_list_item_content_padding)),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Column(
+                verticalArrangement = Arrangement.spacedBy(
+                    dimensionResource(R.dimen.bookmark_list_item_content_text_padding_top)
+                )
+            ) {
                 Text(text= stringResource(R.string.depart))
                 Text(text=bookmark.departureCode)
                 Text(text= stringResource(R.string.arrive))
                 Text(text=bookmark.destinationCode)
             }
+            Spacer(modifier=Modifier.weight(1f))
             IconButton(onClick = {
                 isBookmarked = if(isBookmarked){
                     onDelete(bookmark)
@@ -297,8 +398,17 @@ fun FlightSearchBookmarkList(
 fun FlightSearchRecommendItem(
     airport: Airport
 ){
-    Row{
-        Text(text=airport.iataCode+"\r")
+    Row(
+        modifier=Modifier
+            .padding(top=dimensionResource(R.dimen.searching_recommend_item_padding_top)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ){
+        Text(
+            text=airport.iataCode,
+            modifier=Modifier
+                .padding(end=dimensionResource(R.dimen.searching_recommend_item_text_padding_end))
+        )
         Text(text=airport.name)
     }
 }

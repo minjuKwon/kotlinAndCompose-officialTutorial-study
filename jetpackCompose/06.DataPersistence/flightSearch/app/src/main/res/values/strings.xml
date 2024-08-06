@@ -14,8 +14,8 @@
     <string name="bookmark_list_title">Favorite routes</string>
 
     <string name="error">오류 발생</string>
-    <string name="empty">검색창에 검색어를 입력하세요</string>
+    <string name="empty">검색창에 항공 식별 코드를 입력하세요</string>
 
-    <string name="back_to_home">홈화면으로 돌아가기</string>
-    <string name="back_to_search">검색화면으로 돌아가기</string>
+    <string name="back_to_home">홈화면 이동</string>
+    <string name="back_to_search">검색화면 이동</string>
 </resources>

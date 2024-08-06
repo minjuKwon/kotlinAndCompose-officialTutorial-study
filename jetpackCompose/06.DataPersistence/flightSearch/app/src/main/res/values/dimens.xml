@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="error_screen_icon_size">140dp</dimen>
+    <dimen name="error_screen_icon_padding_bottom">24dp</dimen>
+    <dimen name="error_screen_button_padding_bottom">12dp</dimen>
+
+    <dimen name="empty_screen_text_padding_top">12dp</dimen>
+
+    <dimen name="search_result_screen_title_text_padding">12dp</dimen>
+
+    <dimen name="searching_recommend_item_padding_top">8dp</dimen>
+    <dimen name="searching_recommend_item_text_padding_end">8dp</dimen>
+
+    <dimen name="search_field_padding">12dp</dimen>
+
+    <dimen name="airport_list_item_padding_horizontal">12dp</dimen>
+    <dimen name="airport_list_item_padding_vertical">4dp</dimen>
+    <dimen name="airport_list_item_content_padding">20dp</dimen>
+    <dimen name="airport_list_item_content_text_padding_top">4dp</dimen>
+    <dimen name="airport_list_item_content_text_padding_start">4dp</dimen>
+
+    <dimen name="bookmark_screen_title_text_padding">12dp</dimen>
+
+    <dimen name="bookmark_list_item_padding_horizontal">12dp</dimen>
+    <dimen name="bookmark_list_item_padding_vertical">4dp</dimen>
+    <dimen name="bookmark_list_item_content_padding">20dp</dimen>
+    <dimen name="bookmark_list_item_content_text_padding_top">4dp</dimen>
+</resources>
