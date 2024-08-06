@@ -59,7 +59,10 @@ fun FlightSearchScreen(
                     },
                     items= searchingUiState.searchList,
                     onSearch={airPortViewModel.getAirportList(text)},
-                    onReset={ text=it },
+                    onReset={
+                        airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
+                        text=it
+                    },
                     modifier=modifier
                 )
             }
