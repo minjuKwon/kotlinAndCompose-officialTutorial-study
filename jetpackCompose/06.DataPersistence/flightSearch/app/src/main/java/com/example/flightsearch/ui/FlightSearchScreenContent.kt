@@ -284,7 +284,7 @@ fun FlightSearchAirportList(
                 .padding(dimensionResource(R.dimen.airport_list_item_content_padding)),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Column {
+            Column(modifier=Modifier.fillMaxWidth(0.8f)) {
                 Text(text= stringResource(R.string.depart))
                 Row(modifier=Modifier
                     .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
@@ -304,15 +304,14 @@ fun FlightSearchAirportList(
                     modifier=Modifier
                         .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
                 ){
-                    Text(text=airport.name)
+                    Text(text=airport.iataCode)
                     Text(
-                        text=airport.iataCode,
+                        text=airport.name,
                         modifier=Modifier
                             .padding(start= dimensionResource(R.dimen.airport_list_item_content_text_padding_start))
                     )
                 }
             }
-            Spacer(modifier=Modifier.weight(1f))
             IconButton(
                 onClick = {
                 isBookmarked = if(isBookmarked){
@@ -400,9 +399,13 @@ fun FlightSearchRecommendItem(
 ){
     Row(
         modifier=Modifier
-            .padding(top=dimensionResource(R.dimen.searching_recommend_item_padding_top)),
+            .fillMaxWidth()
+            .padding(
+                horizontal=dimensionResource(R.dimen.searching_recommend_item_padding_horizontal),
+                vertical=dimensionResource(R.dimen.searching_recommend_item_padding_vertical)
+            ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start
     ){
         Text(
             text=airport.iataCode,
