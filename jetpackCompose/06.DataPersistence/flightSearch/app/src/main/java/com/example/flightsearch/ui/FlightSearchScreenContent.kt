@@ -39,6 +39,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Airport
 import com.example.flightsearch.data.model.Bookmark
@@ -111,22 +112,24 @@ fun EmptyScreen(
 
 @Composable
 fun SearchingScreen(
-    searchQuery:String,
-    onSearchQueryChange:(String)->Unit,
+    searchQuery:TextFieldValue,
+    onSearchQueryChange:(TextFieldValue)->Unit,
     items:List<Airport>,
     onSearch:(String)->Unit,
-    onReset: (String) -> Unit,
-    modifier:Modifier=Modifier
+    onReset: (TextFieldValue) -> Unit,
+    screenModifier:Modifier=Modifier,
+    textFieldModifier:Modifier=Modifier
 ){
     Column(
-        modifier=modifier,
+        modifier=screenModifier,
         horizontalAlignment=Alignment.CenterHorizontally
     ) {
         SearchField(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
             onSearch= onSearch,
-            onReset = onReset
+            onReset = onReset,
+            modifier=textFieldModifier
         )
         LazyColumn{
             items(items,key={it.id}){
@@ -138,13 +141,13 @@ fun SearchingScreen(
 
 @Composable
 fun SearchResultScreen(
-    searchQuery:String,
-    onSearchQueryChange:(String)->Unit,
+    searchQuery:TextFieldValue,
+    onSearchQueryChange:(TextFieldValue)->Unit,
     listTitle:String,
     items:List<Airport>,
     item:Item,
     onSearch:(String)->Unit,
-    onReset: (String) -> Unit,
+    onReset: (TextFieldValue) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
@@ -180,12 +183,12 @@ fun SearchResultScreen(
 
 @Composable
 fun BookmarkScreen(
-    searchQuery:String,
-    onSearchQueryChange:(String)->Unit,
+    searchQuery:TextFieldValue,
+    onSearchQueryChange:(TextFieldValue)->Unit,
     listTitle:String,
     items:List<Bookmark>?,
     onSearch:(String)->Unit,
-    onReset: (String) -> Unit,
+    onReset: (TextFieldValue) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier:Modifier=Modifier
@@ -225,10 +228,11 @@ fun BookmarkScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchField(
-    query:String,
-    onQueryChange:(String)->Unit,
+    query:TextFieldValue,
+    onQueryChange:(TextFieldValue)->Unit,
     onSearch:(String)->Unit,
-    onReset:(String)->Unit
+    onReset:(TextFieldValue)->Unit,
+    modifier:Modifier=Modifier
 ){
     TextField(
         value = query,
@@ -238,14 +242,14 @@ fun SearchField(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = stringResource(R.string.search),
-                modifier=Modifier.clickable{onSearch(query)}
+                modifier=Modifier.clickable{onSearch(query.text)}
             )
         },
         trailingIcon={
             Icon(
                 imageVector=Icons.Default.Close,
                 contentDescription = stringResource(R.string.keyword_reset),
-                modifier=Modifier.clickable{onReset("")}
+                modifier=Modifier.clickable{onReset(TextFieldValue(""))}
 
             )
         },
@@ -254,9 +258,9 @@ fun SearchField(
             keyboardType = KeyboardType.Text
         ),
         keyboardActions= KeyboardActions(
-            onSearch = {onSearch(query)},
+            onSearch = {onSearch(query.text)},
         ),
-        modifier= Modifier
+        modifier= modifier
             .fillMaxWidth()
             .padding(dimensionResource(R.dimen.search_field_padding))
     )

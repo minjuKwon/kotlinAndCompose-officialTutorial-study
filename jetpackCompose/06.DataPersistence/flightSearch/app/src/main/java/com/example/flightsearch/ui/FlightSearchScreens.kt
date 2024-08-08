@@ -1,14 +1,21 @@
 package com.example.flightsearch.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Bookmark
@@ -19,6 +26,7 @@ import com.example.flightsearch.viewmodel.bookmark.BookmarkUiState
 import com.example.flightsearch.viewmodel.bookmark.BookmarkViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FlightSearchScreen(
     modifier:Modifier=Modifier,
@@ -30,7 +38,11 @@ fun FlightSearchScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    var text by remember{mutableStateOf(airPortViewModel.searchingText)}
+    var text by remember{mutableStateOf(TextFieldValue(airPortViewModel.searchingText))}
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    val currentFocusRequester by remember{mutableStateOf(focusRequester)}
 
     when(airportUiState){
         is AirportUiState.Loading->{
@@ -47,23 +59,33 @@ fun FlightSearchScreen(
         }
         is AirportUiState.Searching->{
             val searchingUiState = (airportUiState as AirportUiState.Searching)
-            if(text.isEmpty()){
+            if(text.text.isEmpty()){
                 airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
+                keyboardController?.hide()
             }else{
+                LaunchedEffect(Unit) {
+                    currentFocusRequester.requestFocus()
+                }
                 SearchingScreen(
                     searchQuery = text,
                     onSearchQueryChange={
                         text=it
-                        airPortViewModel.updateText(it)
+                        airPortViewModel.updateText(it.text)
                         airPortViewModel.searchByKeyword()
                     },
                     items= searchingUiState.searchList,
-                    onSearch={airPortViewModel.getAirportList(text)},
+                    onSearch={airPortViewModel.getAirportList(text.text)},
                     onReset={
                         airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
                         text=it
                     },
-                    modifier=modifier
+                    screenModifier=modifier,
+                    textFieldModifier=Modifier.focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                keyboardController?.show()
+                            }
+                        }
                 )
             }
         }
@@ -73,7 +95,7 @@ fun FlightSearchScreen(
                 searchQuery=text,
                 onSearchQueryChange = {
                     text=it
-                    airPortViewModel.updateText(it)
+                    airPortViewModel.updateText(it.text)
                     airPortViewModel.searchByKeyword()
                 },
                 listTitle=stringResource(R.string.result_list_title),
@@ -94,10 +116,10 @@ fun FlightSearchScreen(
                 text=text,
                 onTextChange={
                     text=it
-                    airPortViewModel.updateText(it)
+                    airPortViewModel.updateText(it.text)
                     airPortViewModel.searchByKeyword()
                     },
-                onSearch={airPortViewModel.getAirportList(text)},
+                onSearch={airPortViewModel.getAirportList(text.text)},
                 onReset = { text=it },
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
                 onDelete={bookmarkViewModel.deleteItem(it)},
@@ -113,10 +135,10 @@ fun CheckBookmarkUiStateScreen(
     bookmarkUiState: BookmarkUiState,
     bookmarkViewModel:BookmarkViewModel,
     airPortViewModel: AirportViewModel,
-    text:String,
-    onTextChange:(String)->Unit,
+    text:TextFieldValue,
+    onTextChange:(TextFieldValue)->Unit,
     onSearch:(String)->Unit,
-    onReset: (String) -> Unit,
+    onReset: (TextFieldValue) -> Unit,
     onInsert:(Bookmark)->Unit,
     onDelete:(Bookmark)->Unit,
     modifier: Modifier=Modifier
@@ -134,7 +156,7 @@ fun CheckBookmarkUiStateScreen(
                 },
                 listTitle=stringResource(R.string.bookmark_list_title),
                 items= bookmarkUiState.itemList,
-                onSearch= {onSearch(text)},
+                onSearch= {onSearch(text.text)},
                 onReset= onReset,
                 onInsert=onInsert,
                 onDelete=onDelete,
