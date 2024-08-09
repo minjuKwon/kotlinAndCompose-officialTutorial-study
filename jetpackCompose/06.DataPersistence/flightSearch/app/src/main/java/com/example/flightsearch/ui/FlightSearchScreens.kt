@@ -82,8 +82,8 @@ fun FlightSearchScreen(
                     screenModifier=modifier,
                     textFieldModifier=Modifier.focusRequester(focusRequester)
                         .onFocusChanged { focusState ->
-                            if (focusState.isFocused) {
-                                keyboardController?.show()
+                            if (!focusState.isFocused) {
+                                currentFocusRequester.requestFocus()
                             }
                         }
                 )
