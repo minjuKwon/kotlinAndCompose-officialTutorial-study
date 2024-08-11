@@ -234,9 +234,12 @@ fun SearchField(
     onReset:(TextFieldValue)->Unit,
     modifier:Modifier=Modifier
 ){
+    //onReset 올바른 타이밍 적용하기 위한 플래그
+    //onValueChange 새로운 값이 리셋된 값으로 적용되지 않는 문제 방지
+    var isResetting by remember{ mutableStateOf(true) }
     TextField(
         value = query,
-        onValueChange = onQueryChange,
+        onValueChange = {if(isResetting) onQueryChange(it) else onReset(TextFieldValue(""))},
         label={Text(stringResource(R.string.search_label))},
         leadingIcon = {
             Icon(
@@ -249,7 +252,10 @@ fun SearchField(
             Icon(
                 imageVector=Icons.Default.Close,
                 contentDescription = stringResource(R.string.keyword_reset),
-                modifier=Modifier.clickable{onReset(TextFieldValue(""))}
+                modifier=Modifier.clickable{
+                    isResetting=false
+                    onReset(TextFieldValue(""))
+                }
 
             )
         },
@@ -264,6 +270,7 @@ fun SearchField(
             .fillMaxWidth()
             .padding(dimensionResource(R.dimen.search_field_padding))
     )
+    isResetting=true
 }
 
 @Composable
