@@ -1,7 +1,6 @@
 package com.example.flightsearch.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,9 +62,6 @@ fun FlightSearchScreen(
                 airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
                 keyboardController?.hide()
             }else{
-                LaunchedEffect(Unit) {
-                    currentFocusRequester.requestFocus()
-                }
                 SearchingScreen(
                     searchQuery = text,
                     onSearchQueryChange={
@@ -74,7 +70,7 @@ fun FlightSearchScreen(
                         airPortViewModel.searchByKeyword()
                     },
                     items= searchingUiState.searchList,
-                    onSearch={airPortViewModel.getAirportList(text.text)},
+                    onSearch={airPortViewModel.getAirportList(it)},
                     onReset={
                         airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
                         text=it
@@ -119,7 +115,7 @@ fun FlightSearchScreen(
                     airPortViewModel.updateText(it.text)
                     airPortViewModel.searchByKeyword()
                     },
-                onSearch={airPortViewModel.getAirportList(text.text)},
+                onSearch={airPortViewModel.getAirportList(it)},
                 onReset = { text=it },
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
                 onDelete={bookmarkViewModel.deleteItem(it)},
@@ -156,7 +152,7 @@ fun CheckBookmarkUiStateScreen(
                 },
                 listTitle=stringResource(R.string.bookmark_list_title),
                 items= bookmarkUiState.itemList,
-                onSearch= {onSearch(text.text)},
+                onSearch= {onSearch(it)},
                 onReset= onReset,
                 onInsert=onInsert,
                 onDelete=onDelete,
