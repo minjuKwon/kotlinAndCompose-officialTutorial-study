@@ -10,7 +10,13 @@ sealed class AirportUiState{
         val itemList:List<Airport> = emptyList(),
         val item: Item = Item()
     ): AirportUiState()
-    object EmptySearch: AirportUiState()
+    data class EmptySearch(
+        val mode:Int= EMPTY_LIST
+    ): AirportUiState()
     object Error:AirportUiState()
     object Loading:AirportUiState()
 }
+
+const val EMPTY_LIST=1
+const val INVALID_QUERY=2
+

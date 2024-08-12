@@ -50,7 +50,7 @@ fun FlightSearchScreen(
         is AirportUiState.Error->{
             ErrorScreen(
                 onHomeScreenChange={ airPortViewModel
-                        .updateAirportUiState(AirportUiState.EmptySearch)},
+                        .updateAirportUiState(AirportUiState.EmptySearch())},
                 onSearchScreenChange={ airPortViewModel
                     .updateAirportUiState(AirportUiState.Searching())},
                 modifier=modifier
@@ -59,7 +59,7 @@ fun FlightSearchScreen(
         is AirportUiState.Searching->{
             val searchingUiState = (airportUiState as AirportUiState.Searching)
             if(text.text.isEmpty()){
-                airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
+                airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
                 keyboardController?.hide()
             }else{
                 SearchingScreen(
@@ -72,7 +72,7 @@ fun FlightSearchScreen(
                     items= searchingUiState.searchList,
                     onSearch={airPortViewModel.getAirportList(it)},
                     onReset={
-                        airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch)
+                        airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
                         text=it
                     },
                     screenModifier=modifier,
@@ -98,23 +98,28 @@ fun FlightSearchScreen(
                 items=searchResultUiState.itemList,
                 item=searchResultUiState.item,
                 onSearch={airPortViewModel.getAirportList(it)},
-                onReset={text=it},
+                onReset={
+                    airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
+                    text=it
+                },
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
                 onDelete={bookmarkViewModel.deleteItem(it)},
                 modifier=modifier
             )
         }
         is AirportUiState.EmptySearch->{
+            val emptyUiState = (airportUiState as AirportUiState.EmptySearch)
             CheckBookmarkUiStateScreen(
                 bookmarkUiState=bookmarkUiState,
                 bookmarkViewModel = bookmarkViewModel,
                 airPortViewModel=airPortViewModel,
                 text=text,
+                emptyScreenMode = emptyUiState.mode,
                 onTextChange={
                     text=it
                     airPortViewModel.updateText(it.text)
                     airPortViewModel.searchByKeyword()
-                    },
+                },
                 onSearch={airPortViewModel.getAirportList(it)},
                 onReset = { text=it },
                 onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
@@ -132,6 +137,7 @@ fun CheckBookmarkUiStateScreen(
     bookmarkViewModel:BookmarkViewModel,
     airPortViewModel: AirportViewModel,
     text:TextFieldValue,
+    emptyScreenMode:Int,
     onTextChange:(TextFieldValue)->Unit,
     onSearch:(String)->Unit,
     onReset: (TextFieldValue) -> Unit,
@@ -151,6 +157,7 @@ fun CheckBookmarkUiStateScreen(
                     onTextChange(it)
                 },
                 listTitle=stringResource(R.string.bookmark_list_title),
+                emptyScreenMode=emptyScreenMode,
                 items= bookmarkUiState.itemList,
                 onSearch= {onSearch(it)},
                 onReset= onReset,
@@ -162,7 +169,7 @@ fun CheckBookmarkUiStateScreen(
         is BookmarkUiState.Error->{
             ErrorScreen(
                 onHomeScreenChange={ airPortViewModel
-                    .updateAirportUiState(AirportUiState.EmptySearch)},
+                    .updateAirportUiState(AirportUiState.EmptySearch())},
                 onSearchScreenChange={ airPortViewModel
                     .updateAirportUiState(AirportUiState.Searching())}
                 ,modifier=modifier

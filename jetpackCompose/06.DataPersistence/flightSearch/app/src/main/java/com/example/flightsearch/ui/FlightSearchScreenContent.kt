@@ -43,6 +43,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Airport
 import com.example.flightsearch.data.model.Bookmark
+import com.example.flightsearch.viewmodel.airport.EMPTY_LIST
+import com.example.flightsearch.viewmodel.airport.INVALID_QUERY
 import com.example.flightsearch.viewmodel.airport.Item
 
 @Composable
@@ -96,6 +98,7 @@ fun ErrorScreen(
 
 @Composable
 fun EmptyScreen(
+    mode:Int,
     modifier:Modifier=Modifier
 ){
     Box(
@@ -103,7 +106,9 @@ fun EmptyScreen(
         contentAlignment = Alignment.TopCenter
     ){
         Text(
-            stringResource(R.string.empty),
+            text=
+            if(mode==INVALID_QUERY) stringResource(R.string.invalid_query)
+            else stringResource(R.string.empty),
             modifier=Modifier
                 .padding(top=dimensionResource(R.dimen.empty_screen_text_padding_top))
         )
@@ -187,6 +192,7 @@ fun BookmarkScreen(
     onSearchQueryChange:(TextFieldValue)->Unit,
     listTitle:String,
     items:List<Bookmark>?,
+    emptyScreenMode:Int,
     onSearch:(String)->Unit,
     onReset: (TextFieldValue) -> Unit,
     onInsert:(Bookmark)->Unit,
@@ -220,7 +226,7 @@ fun BookmarkScreen(
                 }
             }
         }else{
-            EmptyScreen()
+            EmptyScreen(emptyScreenMode)
         }
     }
 }
@@ -409,11 +415,11 @@ fun FlightSearchRecommendItem(
     airport: Airport
 ){
     Row(
-        modifier=Modifier
+        modifier= Modifier
             .fillMaxWidth()
             .padding(
-                horizontal=dimensionResource(R.dimen.searching_recommend_item_padding_horizontal),
-                vertical=dimensionResource(R.dimen.searching_recommend_item_padding_vertical)
+                horizontal = dimensionResource(R.dimen.searching_recommend_item_padding_horizontal),
+                vertical = dimensionResource(R.dimen.searching_recommend_item_padding_vertical)
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start

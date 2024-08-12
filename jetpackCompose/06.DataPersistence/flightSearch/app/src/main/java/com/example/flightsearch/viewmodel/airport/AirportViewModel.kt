@@ -16,7 +16,7 @@ class AirportViewModel(
     private val repository: FlightAirportRepository
 ) : ViewModel() {
 
-    private val _airportUiState = MutableStateFlow<AirportUiState>(AirportUiState.EmptySearch)
+    private val _airportUiState = MutableStateFlow<AirportUiState>(AirportUiState.EmptySearch())
     val airportUiState: StateFlow<AirportUiState> = _airportUiState
 
     var searchingText by mutableStateOf("")
@@ -34,7 +34,7 @@ class AirportViewModel(
         viewModelScope.launch {
             _airportUiState.value= AirportUiState.Loading
             _airportUiState.value=try{
-                if(word.isEmpty()) AirportUiState.EmptySearch
+                if(word.isEmpty()) AirportUiState.EmptySearch()
                 else{
                     val item=repository.getAirportStream(word).first().toItem()
                     val itemList = repository.getAirportsListStream(word).first()
@@ -51,11 +51,11 @@ class AirportViewModel(
         viewModelScope.launch {
             _airportUiState.value=try{
                 if(searchingText.isEmpty()){
-                    AirportUiState.EmptySearch
+                    AirportUiState.EmptySearch()
                 }else{
                     val searchList = repository.searchByKeywordStream(searchingText).first()
                     if(searchList.isEmpty()){
-                        AirportUiState.EmptySearch
+                        AirportUiState.EmptySearch(INVALID_QUERY)
                     }else{
                         repository.saveSearchWordPreference(searchingText)
                         AirportUiState.Searching(searchList=searchList)
