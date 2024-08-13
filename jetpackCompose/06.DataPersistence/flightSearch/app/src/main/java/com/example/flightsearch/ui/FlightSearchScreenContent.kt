@@ -15,18 +15,19 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,15 +36,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Airport
 import com.example.flightsearch.data.model.Bookmark
-import com.example.flightsearch.viewmodel.airport.EMPTY_LIST
+import com.example.flightsearch.ui.theme.Brown
+import com.example.flightsearch.ui.theme.SkyBlue
 import com.example.flightsearch.viewmodel.airport.INVALID_QUERY
 import com.example.flightsearch.viewmodel.airport.Item
 
@@ -169,6 +173,7 @@ fun SearchResultScreen(
         )
         Text(
             text=listTitle,
+            fontWeight=FontWeight.Bold,
             modifier= Modifier
                 .align(Alignment.Start)
                 .padding(dimensionResource(R.dimen.search_result_screen_title_text_padding))
@@ -211,6 +216,7 @@ fun BookmarkScreen(
         )
         Text(
             text=listTitle,
+            fontWeight=FontWeight.Bold,
             modifier= Modifier
                 .align(Alignment.Start)
                 .padding(dimensionResource(R.dimen.bookmark_screen_title_text_padding))
@@ -274,7 +280,10 @@ fun SearchField(
         ),
         modifier= modifier
             .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.search_field_padding))
+            .padding(dimensionResource(R.dimen.search_field_padding)),
+        colors=TextFieldDefaults.textFieldColors(
+            containerColor = SkyBlue
+        )
     )
     isResetting=true
 }
@@ -293,7 +302,8 @@ fun FlightSearchAirportList(
             .padding(
                 horizontal = dimensionResource(R.dimen.airport_list_item_padding_horizontal),
                 vertical = dimensionResource(R.dimen.airport_list_item_padding_vertical)
-            )
+            ),
+        colors=CardDefaults.cardColors(Color.LightGray)
     ){
         Row(
             modifier= Modifier
@@ -306,7 +316,7 @@ fun FlightSearchAirportList(
                 Row(modifier=Modifier
                     .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
                 ){
-                    Text(text=item.iataCode)
+                    Text(text=item.iataCode,fontWeight=FontWeight.Bold)
                     Text(
                         text=item.name,
                         modifier=Modifier.padding(start= dimensionResource(R.dimen.airport_list_item_content_text_padding_start))
@@ -321,7 +331,7 @@ fun FlightSearchAirportList(
                     modifier=Modifier
                         .padding(top= dimensionResource(R.dimen.airport_list_item_content_text_padding_top))
                 ){
-                    Text(text=airport.iataCode)
+                    Text(text=airport.iataCode,fontWeight=FontWeight.Bold)
                     Text(
                         text=airport.name,
                         modifier=Modifier
@@ -351,8 +361,9 @@ fun FlightSearchAirportList(
             }) {
                 Icon(
                     imageVector = if(isBookmarked){Icons.Default.Bookmark}
-                    else {Icons.Default.BookmarkBorder},
-                    contentDescription = stringResource(R.string.bookmark)
+                    else {Icons.Default.Bookmark},
+                    contentDescription = stringResource(R.string.bookmark),
+                    tint=if(isBookmarked)Brown else Color.DarkGray
                 )
             }
         }
@@ -372,7 +383,8 @@ fun FlightSearchBookmarkList(
             .padding(
                 horizontal = dimensionResource(R.dimen.bookmark_list_item_padding_horizontal),
                 vertical = dimensionResource(R.dimen.bookmark_list_item_padding_vertical)
-            )
+            ),
+        colors=CardDefaults.cardColors(Color.LightGray)
     ){
         Row(
             modifier= Modifier
@@ -386,9 +398,9 @@ fun FlightSearchBookmarkList(
                 )
             ) {
                 Text(text= stringResource(R.string.depart))
-                Text(text=bookmark.departureCode)
+                Text(text=bookmark.departureCode,fontWeight=FontWeight.Bold)
                 Text(text= stringResource(R.string.arrive))
-                Text(text=bookmark.destinationCode)
+                Text(text=bookmark.destinationCode,fontWeight=FontWeight.Bold)
             }
             Spacer(modifier=Modifier.weight(1f))
             IconButton(onClick = {
@@ -402,8 +414,9 @@ fun FlightSearchBookmarkList(
             }) {
                 Icon(
                     imageVector = if(isBookmarked){Icons.Default.Bookmark}
-                    else {Icons.Default.BookmarkBorder},
-                    contentDescription = stringResource(R.string.bookmark)
+                    else {Icons.Default.Bookmark},
+                    contentDescription = stringResource(R.string.bookmark),
+                    tint=if(isBookmarked)Brown else Color.DarkGray
                 )
             }
         }
@@ -426,6 +439,7 @@ fun FlightSearchRecommendItem(
     ){
         Text(
             text=airport.iataCode,
+            fontWeight=FontWeight.Bold,
             modifier=Modifier
                 .padding(end=dimensionResource(R.dimen.searching_recommend_item_text_padding_end))
         )

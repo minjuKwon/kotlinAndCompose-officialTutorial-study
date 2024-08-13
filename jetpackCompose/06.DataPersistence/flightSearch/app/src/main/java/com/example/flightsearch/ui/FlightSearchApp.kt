@@ -10,9 +10,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.example.flightsearch.R
+import com.example.flightsearch.ui.theme.Blue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,8 +47,16 @@ fun FlightSearchTopBar(
     modifier: Modifier = Modifier
 ){
     TopAppBar(
-        title= { Text(title) },
+        title= {
+            Text(
+                text=title,
+                color= Color.White
+            )
+        },
         scrollBehavior = scrollBehavior,
-        modifier=modifier
+        modifier=modifier,
+        colors=TopAppBarDefaults.mediumTopAppBarColors(
+            Blue
+        )
     )
 }
