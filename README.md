@@ -4,15 +4,15 @@
 # 내용
 ### 코틀린
 ### Jetpack
-1. 기초
-2. UI
-3. List and Design
+1. Introduce
+2. BuildingUI
+3. List and Material Design
     * [30Days](https://github.com/minjuKwon/kotlinAndCompose-officialTutorial-study/tree/main/jetpackCompose/03.ListAndMaterialDesign/Days30)
-4. Navigation, ViewModel and Adaptive layouts
+4. Navigation and Architecture
     * [MyCity](https://github.com/minjuKwon/kotlinAndCompose-officialTutorial-study/tree/main/jetpackCompose/04.NavigationAndArchitecture/MyCity)
-5. Coroutines, Retrofit and Coil
+5. Internet
     * [Bookshelf](https://github.com/minjuKwon/kotlinAndCompose-officialTutorial-study/tree/main/jetpackCompose/05.Internet/bookshelf)
-6. Room and Preference DataStore
+6. Data Persistence
     * [FlightSearch](https://github.com/minjuKwon/kotlinAndCompose-officialTutorial-study/tree/main/jetpackCompose/06.DataPersistence/flightSearch)
 7. WorkManager
 8. Views and Compose
