@@ -15,10 +15,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flightsearch.R
 import com.example.flightsearch.data.model.Bookmark
-import com.example.flightsearch.viewmodel.AppVieModelProvider
 import com.example.flightsearch.viewmodel.airport.AirportUiState
 import com.example.flightsearch.viewmodel.airport.AirportViewModel
 import com.example.flightsearch.viewmodel.bookmark.BookmarkUiState
@@ -29,8 +28,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun FlightSearchScreen(
     modifier:Modifier=Modifier,
-    airPortViewModel:AirportViewModel=viewModel(factory=AppVieModelProvider.Factory),
-    bookmarkViewModel:BookmarkViewModel=viewModel(factory=AppVieModelProvider.Factory)
+    airPortViewModel:AirportViewModel = hiltViewModel(),
+    bookmarkViewModel:BookmarkViewModel = hiltViewModel()
 ){
     val airportUiState by airPortViewModel.airportUiState.collectAsState()
     val bookmarkUiState by bookmarkViewModel.bookmarkUiState.collectAsState()

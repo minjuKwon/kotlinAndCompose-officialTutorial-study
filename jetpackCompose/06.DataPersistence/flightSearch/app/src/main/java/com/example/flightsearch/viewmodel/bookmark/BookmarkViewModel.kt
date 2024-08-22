@@ -4,14 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flightsearch.data.model.Bookmark
 import com.example.flightsearch.data.repository.FlightBookmarkRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BookmarkViewModel(
+@HiltViewModel
+class BookmarkViewModel @Inject constructor(
     private val repository: FlightBookmarkRepository
 ):ViewModel() {
 

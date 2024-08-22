@@ -12,8 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
 
-class OfflineFlightAirportRepository(
+class OfflineFlightAirportRepository @Inject constructor(
     private val airportDao: AirportDao,
     private val dataStore: DataStore<Preferences>
 ) : FlightAirportRepository {
