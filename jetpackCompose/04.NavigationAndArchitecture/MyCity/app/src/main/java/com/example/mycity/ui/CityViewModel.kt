@@ -74,17 +74,16 @@ class CityViewModel : ViewModel() {
 
         _uiState.update {
             var tempList:MutableList<Spot> = it.bookmarkList
-            if(spot.isBookmark){
-                tempList= (tempList + spot) as MutableList<Spot>
+            tempList = if(spot.isBookmark){
+                (tempList + spot) as MutableList<Spot>
             }else{
-                tempList= (tempList - spot) as MutableList<Spot>
-                if(it.currentSpotType==SpotType.Bookmark&&it.bookmarkList.size==0){
-                }
+                (tempList - spot) as MutableList<Spot>
             }
             it.copy(
                 bookmarkList = tempList
             )
         }
+
     }
 
 }

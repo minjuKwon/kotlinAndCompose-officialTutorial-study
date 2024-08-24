@@ -26,10 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,31 +64,24 @@ fun SpotListOnlyContent(
 
         if(cityUiState.currentSpotType==SpotType.Bookmark){
             items(cityUiState.bookmarkList, key = { it.id }){spot->
-                var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
                 SpotListItem(
                     spot = spot,
-                    pressed = pressedBookmark,
+                    pressed=false,
+                    isBookmarked = spot.isBookmark,
                     onCardClick = {onSpotCardPressed(spot)},
-                    onBookmarkClick = {
-                        pressedBookmark=!pressedBookmark
-                        cityViewModel.updateBookmarkList(spot)
-                    }
-
+                    onBookmarkClick = {cityViewModel.updateBookmarkList(spot)}
                 )
             }
         }
         else{
             val spots=cityUiState.currentSpotTypeList
             items(spots, key = { it.id }){spot->
-                var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
                 SpotListItem(
                     spot = spot,
-                    pressed = pressedBookmark,
+                    pressed = false,
+                    isBookmarked = spot.isBookmark,
                     onCardClick = {onSpotCardPressed(spot)},
-                    onBookmarkClick = {
-                        pressedBookmark=!pressedBookmark
-                        cityViewModel.updateBookmarkList(spot)
-                    }
+                    onBookmarkClick = {cityViewModel.updateBookmarkList(spot)}
                 )
             }
         }
@@ -109,58 +98,59 @@ fun SpotListAndDetailContent(
     onSpotCardPressed: (Spot) -> Unit,
     modifier: Modifier=Modifier
 ){
-    Row(modifier=modifier){
+    if(cityUiState.currentSpotType==SpotType.Bookmark
+        &&cityUiState.bookmarkList.isEmpty()){
+        BookMarkEmptyScreen()
+    }else{
 
-        LazyColumn(
-            modifier= Modifier
-                .weight(1f)
-                .padding(
-                    top = dimensionResource(R.dimen.list_and_detail_top_padding),
-                    end = dimensionResource(R.dimen.list_and_detail_end_padding)
-                ),
-            verticalArrangement = Arrangement.spacedBy(
-                dimensionResource(R.dimen.list_card_padding)
+        Row(modifier=modifier){
+
+            LazyColumn(
+                modifier= Modifier
+                    .weight(1f)
+                    .padding(
+                        top = dimensionResource(R.dimen.list_and_detail_top_padding),
+                        end = dimensionResource(R.dimen.list_and_detail_end_padding)
+                    ),
+                verticalArrangement = Arrangement.spacedBy(
+                    dimensionResource(R.dimen.list_card_padding)
+                )
+            ){
+                if(cityUiState.currentSpotType==SpotType.Bookmark){
+                    items(cityUiState.bookmarkList, key = { it.id }){spot->
+                        SpotListItem(
+                            spot = spot,
+                            pressed = cityUiState.currentSelectSpot.id==spot.id,
+                            isBookmarked = spot.isBookmark,
+                            onCardClick = {onSpotCardPressed(spot)},
+                            onBookmarkClick = { cityViewModel.updateBookmarkList(spot)}
+
+                        )
+                    }
+                }
+                else{
+                    val spots=cityUiState.currentSpotTypeList
+                    items(spots, key = { it.id }){spot->
+                        SpotListItem(
+                            spot = spot,
+                            pressed = cityUiState.currentSelectSpot.id==spot.id,
+                            isBookmarked = spot.isBookmark,
+                            onCardClick = {onSpotCardPressed(spot)},
+                            onBookmarkClick = { cityViewModel.updateBookmarkList(spot) }
+                        )
+                    }
+                }
+            }
+
+            val activity = LocalContext.current as Activity
+            CityDetailScreen(
+                cityUiState = cityUiState,
+                onBackPressed = {activity.finish() },
+                modifier=Modifier.weight(1f)
             )
-
-        ){
-            if(cityUiState.currentSpotType==SpotType.Bookmark){
-                items(cityUiState.bookmarkList, key = { it.id }){spot->
-                    var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
-                    SpotListItem(
-                        spot = spot,
-                        pressed = pressedBookmark,
-                        onCardClick = {onSpotCardPressed(spot)},
-                        onBookmarkClick = {
-                            pressedBookmark=!pressedBookmark
-                            cityViewModel.updateBookmarkList(spot)
-                        }
-
-                    )
-                }
-            }
-            else{
-                val spots=cityUiState.currentSpotTypeList
-                items(spots, key = { it.id }){spot->
-                    var pressedBookmark by remember {mutableStateOf(spot.isBookmark)}
-                    SpotListItem(
-                        spot = spot,
-                        pressed = pressedBookmark,
-                        onCardClick = {onSpotCardPressed(spot)},
-                        onBookmarkClick = {
-                            pressedBookmark=!pressedBookmark
-                            cityViewModel.updateBookmarkList(spot)
-                        }
-                    )
-                }
-            }
+            
         }
 
-        val activity = LocalContext.current as Activity
-        CityDetailScreen(
-            cityUiState = cityUiState,
-            onBackPressed = {activity.finish() },
-            modifier=Modifier.weight(1f)
-        )
     }
 }
 
@@ -204,6 +194,7 @@ fun BookMarkEmptyScreen(modifier:Modifier=Modifier){
 fun SpotListItem(
     spot:Spot,
     pressed:Boolean,
+    isBookmarked:Boolean,
     onCardClick:()->Unit,
     onBookmarkClick:(Spot)->Unit
 ){
@@ -271,7 +262,7 @@ fun SpotListItem(
             ) {
                 Icon(
                     imageVector =
-                    if(pressed) Icons.Default.Bookmark
+                    if(isBookmarked) Icons.Default.Bookmark
                     else Icons.Default.BookmarkBorder,
                     contentDescription = stringResource(R.string.move_to_bookmark),
                     tint = Color.Black
