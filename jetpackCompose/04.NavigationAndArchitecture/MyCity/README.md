@@ -7,10 +7,11 @@
 # 기간
 2024.05.10~2024.06.01
 # 기술 스택
-- Compose(LazyColumn,remember,stateflow,state)
+- Compose(LazyColumn,stateflow,state)
 - Navigation
 - ViewModel
 - UI Test(Espresso, JUnit)
+- MVVM 패턴
 # 주요 기능
 - 즐겨찾기
 - 기기 화면 크기에 따른 동적 화면 제공
