@@ -1,6 +1,5 @@
 package com.example.bookshelf.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,6 +13,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.bookshelf.BookshelfApplication
 import com.example.bookshelf.data.BookPagingSource
 import com.example.bookshelf.data.BookType
@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -43,15 +44,25 @@ class BookshelfViewModel(
     private val _currentOrder = MutableStateFlow(false)
     val currentOrder:StateFlow<Boolean> = _currentOrder
 
+    private val _textFieldKeyword = mutableStateOf("android")
+    val textFieldKeyword=_textFieldKeyword
+
     fun updateOrder(b:Boolean){
         _currentOrder.value= b
+    }
+
+    fun updateKeyword(input:String){
+        _textFieldKeyword.value=input
     }
 
     init {
         getInformation()
     }
 
-    fun getInformation(search:String="android",page:Int=1){
+    fun getInformation(
+        search:String=_textFieldKeyword.value,
+        page:Int=1
+    ){
 
         val pageData: Flow<PagingData<Book>> = Pager(
             config= PagingConfig(
@@ -62,14 +73,33 @@ class BookshelfViewModel(
 
         viewModelScope.launch {
             bookshelfUiState = try{
+
                 val totalCount=withContext(Dispatchers.IO){
                     bookshelfRepository
                         .getBookListInformation(search,10,0).totalCount
                 }
+
                 _currentPage.value=page
+
                 when(bookshelfUiState){
-                    is BookshelfUiState.Success-> (bookshelfUiState as BookshelfUiState.Success)
-                        .copy(list= PageData(pageData,totalCount))
+                    is BookshelfUiState.Success->{
+
+                        val pageDataBookmarked=pageData.map { page->
+                            page.map { data->
+                                data.copy(
+                                    bookInfo = data.bookInfo.copy(
+                                        isBookmarked =
+                                        (bookshelfUiState as BookshelfUiState.Success)
+                                            .bookmarkList.any { it.id==data.id }
+                                    )
+                                )
+                            }
+                        }
+
+                        (bookshelfUiState as BookshelfUiState.Success)
+                            .copy(list= PageData(pageDataBookmarked,totalCount))
+
+                    }
                     else-> BookshelfUiState.Success(
                         list= PageData(pageData,totalCount)
                     )

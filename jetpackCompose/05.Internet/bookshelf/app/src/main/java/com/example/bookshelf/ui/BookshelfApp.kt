@@ -24,6 +24,7 @@ fun BookshelfApp(
     val scrollState  = rememberLazyListState()
 
     val currentOrder by bookshelfViewModel.currentOrder.collectAsState()
+    val textFieldKeyword by bookshelfViewModel.textFieldKeyword
 
     when(windowSize){
         WindowWidthSizeClass.Compact->{
@@ -62,6 +63,8 @@ fun BookshelfApp(
             bookshelfViewModel.initCurrentItem(v1,v2) },
         currentOrder=currentOrder,
         updateOrder={bookshelfViewModel.updateOrder(it)},
+        textFieldKeyword=textFieldKeyword,
+        updateKeyword={bookshelfViewModel.updateKeyword(it)},
         modifier=modifier
     )
 }

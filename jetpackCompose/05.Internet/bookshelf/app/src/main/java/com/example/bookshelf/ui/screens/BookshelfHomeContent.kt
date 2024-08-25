@@ -30,10 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -341,7 +337,6 @@ private fun BookShelfListItem(
     onBookItemPressed:(BookInfo)->Unit,
     onBookMarkPressed:(Book)->Unit
 ){
-    var isBookmarked by remember{mutableStateOf(book.bookInfo.isBookmarked)}
     Row(
         modifier= Modifier
             .clickable { onBookItemPressed(book.bookInfo) }
@@ -378,11 +373,10 @@ private fun BookShelfListItem(
         ) {
             ItemDescription(book = book)
             IconButton(
-                onClick = {isBookmarked=!isBookmarked
-                onBookMarkPressed(book)}
+                onClick = {onBookMarkPressed(book)}
             ) {
                 Icon(
-                    imageVector = if(isBookmarked){Icons.Default.Bookmark}
+                    imageVector = if(book.bookInfo.isBookmarked){Icons.Default.Bookmark}
                     else {Icons.Default.BookmarkBorder},
                     contentDescription = stringResource(R.string.bookmark),
                 )

@@ -28,10 +28,6 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -68,6 +64,8 @@ fun BookshelfHomeScreen(
     initCurrentItem:(BookType,BookInfo)->Unit,
     updateOrder: (Boolean)->Unit,
     currentOrder:Boolean,
+    textFieldKeyword:String,
+    updateKeyword:(String)->Unit,
     modifier:Modifier=Modifier
 ){
 
@@ -120,7 +118,9 @@ fun BookshelfHomeScreen(
                 scrollState=scrollState,
                 initCurrentItem=initCurrentItem,
                 updateOrder=updateOrder,
-                currentOrder=currentOrder
+                currentOrder=currentOrder,
+                textFieldKeyword=textFieldKeyword,
+                updateKeyword=updateKeyword
             )
         }
     }else{
@@ -142,7 +142,9 @@ fun BookshelfHomeScreen(
                         scrollState=scrollState,
                         initCurrentItem=initCurrentItem,
                         currentOrder=currentOrder,
-                        updateOrder=updateOrder
+                        updateOrder=updateOrder,
+                        textFieldKeyword=textFieldKeyword,
+                        updateKeyword=updateKeyword
                     )
                 }
                 else {
@@ -173,7 +175,9 @@ fun BookshelfHomeScreen(
                     scrollState=scrollState,
                     initCurrentItem=initCurrentItem,
                     currentOrder=currentOrder,
-                    updateOrder=updateOrder
+                    updateOrder=updateOrder,
+                    textFieldKeyword=textFieldKeyword,
+                    updateKeyword=updateKeyword
                 )
             }
         }
@@ -196,9 +200,10 @@ private fun BookshelfAppContent(
     initCurrentItem: (BookType, BookInfo) -> Unit,
     updateOrder:(Boolean)->Unit,
     currentOrder: Boolean,
+    textFieldKeyword:String,
+    updateKeyword:(String)->Unit,
     modifier:Modifier=Modifier
 ){
-    var input by remember{ mutableStateOf("android") }
 
     Box(modifier=modifier){
         Row(modifier=Modifier.fillMaxSize()){
@@ -219,9 +224,9 @@ private fun BookshelfAppContent(
                         bookshelfUiState = bookshelfUiState,
                         onSearch=onSearch,
                         onBookItemPressed=onBookItemPressed,
-                        input=input,
-                        onInputChange = {input=it},
-                        onInputReset = {input=it},
+                        input=textFieldKeyword,
+                        onInputChange = updateKeyword,
+                        onInputReset = updateKeyword,
                         onBookmarkPressed=onBookmarkPressed,
                         currentPage=currentPage,
                         updatePage=updatePage,
@@ -244,9 +249,9 @@ private fun BookshelfAppContent(
                                 onSearch=onSearch,
                                 onBookItemPressed=onBookItemPressed,
                                 bookshelfUiState=bookshelfUiState,
-                                input=input,
-                                onInputChange = {input=it},
-                                onInputReset = {input=it},
+                                input=textFieldKeyword,
+                                onInputChange = updateKeyword,
+                                onInputReset = updateKeyword,
                                 onBookmarkPressed=onBookmarkPressed,
                                 currentPage=currentPage,
                                 updatePage=updatePage,
@@ -265,7 +270,7 @@ private fun BookshelfAppContent(
                             is BookshelfUiState.Error -> {
                                 ErrorScreen(
                                     retryAction = onSearch,
-                                    input=input,
+                                    input=textFieldKeyword,
                                     modifier= Modifier
                                         .fillMaxSize()
                                         .weight(1f))
