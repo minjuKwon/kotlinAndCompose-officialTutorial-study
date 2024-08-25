@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -7,6 +8,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bookshelf.data.BookType
+import com.example.bookshelf.network.Book
+import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.screens.BookshelfHomeScreen
 import com.example.bookshelf.ui.utils.ContentType
 import com.example.bookshelf.ui.utils.NavigationType
@@ -47,24 +51,59 @@ fun BookshelfApp(
 
     BookshelfHomeScreen(
         bookshelfUiState=bookshelfViewModel.bookshelfUiState,
-        onTabPressed={ bookshelfViewModel.updateCurrentBookTabType(it) },
-        onSearch={ bookshelfViewModel.getInformation(it)},
-        onBookItemPressed={
-            bookshelfViewModel.updateOrder(true)
-            bookshelfViewModel.updateDetailsScreenState(it)},
-        onBackPressed={bookshelfViewModel.resetHomeScreenState(it)},
-        onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
-        navigationType = navigationType,
-        contentType= contentType,
-        currentPage=currentPage,
-        updatePage={bookshelfViewModel.getInformation(page=it)},
-        scrollState=scrollState,
-        initCurrentItem={v1,v2->
-            bookshelfViewModel.initCurrentItem(v1,v2) },
-        currentOrder=currentOrder,
-        updateOrder={bookshelfViewModel.updateOrder(it)},
-        textFieldKeyword=textFieldKeyword,
-        updateKeyword={bookshelfViewModel.updateKeyword(it)},
+        navigationConfig = NavigationConfig(
+            contentType=contentType,
+            navigationType = navigationType,
+            onTabPressed = { bookshelfViewModel.updateCurrentBookTabType(it) }
+        ),
+        textFieldParams = TextFieldParams(
+            textFieldKeyword=textFieldKeyword,
+            updateKeyword={bookshelfViewModel.updateKeyword(it)},
+            onSearch = { bookshelfViewModel.getInformation(it)}
+        ),
+        listContentParams = ListContentParams(
+            scrollState=scrollState,
+            currentPage=currentPage,
+            updatePage={bookshelfViewModel.getInformation(page=it)},
+            onBookmarkPressed={bookshelfViewModel.updateBookmarkList(it)},
+            onBookItemPressed={
+                bookshelfViewModel.updateOrder(true)
+                bookshelfViewModel.updateDetailsScreenState(it)},
+            initCurrentItem={v1,v2->
+                bookshelfViewModel.initCurrentItem(v1,v2)}
+        ),
+        detailsScreenParams = DetailsScreenParams(
+            currentOrder=currentOrder,
+            updateOrder={bookshelfViewModel.updateOrder(it)},
+            onBackPressed={bookshelfViewModel.resetHomeScreenState(it)}
+        ),
         modifier=modifier
     )
 }
+
+data class NavigationConfig(
+    val contentType: ContentType,
+    val navigationType: NavigationType,
+    val onTabPressed: (BookType) -> Unit
+)
+
+data class TextFieldParams(
+    val textFieldKeyword:String,
+    val updateKeyword:(String)->Unit,
+    val onSearch:(String)->Unit
+)
+
+data class ListContentParams(
+    val scrollState: LazyListState,
+    val currentPage:Int,
+    val updatePage:(Int)->Unit,
+    val onBookmarkPressed:(Book)->Unit,
+    val onBookItemPressed: (BookInfo) -> Unit,
+    val initCurrentItem:(BookType,BookInfo)->Unit,
+)
+
+data class DetailsScreenParams(
+    val currentOrder:Boolean,
+    val updateOrder: (Boolean)->Unit,
+    val onBackPressed:(BookInfo)->Unit
+)

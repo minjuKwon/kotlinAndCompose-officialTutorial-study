@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,22 +51,17 @@ import com.example.bookshelf.getTotalItemsCount
 import com.example.bookshelf.network.Book
 import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
+import com.example.bookshelf.ui.DetailsScreenParams
+import com.example.bookshelf.ui.ListContentParams
 import com.example.bookshelf.ui.PAGE_SIZE
+import com.example.bookshelf.ui.TextFieldParams
 
 @Composable
 fun BookshelfListOnlyContent(
     books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
-    onSearch:(String)->Unit,
-    onBookItemPressed: (BookInfo) -> Unit,
-    input:String,
-    onInputChange:(String)->Unit,
-    onInputReset:(String)->Unit,
-    onBookmarkPressed:(Book)->Unit,
-    currentPage:Int,
-    updatePage:(Int)->Unit,
-    scrollState:LazyListState,
-    initCurrentItem:(BookType,BookInfo)->Unit,
+    textFieldParams:TextFieldParams,
+    listContentParams:ListContentParams,
     modifier:Modifier= Modifier
 ){
     Column(
@@ -79,13 +73,13 @@ fun BookshelfListOnlyContent(
         val pageSize = PAGE_SIZE
         val totalPages = (totalCount+pageSize-1)/pageSize
         val pageGroupSize = 3
-        val currentGroup = (currentPage-1)/pageGroupSize
+        val currentGroup = (listContentParams.currentPage-1)/pageGroupSize
 
         SearchTextField(
-            input = input,
-            onInputChange = onInputChange,
-            onSearch = onSearch,
-            onInputReset = onInputReset
+            input = textFieldParams.textFieldKeyword,
+            onInputChange = textFieldParams.updateKeyword,
+            onSearch = textFieldParams.onSearch,
+            onInputReset = textFieldParams.updateKeyword
         )
 
         Row(
@@ -107,34 +101,34 @@ fun BookshelfListOnlyContent(
         }
 
         LazyColumn(
-            state=scrollState,
+            state=listContentParams.scrollState,
             modifier= Modifier
                 .padding(dimensionResource(R.dimen.list_padding))
         ){
             if(checkTabPressed(bookshelfUiState)==BookType.Bookmark){
                     items(checkBookmarkList(bookshelfUiState),key={it.id}){
-                        initCurrentItem(
+                        listContentParams.initCurrentItem(
                             checkTabPressed(bookshelfUiState),
                             checkBookmarkList(bookshelfUiState)[0].bookInfo
                         )
                         BookShelfListItem(
                             book = it,
-                            onBookItemPressed=onBookItemPressed,
-                            onBookMarkPressed = onBookmarkPressed
+                            onBookItemPressed= listContentParams.onBookItemPressed,
+                            onBookMarkPressed = listContentParams.onBookmarkPressed
                         )
                     }
             }else{
                 items(count=books.itemCount){
                     books[it]?.let { it1 ->
                         if(it==0){
-                            initCurrentItem(
+                            listContentParams.initCurrentItem(
                                 checkTabPressed(bookshelfUiState), it1.bookInfo
                             )
                         }
                         BookShelfListItem(
                             book = it1,
-                            onBookItemPressed=onBookItemPressed,
-                            onBookMarkPressed = onBookmarkPressed
+                            onBookItemPressed= listContentParams.onBookItemPressed,
+                            onBookMarkPressed =listContentParams.onBookmarkPressed
                         )
                     }
                 }
@@ -166,8 +160,8 @@ fun BookshelfListOnlyContent(
                         currentGroup = currentGroup,
                         pageGroupSize = pageGroupSize,
                         totalPages = totalPages,
-                        updatePage = updatePage,
-                        currentPage = currentPage
+                        updatePage = listContentParams.updatePage,
+                        currentPage = listContentParams.currentPage
                     )
                 }
             }
@@ -180,34 +174,17 @@ fun BookshelfListOnlyContent(
 fun BookshelfListAndDetailContent(
     books:LazyPagingItems<Book>,
     bookshelfUiState: BookshelfUiState,
-    onSearch: (String) -> Unit,
-    onBookItemPressed: (BookInfo) -> Unit,
-    input:String,
-    onInputChange:(String)->Unit,
-    onInputReset:(String)->Unit,
-    onBookmarkPressed:(Book)->Unit,
-    currentPage: Int,
-    updatePage: (Int) -> Unit,
-    scrollState: LazyListState,
-    initCurrentItem: (BookType, BookInfo) -> Unit,
-    updateOrder:(Boolean)->Unit,
-    currentOrder: Boolean,
+    textFieldParams:TextFieldParams,
+    listContentParams:ListContentParams,
+    detailsScreenParams: DetailsScreenParams,
     modifier:Modifier= Modifier
 ){
     Row(modifier=modifier){
         BookshelfListOnlyContent(
             books = books,
             bookshelfUiState = bookshelfUiState,
-            onSearch=onSearch,
-            onBookItemPressed = onBookItemPressed,
-            input=input,
-            onInputChange=onInputChange,
-            onInputReset=onInputReset,
-            onBookmarkPressed=onBookmarkPressed,
-            currentPage=currentPage,
-            updatePage=updatePage,
-            scrollState=scrollState,
-            initCurrentItem = initCurrentItem,
+            textFieldParams=textFieldParams,
+            listContentParams=listContentParams,
             modifier=Modifier.weight(1f)
         )
 
@@ -215,12 +192,14 @@ fun BookshelfListAndDetailContent(
 
         if(books.loadState.refresh is LoadState.NotLoading){
             BookshelfDetailsScreen(
-                onBackPressed= { activity.finish() },
-                isNotFullScreen = false,
-                order=currentOrder,
-                onOrderChange = updateOrder,
+                detailsScreenParams= DetailsScreenParams(
+                    onBackPressed = { activity.finish() },
+                    currentOrder = detailsScreenParams.currentOrder,
+                    updateOrder = detailsScreenParams.updateOrder
+                ),
                 bookshelfUiState=bookshelfUiState,
-                modifier=Modifier.weight(1f)
+                modifier=Modifier.weight(1f),
+                isNotFullScreen = false
             )
         }
 

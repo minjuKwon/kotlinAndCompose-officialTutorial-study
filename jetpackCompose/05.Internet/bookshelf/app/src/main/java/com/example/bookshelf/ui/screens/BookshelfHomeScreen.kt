@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
@@ -41,9 +40,11 @@ import com.example.bookshelf.checkBookList
 import com.example.bookshelf.checkBookmarkIsEmpty
 import com.example.bookshelf.checkTabPressed
 import com.example.bookshelf.data.BookType
-import com.example.bookshelf.network.Book
-import com.example.bookshelf.network.BookInfo
 import com.example.bookshelf.ui.BookshelfUiState
+import com.example.bookshelf.ui.DetailsScreenParams
+import com.example.bookshelf.ui.ListContentParams
+import com.example.bookshelf.ui.NavigationConfig
+import com.example.bookshelf.ui.TextFieldParams
 import com.example.bookshelf.ui.utils.ContentType
 import com.example.bookshelf.ui.utils.NavigationType
 
@@ -51,21 +52,10 @@ import com.example.bookshelf.ui.utils.NavigationType
 @Composable
 fun BookshelfHomeScreen(
     bookshelfUiState: BookshelfUiState,
-    onTabPressed: (BookType) -> Unit,
-    onSearch:(String)->Unit,
-    onBookItemPressed: (BookInfo) -> Unit,
-    onBackPressed:(BookInfo)->Unit,
-    onBookmarkPressed:(Book)->Unit,
-    navigationType: NavigationType,
-    contentType: ContentType,
-    currentPage:Int,
-    updatePage:(Int)->Unit,
-    scrollState: LazyListState,
-    initCurrentItem:(BookType,BookInfo)->Unit,
-    updateOrder: (Boolean)->Unit,
-    currentOrder:Boolean,
-    textFieldKeyword:String,
-    updateKeyword:(String)->Unit,
+    navigationConfig: NavigationConfig,
+    textFieldParams: TextFieldParams,
+    listContentParams: ListContentParams,
+    detailsScreenParams: DetailsScreenParams,
     modifier:Modifier=Modifier
 ){
 
@@ -82,13 +72,13 @@ fun BookshelfHomeScreen(
         )
     )
 
-    if(navigationType==NavigationType.PERMANENT_NAVIGATION_DRAWER){
+    if(navigationConfig.navigationType==NavigationType.PERMANENT_NAVIGATION_DRAWER){
         PermanentNavigationDrawer(
             drawerContent = {
                 PermanentDrawerSheet(modifier = Modifier.fillMaxWidth(0.2f)) {
                     NavigationDrawerContent(
                         selectedTab = checkTabPressed(bookshelfUiState) ,
-                        onTabPressed = onTabPressed,
+                        onTabPressed = navigationConfig.onTabPressed,
                         navigationItemList = navigationItemContentList,
                         modifier= Modifier
                             .fillMaxHeight()
@@ -104,23 +94,13 @@ fun BookshelfHomeScreen(
             },modifier=Modifier.testTag(stringResource(R.string.navigation_drawer))
         ) {
             BookshelfAppContent(
-                navigationType = navigationType,
-                contentType = contentType,
                 bookshelfUiState = bookshelfUiState,
-                onTabPressed=onTabPressed,
-                onSearch=onSearch,
-                onBookItemPressed=onBookItemPressed,
-                onBookmarkPressed=onBookmarkPressed,
                 navigationItemContent = navigationItemContentList,
-                currentPage=currentPage,
-                updatePage=updatePage,
-                modifier = modifier,
-                scrollState=scrollState,
-                initCurrentItem=initCurrentItem,
-                updateOrder=updateOrder,
-                currentOrder=currentOrder,
-                textFieldKeyword=textFieldKeyword,
-                updateKeyword=updateKeyword
+                navigationConfig=navigationConfig,
+                textFieldParams=textFieldParams,
+                listContentParams=listContentParams,
+                detailsScreenParams=detailsScreenParams,
+                modifier = modifier
             )
         }
     }else{
@@ -128,56 +108,34 @@ fun BookshelfHomeScreen(
             is BookshelfUiState.Success -> {
                 if(bookshelfUiState.isShowingHomepage) {
                     BookshelfAppContent(
-                        navigationType=navigationType,
-                        contentType = contentType,
                         bookshelfUiState = bookshelfUiState,
-                        onTabPressed= onTabPressed,
-                        onSearch=onSearch,
-                        onBookItemPressed=onBookItemPressed,
-                        onBookmarkPressed=onBookmarkPressed,
                         navigationItemContent = navigationItemContentList,
-                        currentPage=currentPage,
-                        updatePage=updatePage,
-                        modifier = modifier,
-                        scrollState=scrollState,
-                        initCurrentItem=initCurrentItem,
-                        currentOrder=currentOrder,
-                        updateOrder=updateOrder,
-                        textFieldKeyword=textFieldKeyword,
-                        updateKeyword=updateKeyword
+                        navigationConfig=navigationConfig,
+                        textFieldParams=textFieldParams,
+                        listContentParams=listContentParams,
+                        detailsScreenParams=detailsScreenParams,
+                        modifier = modifier
                     )
                 }
                 else {
                     bookshelfUiState.currentItem[bookshelfUiState.currentTabType]?.let {
                         BookshelfDetailsScreen(
-                            onBackPressed=onBackPressed,
-                            modifier=modifier,
-                            order=currentOrder,
-                            onOrderChange=updateOrder,
-                            bookshelfUiState = bookshelfUiState
+                            bookshelfUiState = bookshelfUiState,
+                            detailsScreenParams=detailsScreenParams,
+                            modifier=modifier
                         )
                     }
                 }
             }
             else ->{
                 BookshelfAppContent(
-                    navigationType = navigationType,
-                    contentType = contentType,
                     bookshelfUiState = bookshelfUiState,
-                    onTabPressed=onTabPressed,
-                    onSearch=onSearch,
-                    onBookItemPressed=onBookItemPressed,
-                    onBookmarkPressed=onBookmarkPressed,
                     navigationItemContent = navigationItemContentList,
-                    currentPage=currentPage,
-                    updatePage=updatePage,
-                    modifier = modifier,
-                    scrollState=scrollState,
-                    initCurrentItem=initCurrentItem,
-                    currentOrder=currentOrder,
-                    updateOrder=updateOrder,
-                    textFieldKeyword=textFieldKeyword,
-                    updateKeyword=updateKeyword
+                    navigationConfig=navigationConfig,
+                    textFieldParams=textFieldParams,
+                    listContentParams=listContentParams,
+                    detailsScreenParams=detailsScreenParams,
+                    modifier = modifier
                 )
             }
         }
@@ -187,53 +145,36 @@ fun BookshelfHomeScreen(
 @Composable
 private fun BookshelfAppContent(
     bookshelfUiState: BookshelfUiState,
-    onTabPressed: (BookType) -> Unit,
-    onSearch: (String) -> Unit,
-    onBookItemPressed: (BookInfo) -> Unit,
-    onBookmarkPressed:(Book)->Unit,
-    navigationType: NavigationType,
-    contentType: ContentType,
     navigationItemContent: List<NavigationItemContent>,
-    currentPage:Int,
-    updatePage: (Int) -> Unit,
-    scrollState:LazyListState,
-    initCurrentItem: (BookType, BookInfo) -> Unit,
-    updateOrder:(Boolean)->Unit,
-    currentOrder: Boolean,
-    textFieldKeyword:String,
-    updateKeyword:(String)->Unit,
+    navigationConfig: NavigationConfig,
+    textFieldParams: TextFieldParams,
+    listContentParams: ListContentParams,
+    detailsScreenParams: DetailsScreenParams,
     modifier:Modifier=Modifier
 ){
 
     Box(modifier=modifier){
         Row(modifier=Modifier.fillMaxSize()){
 
-            AnimatedVisibility(visible=navigationType==NavigationType.NAVIGATION_RAIL){
+            AnimatedVisibility(
+                visible=navigationConfig.navigationType==NavigationType.NAVIGATION_RAIL
+            ){
                 BookNavigationRail(
                     currentTab = checkTabPressed(bookshelfUiState),
-                    onTabPressed = onTabPressed,
+                    onTabPressed = navigationConfig.onTabPressed,
                     navigationItemContentList = navigationItemContent,
                     modifier=Modifier.testTag(stringResource(R.string.navigation_rail))
                 )
             }
 
             Column(modifier=Modifier.fillMaxSize()) {
-                if(contentType==ContentType.LIST_AND_DETAIL){
+                if(navigationConfig.contentType==ContentType.LIST_AND_DETAIL){
                     BookshelfListAndDetailContent(
                         books = checkBookList(bookshelfUiState).collectAsLazyPagingItems() ,
                         bookshelfUiState = bookshelfUiState,
-                        onSearch=onSearch,
-                        onBookItemPressed=onBookItemPressed,
-                        input=textFieldKeyword,
-                        onInputChange = updateKeyword,
-                        onInputReset = updateKeyword,
-                        onBookmarkPressed=onBookmarkPressed,
-                        currentPage=currentPage,
-                        updatePage=updatePage,
-                        scrollState = scrollState,
-                        initCurrentItem=initCurrentItem,
-                        updateOrder=updateOrder,
-                        currentOrder=currentOrder
+                        listContentParams=listContentParams,
+                        textFieldParams=textFieldParams,
+                        detailsScreenParams=detailsScreenParams,
                     )
                 }else{
                     if(checkTabPressed(bookshelfUiState)==BookType.Bookmark
@@ -246,17 +187,9 @@ private fun BookshelfAppContent(
                         when(bookshelfUiState){
                             is BookshelfUiState.Success -> BookshelfListOnlyContent(
                                 books=bookshelfUiState.list.book.collectAsLazyPagingItems(),
-                                onSearch=onSearch,
-                                onBookItemPressed=onBookItemPressed,
                                 bookshelfUiState=bookshelfUiState,
-                                input=textFieldKeyword,
-                                onInputChange = updateKeyword,
-                                onInputReset = updateKeyword,
-                                onBookmarkPressed=onBookmarkPressed,
-                                currentPage=currentPage,
-                                updatePage=updatePage,
-                                scrollState = scrollState,
-                                initCurrentItem=initCurrentItem,
+                                textFieldParams=textFieldParams,
+                                listContentParams=listContentParams,
                                 modifier= Modifier
                                     .padding(dimensionResource(R.dimen.list_only_content_column_padding))
                                     .fillMaxSize()
@@ -269,8 +202,8 @@ private fun BookshelfAppContent(
                             }
                             is BookshelfUiState.Error -> {
                                 ErrorScreen(
-                                    retryAction = onSearch,
-                                    input=textFieldKeyword,
+                                    retryAction = textFieldParams.onSearch,
+                                    input=textFieldParams.textFieldKeyword,
                                     modifier= Modifier
                                         .fillMaxSize()
                                         .weight(1f))
@@ -278,10 +211,12 @@ private fun BookshelfAppContent(
                         }
                     }
                 }
-                AnimatedVisibility(visible = navigationType==NavigationType.BOTTOM_NAVIGATION) {
+                AnimatedVisibility(
+                    visible = navigationConfig.navigationType==NavigationType.BOTTOM_NAVIGATION
+                ) {
                     BookBottomNavigationBar(
                         currentTab = checkTabPressed(bookshelfUiState),
-                        onTabPressed = onTabPressed,
+                        onTabPressed = navigationConfig.onTabPressed,
                         navigationItemContentList = navigationItemContent,
                         modifier=Modifier.fillMaxWidth()
                     )
