@@ -7,8 +7,9 @@
 - 해당 책 클릭 시 상세화면 이동.
 # 기간
 2024.06.03~2024.07.12
+(리팩토링:2024.08.25)
 # 기술 스택
-- Compose(LazyColumn,remember,stateflow,state)
+- Compose(LazyColumn,stateflow,state)
 - Coil
 -  Coroutine
 -  수동 DI
@@ -17,6 +18,7 @@
 -  Retrofit
 -  ViewModel
 -  UI Test(Espresso, JUnit), Unit Test(JUnit)
+-  MVVM 패턴
 # 주요 기능
 - 검색
 - 즐겨찾기
