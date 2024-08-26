@@ -6,6 +6,8 @@ db 파일 제공
 항공편 출발 위치를 검색하여 해당 항공편을 보고 저장하는 어플.
 # 기간
 2024.07.13~2024.08.17
+
+(리팩토링:2024.08.22, 2024.08.26)
 # 기술 스택
 - Compose(LazyColumn,remember,stateflow,state)
 - Coroutine
@@ -14,6 +16,7 @@ db 파일 제공
 - DataStore
 - ViewModel
 - Unit Test(JUnit)
+- MVVM 패턴 
 # 주요 기능
 - 검색
 - 즐겨찾기
