@@ -121,11 +121,8 @@ fun EmptyScreen(
 
 @Composable
 fun SearchingScreen(
-    searchQuery:TextFieldValue,
-    onSearchQueryChange:(TextFieldValue)->Unit,
     items:List<Airport>,
-    onSearch:(String)->Unit,
-    onReset: (TextFieldValue) -> Unit,
+    textFieldParams: TextFieldParams,
     screenModifier:Modifier=Modifier,
     textFieldModifier:Modifier=Modifier
 ){
@@ -134,10 +131,7 @@ fun SearchingScreen(
         horizontalAlignment=Alignment.CenterHorizontally
     ) {
         SearchField(
-            query = searchQuery,
-            onQueryChange = onSearchQueryChange,
-            onSearch= onSearch,
-            onReset = onReset,
+            textFieldParams=textFieldParams,
             modifier=textFieldModifier
         )
         LazyColumn{
@@ -150,15 +144,11 @@ fun SearchingScreen(
 
 @Composable
 fun SearchResultScreen(
-    searchQuery:TextFieldValue,
-    onSearchQueryChange:(TextFieldValue)->Unit,
-    listTitle:String,
-    items:List<Airport>,
     item:Item,
-    onSearch:(String)->Unit,
-    onReset: (TextFieldValue) -> Unit,
-    onInsert:(Bookmark)->Unit,
-    onDelete:(Bookmark)->Unit,
+    items:List<Airport>,
+    listTitle:String,
+    textFieldParams: TextFieldParams,
+    databaseDaoParams: DatabaseDaoParams,
     modifier:Modifier=Modifier
 ){
     Column(
@@ -166,10 +156,7 @@ fun SearchResultScreen(
         horizontalAlignment=Alignment.CenterHorizontally
     ) {
         SearchField(
-            query = searchQuery,
-            onQueryChange = onSearchQueryChange,
-            onSearch= onSearch,
-            onReset = onReset
+            textFieldParams = textFieldParams
         )
         Text(
             text=listTitle,
@@ -183,8 +170,7 @@ fun SearchResultScreen(
                 FlightSearchAirportList(
                     airport=it,
                     item=item,
-                    onInsert=onInsert,
-                    onDelete=onDelete
+                    databaseDaoParams = databaseDaoParams
                 )
             }
         }
@@ -193,15 +179,11 @@ fun SearchResultScreen(
 
 @Composable
 fun BookmarkScreen(
-    searchQuery:TextFieldValue,
-    onSearchQueryChange:(TextFieldValue)->Unit,
-    listTitle:String,
     items:List<Bookmark>?,
+    listTitle:String,
     emptyScreenMode:Int,
-    onSearch:(String)->Unit,
-    onReset: (TextFieldValue) -> Unit,
-    onInsert:(Bookmark)->Unit,
-    onDelete:(Bookmark)->Unit,
+    textFieldParams: TextFieldParams,
+    databaseDaoParams: DatabaseDaoParams,
     modifier:Modifier=Modifier
 ){
     Column(
@@ -209,10 +191,7 @@ fun BookmarkScreen(
         horizontalAlignment=Alignment.CenterHorizontally
     ) {
         SearchField(
-            query = searchQuery,
-            onQueryChange = onSearchQueryChange,
-            onSearch= onSearch,
-            onReset = onReset
+            textFieldParams = textFieldParams
         )
         Text(
             text=listTitle,
@@ -226,8 +205,7 @@ fun BookmarkScreen(
                 items(items=items,key={it.id}){
                     FlightSearchBookmarkList(
                         bookmark=it,
-                        onInsert=onInsert,
-                        onDelete=onDelete
+                        databaseDaoParams=databaseDaoParams
                     )
                 }
             }
@@ -240,24 +218,26 @@ fun BookmarkScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchField(
-    query:TextFieldValue,
-    onQueryChange:(TextFieldValue)->Unit,
-    onSearch:(String)->Unit,
-    onReset:(TextFieldValue)->Unit,
+    textFieldParams: TextFieldParams,
     modifier:Modifier=Modifier
 ){
     //onReset 올바른 타이밍 적용하기 위한 플래그
     //onValueChange 새로운 값이 리셋된 값으로 적용되지 않는 문제 방지
     var isResetting by remember{ mutableStateOf(true) }
     TextField(
-        value = query,
-        onValueChange = {if(isResetting) onQueryChange(it) else onReset(TextFieldValue(""))},
+        value = textFieldParams.query,
+        onValueChange = {
+            if(isResetting) textFieldParams.onQueryChange(it)
+            else textFieldParams.onReset(TextFieldValue(""))
+        },
         label={Text(stringResource(R.string.search_label))},
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = stringResource(R.string.search),
-                modifier=Modifier.clickable{onSearch(query.text)}
+                modifier=Modifier.clickable{
+                    textFieldParams.onSearch(textFieldParams.query.text)
+                }
             )
         },
         trailingIcon={
@@ -266,7 +246,7 @@ fun SearchField(
                 contentDescription = stringResource(R.string.keyword_reset),
                 modifier=Modifier.clickable{
                     isResetting=false
-                    onReset(TextFieldValue(""))
+                    textFieldParams.onReset(TextFieldValue(""))
                 }
 
             )
@@ -276,7 +256,7 @@ fun SearchField(
             keyboardType = KeyboardType.Text
         ),
         keyboardActions= KeyboardActions(
-            onSearch = {onSearch(query.text)},
+            onSearch = {textFieldParams.onSearch(textFieldParams.query.text)},
         ),
         modifier= modifier
             .fillMaxWidth()
@@ -290,10 +270,9 @@ fun SearchField(
 
 @Composable
 fun FlightSearchAirportList(
-    airport: Airport,
     item:Item,
-    onInsert:(Bookmark)->Unit,
-    onDelete:(Bookmark)->Unit
+    airport: Airport,
+    databaseDaoParams: DatabaseDaoParams
 ){
     var isBookmarked by rememberSaveable{mutableStateOf(false)}
     Card(
@@ -342,7 +321,7 @@ fun FlightSearchAirportList(
             IconButton(
                 onClick = {
                 isBookmarked = if(isBookmarked){
-                    onDelete(
+                    databaseDaoParams.onDelete(
                         Bookmark(
                             departureCode=item.iataCode,
                             destinationCode=airport.iataCode
@@ -350,7 +329,7 @@ fun FlightSearchAirportList(
                     )
                     false
                 } else {
-                    onInsert(
+                    databaseDaoParams.onInsert(
                         Bookmark(
                             departureCode=item.iataCode,
                             destinationCode=airport.iataCode
@@ -373,8 +352,7 @@ fun FlightSearchAirportList(
 @Composable
 fun FlightSearchBookmarkList(
     bookmark: Bookmark,
-    onInsert:(Bookmark)->Unit,
-    onDelete:(Bookmark)->Unit
+    databaseDaoParams: DatabaseDaoParams
 ){
     var isBookmarked by remember{mutableStateOf(true)}
     Card(
@@ -405,10 +383,10 @@ fun FlightSearchBookmarkList(
             Spacer(modifier=Modifier.weight(1f))
             IconButton(onClick = {
                 isBookmarked = if(isBookmarked){
-                    onDelete(bookmark)
+                    databaseDaoParams.onDelete(bookmark)
                     false
                 } else {
-                    onInsert(bookmark)
+                    databaseDaoParams.onInsert(bookmark)
                     true
                 }
             }) {

@@ -62,18 +62,20 @@ fun FlightSearchScreen(
                 keyboardController?.hide()
             }else{
                 SearchingScreen(
-                    searchQuery = text,
-                    onSearchQueryChange={
-                        text=it
-                        airPortViewModel.updateText(it.text)
-                        airPortViewModel.searchByKeyword()
-                    },
                     items= searchingUiState.searchList,
-                    onSearch={airPortViewModel.getAirportList(it)},
-                    onReset={
-                        airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
-                        text=it
-                    },
+                    textFieldParams=TextFieldParams(
+                        query = text,
+                        onQueryChange ={
+                            text=it
+                            airPortViewModel.updateText(it.text)
+                            airPortViewModel.searchByKeyword()
+                        },
+                        onSearch={airPortViewModel.getAirportList(it)},
+                        onReset={
+                            airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
+                            text=it
+                        }
+                    ),
                     screenModifier=modifier,
                     textFieldModifier=Modifier.focusRequester(focusRequester)
                         .onFocusChanged { focusState ->
@@ -87,22 +89,26 @@ fun FlightSearchScreen(
         is AirportUiState.SearchResult->{
             val searchResultUiState = (airportUiState as AirportUiState.SearchResult)
             SearchResultScreen(
-                searchQuery=text,
-                onSearchQueryChange = {
-                    text=it
-                    airPortViewModel.updateText(it.text)
-                    airPortViewModel.searchByKeyword()
-                },
-                listTitle=stringResource(R.string.result_list_title),
-                items=searchResultUiState.itemList,
                 item=searchResultUiState.item,
-                onSearch={airPortViewModel.getAirportList(it)},
-                onReset={
-                    airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
-                    text=it
-                },
-                onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
-                onDelete={bookmarkViewModel.deleteItem(it)},
+                items=searchResultUiState.itemList,
+                listTitle=stringResource(R.string.result_list_title),
+                textFieldParams=TextFieldParams(
+                    query = text,
+                    onQueryChange = {
+                        text=it
+                        airPortViewModel.updateText(it.text)
+                        airPortViewModel.searchByKeyword()
+                    },
+                    onSearch={airPortViewModel.getAirportList(it)},
+                    onReset={
+                        airPortViewModel.updateAirportUiState(AirportUiState.EmptySearch())
+                        text=it
+                    },
+                ),
+                databaseDaoParams = DatabaseDaoParams(
+                    onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
+                    onDelete={bookmarkViewModel.deleteItem(it)},
+                ),
                 modifier=modifier
             )
         }
@@ -112,17 +118,21 @@ fun FlightSearchScreen(
                 bookmarkUiState=bookmarkUiState,
                 bookmarkViewModel = bookmarkViewModel,
                 airPortViewModel=airPortViewModel,
-                text=text,
                 emptyScreenMode = emptyUiState.mode,
-                onTextChange={
-                    text=it
-                    airPortViewModel.updateText(it.text)
-                    airPortViewModel.searchByKeyword()
-                },
-                onSearch={airPortViewModel.getAirportList(it)},
-                onReset = { text=it },
-                onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
-                onDelete={bookmarkViewModel.deleteItem(it)},
+                textFieldParams=TextFieldParams(
+                    query=text,
+                    onQueryChange={
+                        text=it
+                        airPortViewModel.updateText(it.text)
+                        airPortViewModel.searchByKeyword()
+                    },
+                    onSearch={airPortViewModel.getAirportList(it)},
+                    onReset = { text=it },
+                ),
+                databaseDaoParams = DatabaseDaoParams(
+                    onInsert={coroutineScope.launch {bookmarkViewModel.insertItem(it)}},
+                    onDelete={bookmarkViewModel.deleteItem(it)}
+                ),
                 modifier=modifier
             )
         }
@@ -135,13 +145,9 @@ fun CheckBookmarkUiStateScreen(
     bookmarkUiState: BookmarkUiState,
     bookmarkViewModel:BookmarkViewModel,
     airPortViewModel: AirportViewModel,
-    text:TextFieldValue,
     emptyScreenMode:Int,
-    onTextChange:(TextFieldValue)->Unit,
-    onSearch:(String)->Unit,
-    onReset: (TextFieldValue) -> Unit,
-    onInsert:(Bookmark)->Unit,
-    onDelete:(Bookmark)->Unit,
+    textFieldParams: TextFieldParams,
+    databaseDaoParams: DatabaseDaoParams,
     modifier: Modifier=Modifier
 ){
     when(bookmarkUiState){
@@ -151,17 +157,11 @@ fun CheckBookmarkUiStateScreen(
         is BookmarkUiState.Success->{
             bookmarkViewModel.getAllBookmarks()
             BookmarkScreen(
-                searchQuery = text,
-                onSearchQueryChange = {
-                    onTextChange(it)
-                },
+                items= bookmarkUiState.itemList,
                 listTitle=stringResource(R.string.bookmark_list_title),
                 emptyScreenMode=emptyScreenMode,
-                items= bookmarkUiState.itemList,
-                onSearch= {onSearch(it)},
-                onReset= onReset,
-                onInsert=onInsert,
-                onDelete=onDelete,
+                textFieldParams=textFieldParams,
+                databaseDaoParams=databaseDaoParams,
                 modifier=modifier
             )
         }
@@ -176,3 +176,15 @@ fun CheckBookmarkUiStateScreen(
         }
     }
 }
+
+data class DatabaseDaoParams(
+    val onInsert:(Bookmark)->Unit,
+    val onDelete:(Bookmark)->Unit,
+)
+
+data class TextFieldParams(
+    val query:TextFieldValue,
+    val onQueryChange:(TextFieldValue)->Unit,
+    val onReset:(TextFieldValue)->Unit,
+    val onSearch:(String)->Unit,
+)
