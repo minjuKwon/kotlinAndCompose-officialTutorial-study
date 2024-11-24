@@ -17,7 +17,7 @@
 -  Paging
 -  Retrofit
 -  ViewModel
--  UI Test(Espresso, JUnit), Unit Test(JUnit)
+-  UI Test(JUnit), Unit Test(JUnit)
 -  MVVM 패턴
 # 주요 기능
 - 검색
